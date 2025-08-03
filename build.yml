@@ -1,0 +1,56 @@
+global_options:
+  freezed:freezed:
+    run_before:
+      - hive_generator:hive_generator
+
+targets:
+  $default:
+    builders:
+      json_serializable:
+        enabled: true
+        generate_for:
+        include:
+          - lib/featueres/**/data/models/**_dto.dart
+          - lib/features/**/**/data/models/**_dto.dart
+          - lib/features/**/domain/entities/**.dart
+          - lib/features/**/**/domain/entities/**.dart
+
+      freezed:freezed:
+        enabled: true
+        options:
+          when: false
+          map: false
+          maybe_when: false
+          when_or_null: false
+        generate_for:
+          include:
+            - lib/features/**/presentation/blocs/**_event.dart
+            - lib/features/**/presentation/blocs/**_state.dart
+            - lib/features/**/presentation/blocs/**_bloc.dart
+
+      injectable_generator:injectable_builder:
+        enabled: true
+        generate_for:
+          include:
+            - lib/features/**/presentation/blocs/**_bloc.dart
+            - lib/di/injection_register_module.dart
+            - lib/features/**/data/infra/**_facade.dart
+
+      injectable_generator:injectable_config_builder:
+        enabled: true
+        generate_for:
+          include:
+            - lib/di/injection.dart
+            - test/di/injection.dart
+      hive_generator:hive_generator:
+        enabled: true
+        generate_for:
+          include:
+            - lib/features/**/data/models/**_dto.dart
+            - lib/features/**/**/data/models/**_dto.dart
+
+      retrofit_generator:
+        enabled: true
+        generate_for:
+          include:
+            - lib/network/**_client.dart
