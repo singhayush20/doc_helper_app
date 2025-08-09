@@ -1,1 +1,1 @@
-enum RouteId { test1 }
+enum RouteId { test1, dashboard }

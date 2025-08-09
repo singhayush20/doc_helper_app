@@ -2,6 +2,9 @@ import 'dart:async';
 
 import 'package:doc_helper_app/core/routes/router.dart';
 
+/**
+ * Stores metadata about which route initiated a navigation to a child route.
+ */
 class RouteInitiatorMetaData {
   RouteInitiatorMetaData({required this.parentRouteId, this.data});
 
@@ -9,6 +12,10 @@ class RouteInitiatorMetaData {
   final dynamic data;
 }
 
+/**
+ *  Encapsulates the result of a navigation operation that can be communicated
+ *  back to the parent route.
+ */
 class RouteCompleterMetaData {
   RouteCompleterMetaData({required this.status, this.data});
 
@@ -27,9 +34,12 @@ class RouteTracker {
 
   static final RouteTracker _singleton = RouteTracker._internal();
 
+  // Tracks parent-child relationships using RouteId as keys
   final Map<RouteId, RouteInitiatorMetaData> initiatorMap = {};
+  // Manages async communication channels using composite keys
   final Map<String, Completer<RouteCompleterMetaData>> completerMap = {};
 
+  // Establishes parent-child relationship when navigation occurs.
   void pushInitiatorForChild({
     required RouteId child,
     required RouteId parent,
@@ -42,6 +52,9 @@ class RouteTracker {
   RouteInitiatorMetaData? getInitatorDataFor({required RouteId child}) =>
       initiatorMap[child];
 
+  // Creates an async communication channel between parent and child routes.
+  // Completer Pattern: Uses Completer<T> to create a Future<T> that can be
+  // completed manually.
   void attachCompleterFor({
     required RouteId parent,
     required RouteId child,
@@ -53,6 +66,7 @@ class RouteTracker {
       ..putIfAbsent(key, () => completer);
   }
 
+  // Sends results from child route back to parent route.
   void resolveCompleterFor({
     required RouteId parent,
     required RouteId child,
@@ -64,12 +78,14 @@ class RouteTracker {
     completer?.complete(completerData);
   }
 
+  // Broadcasts results to all parents waiting for a specific child route's
+  // completion.
   void resolveCompleterForAll({
     required RouteId child,
     required RouteCompleterStatus status,
     dynamic data,
   }) {
-    final completers = _getCompleterforAll(child: child);
+    final completers = _getCompleterForAll(child: child);
     final completerData = RouteCompleterMetaData(status: status, data: data);
 
     for (final completer in completers) {
@@ -86,7 +102,7 @@ class RouteTracker {
     return completer;
   }
 
-  List<Completer<RouteCompleterMetaData>?> _getCompleterforAll({
+  List<Completer<RouteCompleterMetaData>?> _getCompleterForAll({
     required RouteId child,
   }) {
     final completers = <Completer<RouteCompleterMetaData>?>[];
