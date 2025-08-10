@@ -7,7 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'core/router/router.dart';
 import 'firebase_options.dart';
 
-void mainCommon(String env) async {
+Future<void> mainCommon(String env) async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   initConfig(env: env);

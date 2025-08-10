@@ -12,6 +12,7 @@ abstract class InjectionRegisterModule {
   Future<Dio> baseDio(IDioProvider dioProvider) async => dioProvider.baseDio;
 
   @singleton
+  @Named('baseUrl')
   String get baseUrl => configOptions.baseUrl;
 
   @singleton

@@ -1,3 +1,4 @@
+import 'package:doc_helper_app/core/router/route_mapper.dart';
 import 'package:doc_helper_app/di/injection.dart';
 import 'package:doc_helper_app/feature/home/presentation/ui/home_page.dart';
 import 'package:doc_helper_app/feature/signin/presentation/ui/sign_in_page.dart';
@@ -29,17 +30,17 @@ GoRouter buildRouter(AuthNotifier authNotifier) => GoRouter(
   },
   routes: [
     GoRoute(
-      name: 'splash',
+      name: Routes.splash,
       path: '/splash',
       builder: (context, state) => const SplashPage(),
     ),
     GoRoute(
-      name: 'signIn',
+      name: Routes.signIn,
       path: '/signIn',
       builder: (context, state) => const SignInPage(),
     ),
     GoRoute(
-      name: 'home',
+      name: Routes.home,
       path: '/home',
       builder: (context, state) => const HomePage(),
     ),

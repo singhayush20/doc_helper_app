@@ -4,19 +4,20 @@ part of 'splash_bloc.dart';
 sealed class SplashState extends BaseState with _$SplashState {
   const SplashState._();
 
-  const factory SplashState.initial({required SignUpStateStore store}) =
+  const factory SplashState.initial({required SplashStateStore store}) =
       Initial;
 
   const factory SplashState.onCurrentUserFetch({
-    required SignUpStateStore store,
+    required SplashStateStore store,
+    required AppUser? user,
   }) = OnCurrentUserFetch;
 
   const factory SplashState.invalidateLoader({
-    required SignUpStateStore store,
+    required SplashStateStore store,
   }) = InvalidateLoader;
 
   const factory SplashState.onException({
-    required SignUpStateStore store,
+    required SplashStateStore store,
     required Exception exception,
   }) = OnException;
 
@@ -32,7 +33,7 @@ sealed class SplashState extends BaseState with _$SplashState {
 }
 
 @liteFreezed
-sealed class SignUpStateStore with _$SignUpStateStore {
-  const factory SignUpStateStore({@Default(false) bool loading}) =
-      _SignUpStateStore;
+sealed class SplashStateStore with _$SplashStateStore {
+  const factory SplashStateStore({@Default(false) bool loading}) =
+      _SplashStateStore;
 }

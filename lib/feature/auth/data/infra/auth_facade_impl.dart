@@ -8,36 +8,40 @@ import 'package:injectable/injectable.dart';
 
 @Singleton(as: IAuthFacade, env: injectionEnv)
 class AuthFacadeImpl implements IAuthFacade {
-  AuthFacadeImpl(this._auth);
-  final FirebaseAuth _auth;
+  AuthFacadeImpl(this._firebaseAuth);
+
+  final FirebaseAuth _firebaseAuth;
+
   @override
   Future<Either<ServerException, AppUser?>> getCurrentUser() async {
-    // final user = _auth.currentUser;
-    // return user == null ? null : DomainUser(uid: user.uid, email: user.email);
-    return right(null);
+    final user = _firebaseAuth.currentUser;
+    return user == null
+        ? right(null)
+        : right(AppUser(id: user.uid, email: user.email));
   }
 
   @override
-  Stream<Either<ServerException, AppUser?>> authStateChanges() {
-    //  return _auth.authStateChanges().map((user) {
-    //       if (user == null) return null;
-    //       return DomainUser(uid: user.uid, email: user.email);
-    //     });
-    throw UnimplementedError();
-  }
+  Stream<Either<ServerException, AppUser?>> authStateChanges() =>
+      _firebaseAuth.authStateChanges().map((user) {
+        if (user == null) return right(null);
+        return right(AppUser(id: user.uid, email: user.email));
+      });
 
   @override
   Future<Either<ServerException, Unit>> signInWithEmailAndPassword({
     required String email,
     required String password,
-  }) {
-    // await _auth.signInWithEmailAndPassword(email: email, password: password);
-    throw UnimplementedError();
+  }) async {
+    await _firebaseAuth.signInWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+    return right(unit);
   }
 
   @override
-  Future<Either<ServerException, Unit>> signOut() {
-    // _auth.signOut();
-    throw UnimplementedError();
+  Future<Either<ServerException, Unit>> signOut() async {
+    _firebaseAuth.signOut();
+    return right(unit);
   }
 }

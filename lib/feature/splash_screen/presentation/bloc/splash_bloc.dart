@@ -2,6 +2,7 @@ import 'package:doc_helper_app/common/base_bloc/base_bloc.dart';
 import 'package:doc_helper_app/common/base_bloc/base_event.dart';
 import 'package:doc_helper_app/common/base_bloc/base_state.dart';
 import 'package:doc_helper_app/common/utils/app_utils.dart';
+import 'package:doc_helper_app/feature/auth/domain/entities/user.dart';
 import 'package:doc_helper_app/feature/auth/domain/interfaces/i_auth_facade.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -14,7 +15,7 @@ part 'splash_state.dart';
 @injectable
 class SplashBloc extends BaseBloc<SplashEvent, SplashState> {
   SplashBloc(this._authFacade)
-    : super(const SplashState.initial(store: SignUpStateStore()));
+    : super(const SplashState.initial(store: SplashStateStore()));
 
   final IAuthFacade _authFacade;
 
@@ -33,6 +34,7 @@ class SplashBloc extends BaseBloc<SplashEvent, SplashState> {
         emit(
           SplashState.onCurrentUserFetch(
             store: state.store.copyWith(loading: false),
+            user: user,
           ),
         );
       },

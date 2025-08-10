@@ -1,8 +1,11 @@
+import 'package:doc_helper_app/core/router/route_mapper.dart';
 import 'package:doc_helper_app/design/design.dart';
 import 'package:doc_helper_app/di/injection.dart';
+import 'package:doc_helper_app/feature/auth/domain/entities/user.dart';
 import 'package:doc_helper_app/feature/splash_screen/presentation/bloc/splash_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 part 'splash_form.dart';
 
@@ -22,7 +25,12 @@ class SplashPage extends StatelessWidget {
   );
 
   void _handleState(BuildContext context, SplashState state) => switch (state) {
-    OnCurrentUserFetch _ => {},
+    OnCurrentUserFetch(:final AppUser? user) => {
+      if (user == null)
+        {context.goNamed(Routes.signIn)}
+      else
+        {context.goNamed(Routes.home)},
+    },
     _ => {},
   };
 }
