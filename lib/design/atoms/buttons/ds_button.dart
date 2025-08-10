@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 
 part 'base_button.dart';
 
-sealed class DsButton extends BaseButton {
+final class DsButton extends BaseButton {
   const DsButton.primary({
     super.key,
     required super.data,

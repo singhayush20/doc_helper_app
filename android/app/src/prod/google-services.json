@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "749981407559",
+    "project_id": "doc-helper-61abc",
+    "storage_bucket": "doc-helper-61abc.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:749981407559:android:18b56a00b9a57aa6c75462",
+        "android_client_info": {
+          "package_name": "com.example.doc_helper_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBzl_r9kOMu05AhUUORCqbyjU3kHpERJgI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

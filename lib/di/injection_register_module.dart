@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:doc_helper_app/env/config_options.dart';
 import 'package:doc_helper_app/env/env_config.dart';
 import 'package:doc_helper_app/network/dio/i_dio_provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:injectable/injectable.dart';
 
 @module
@@ -15,4 +16,7 @@ abstract class InjectionRegisterModule {
 
   @singleton
   Env get env => Env(configOptions.env);
+
+  @singleton
+  FirebaseAuth get firebaseAuth => FirebaseAuth.instance;
 }

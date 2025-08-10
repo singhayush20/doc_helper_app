@@ -27,6 +27,8 @@ targets:
             - lib/features/**/presentation/blocs/**_event.dart
             - lib/features/**/presentation/blocs/**_state.dart
             - lib/features/**/presentation/blocs/**_bloc.dart
+            - lib/features/**/domain/entities/**.dart
+            - lib/features/**/**/domain/entities/**.dart
 
       injectable_generator:injectable_builder:
         enabled: true
@@ -35,6 +37,7 @@ targets:
             - lib/features/**/presentation/blocs/**_bloc.dart
             - lib/di/injection_register_module.dart
             - lib/features/**/data/infra/**_facade.dart
+            - lib/core/router/auth_notifier.dart
 
       injectable_generator:injectable_config_builder:
         enabled: true

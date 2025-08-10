@@ -4,7 +4,7 @@ import 'ds_text_style.dart';
 
 part 'base_text.dart';
 
-sealed class DsText extends BaseText {
+final class DsText extends BaseText {
   const DsText.titleLarge({
     required super.data,
     super.textAlign,

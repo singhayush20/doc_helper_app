@@ -5,4 +5,6 @@ const liteFreezed = Freezed(
   fromJson: false,
   map: FreezedMapOptions.none,
   when: FreezedWhenOptions.none,
+  copyWith: true,
+  equal: true,
 );

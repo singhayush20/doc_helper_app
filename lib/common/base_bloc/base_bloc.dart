@@ -13,7 +13,7 @@ abstract class BaseBloc<Event extends BaseEvent, State extends BaseState>
 
   void handleEvents();
 
-  void started(Map<String, dynamic>? args);
+  void started({Map<String, dynamic>? args});
 
   void invalidateLoader(Emitter<State> emit, {bool loading = false}) {
     emit(state.getLoaderState(loading: loading) as State);
