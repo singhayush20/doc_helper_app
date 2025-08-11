@@ -1,10 +1,8 @@
 part of 'home_page.dart';
 
 class _HomeForm extends StatelessWidget {
-  const _HomeForm({super.key});
+  const _HomeForm();
 
   @override
-  Widget build(BuildContext context) {
-    return const Placeholder();
-  }
+  Widget build(BuildContext context) => const Placeholder();
 }

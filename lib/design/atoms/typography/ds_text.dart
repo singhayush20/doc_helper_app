@@ -6,6 +6,7 @@ part 'base_text.dart';
 
 final class DsText extends BaseText {
   const DsText.titleLarge({
+    super.key,
     required super.data,
     super.textAlign,
     super.maxLines,
@@ -13,6 +14,7 @@ final class DsText extends BaseText {
   }) : super(dsTextStyleType: DsTextStyleType.titleLarge);
 
   const DsText.titleMedium({
+    super.key,
     required super.data,
     super.textAlign,
     super.maxLines,
@@ -20,6 +22,7 @@ final class DsText extends BaseText {
   }) : super(dsTextStyleType: DsTextStyleType.titleMedium);
 
   const DsText.titleSmall({
+    super.key,
     required super.data,
     super.textAlign,
     super.maxLines,
@@ -27,6 +30,7 @@ final class DsText extends BaseText {
   }) : super(dsTextStyleType: DsTextStyleType.titleSmall);
 
   const DsText.bodyLarge({
+    super.key,
     required super.data,
     super.textAlign,
     super.maxLines,
@@ -34,6 +38,7 @@ final class DsText extends BaseText {
   }) : super(dsTextStyleType: DsTextStyleType.bodyLarge);
 
   const DsText.bodySmall({
+    super.key,
     required super.data,
     super.textAlign,
     super.maxLines,
@@ -41,6 +46,7 @@ final class DsText extends BaseText {
   }) : super(dsTextStyleType: DsTextStyleType.bodySmall);
 
   const DsText.caption({
+    super.key,
     required super.data,
     super.textAlign,
     super.maxLines,

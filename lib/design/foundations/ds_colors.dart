@@ -30,7 +30,8 @@ abstract class DsColors {
 
   // --- Text Colors ---
   static const Color textPrimary = _BaseColors.neutral800;
-  static const Color textSecondary = _BaseColors.neutral600;
+  static const Color textSecondary = _BaseColors.neutral700;
+  static const Color textTertiary = _BaseColors.neutral500;
   static const Color textDisabled = _BaseColors.neutral400;
   static const Color textHint = _BaseColors.neutral400;
   static const Color textOnDark = _BaseColors.white;
@@ -38,7 +39,7 @@ abstract class DsColors {
   static const Color textLink = _BaseColors.blue600;
 
   // --- Icon Colors ---
-  static const Color iconPrimary = _BaseColors.neutral700;
+  static const Color iconPrimary = _BaseColors.black;
   static const Color iconSecondary = _BaseColors.neutral500;
   static const Color iconDisabled = _BaseColors.neutral400;
   static const Color iconOnDark = _BaseColors.neutral200;
@@ -103,6 +104,14 @@ abstract class DsColors {
 
   static const Color stateBackgroundDisabled = _BaseColors.neutral200;
   static const Color stateTextMuted = _BaseColors.neutral500;
+
+  // --- Text Field Colors ---
+  static const Color textFieldBackground = _BaseColors.white;
+  static const Color textFieldBackgroundHover = _BaseColors.neutral100;
+  static const Color textFieldBackgroundDisabled = _BaseColors.neutral200;
+  static const Color textFieldText = _BaseColors.neutral800;
+  static const Color textFieldTextDisabled = _BaseColors.neutral400;
+  static const Color textFormFieldCursorColor = _BaseColors.neutral800;
 
   // --- Other UI Elements ---
   static const Color divider = _BaseColors.neutral200;

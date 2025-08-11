@@ -2,6 +2,7 @@ part of 'ds_text.dart';
 
 base class BaseText extends StatelessWidget {
   const BaseText({
+    super.key,
     required this.data,
     required this.dsTextStyleType,
     this.textAlign,
