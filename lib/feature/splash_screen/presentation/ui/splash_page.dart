@@ -29,7 +29,7 @@ class SplashPage extends StatelessWidget {
       if (user == null)
         {context.goNamed(Routes.signIn)}
       else
-        {context.goNamed(Routes.home)},
+        {context.goNamed(Routes.signIn)},
     },
     _ => {},
   };

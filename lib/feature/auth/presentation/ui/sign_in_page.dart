@@ -14,7 +14,7 @@ import 'package:doc_helper_app/design/design.dart'
         DsImage;
 import 'package:doc_helper_app/design/foundations/ds_border_width.dart';
 import 'package:doc_helper_app/di/injection.dart';
-import 'package:doc_helper_app/feature/signin/presentation/bloc/signin_bloc.dart';
+import 'package:doc_helper_app/feature/auth/presentation/bloc/signin_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

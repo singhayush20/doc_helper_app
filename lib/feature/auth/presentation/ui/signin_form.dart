@@ -83,10 +83,11 @@ class _SignInForm extends StatelessWidget {
                   data: 'Sign In',
                   onTap:
                       (_enableNextButton(
-                        email: state.store.email,
-                        password: state.store.password,
-                      ))
-                      ? () {}
+                            email: state.store.email,
+                            password: state.store.password,
+                          )) &&
+                          !state.store.loading
+                      ? () => getBloc<SignInBloc>(context).onLoginPressed()
                       : null,
                 ),
               ],

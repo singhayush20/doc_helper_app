@@ -17,4 +17,6 @@ sealed class SignInEvent extends BaseEvent with _$SignInEvent {
 
   const factory SignInEvent.onPasswordVisibilityChanged() =
       _OnPasswordVisibilityChanged;
+
+  const factory SignInEvent.onLoginPressed() = _OnLoginPressed;
 }

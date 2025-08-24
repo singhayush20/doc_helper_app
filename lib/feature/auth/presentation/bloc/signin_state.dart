@@ -21,6 +21,9 @@ sealed class SignInState extends BaseState with _$SignInState {
     required SignInStateStore store,
   }) = OnPasswordVisibilityChange;
 
+  const factory SignInState.onLogin({required SignInStateStore store}) =
+      OnLogin;
+
   const factory SignInState.invalidateLoader({
     required SignInStateStore store,
   }) = InvalidateLoader;

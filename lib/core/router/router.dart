@@ -1,7 +1,7 @@
 import 'package:doc_helper_app/core/router/route_mapper.dart';
 import 'package:doc_helper_app/di/injection.dart';
+import 'package:doc_helper_app/feature/auth/presentation/ui/sign_in_page.dart';
 import 'package:doc_helper_app/feature/home/presentation/ui/home_page.dart';
-import 'package:doc_helper_app/feature/signin/presentation/ui/sign_in_page.dart';
 import 'package:doc_helper_app/feature/splash_screen/presentation/ui/splash_page.dart';
 import 'package:go_router/go_router.dart';
 
@@ -22,9 +22,6 @@ GoRouter buildRouter(AuthNotifier authNotifier) => GoRouter(
 
     // If not authenticated, force sign-in for any protected route.
     if (!authed && !isOnSignIn) return '/signIn';
-
-    // If authenticated and on sign-in, send to home.
-    if (authed && isOnSignIn) return '/home';
 
     return null;
   },
