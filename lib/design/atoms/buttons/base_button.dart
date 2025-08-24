@@ -5,7 +5,7 @@ base class BaseButton extends StatelessWidget {
     super.key,
     required this.data,
     required this.buttonStyleType,
-    this.onClick,
+    this.onTap,
     this.leadingIcon,
     this.backgroundColor = DsColors.buttonPrimaryBackground,
     this.disabledColor = DsColors.buttonPrimaryBackgroundDisabled,
@@ -16,7 +16,7 @@ base class BaseButton extends StatelessWidget {
   });
 
   final String data;
-  final VoidCallback? onClick;
+  final VoidCallback? onTap;
   final IconData? leadingIcon;
   final Color backgroundColor;
   final Color disabledColor;
@@ -29,13 +29,19 @@ base class BaseButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final buttonStyle = _getButtonStyle;
-    return ElevatedButton(
-      style: buttonStyle,
-      onPressed: onClick,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        spacing: DsSpacing.horizontalSpace4,
-        children: [if (leadingIcon != null) Icon(leadingIcon), Text(data)],
+    return SizedBox(
+      height: 40.h,
+      child: ElevatedButton(
+        style: buttonStyle,
+        onPressed: onTap,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          spacing: DsSpacing.horizontalSpace4,
+          children: [
+            if (leadingIcon != null) ...[Icon(leadingIcon)],
+            Text(data, maxLines: 1, overflow: TextOverflow.clip),
+          ],
+        ),
       ),
     );
   }
@@ -80,7 +86,7 @@ base class BaseButton extends StatelessWidget {
           );
         }
         return RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(DsBorderRadius.borderRadius8),
+          borderRadius: BorderRadius.circular(DsBorderRadius.borderRadius2),
           side: BorderSide(color: borderColor ?? DsColors.borderDefault),
         );
       }),

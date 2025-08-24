@@ -10,7 +10,7 @@ part 'base_text_form_field.dart';
 
 class PrimaryTextFormField extends BaseTextFormField {
   const PrimaryTextFormField({
-    super.value,
+    required super.value,
     super.autoValidateMode,
     super.formFieldValidator,
     super.markIncorrect,
@@ -49,26 +49,51 @@ class PrimaryTextFormField extends BaseTextFormField {
 }
 
 class EmailTextFormField extends PrimaryTextFormField {
-  EmailTextFormField({
-    super.value,
+  const EmailTextFormField({
+    required super.value,
     super.key,
     super.onChanged,
     super.onTap,
+    super.labelText,
     super.hintText,
     super.errorText,
     super.controller,
     super.focusNode,
     super.onTapOutside,
+    super.prefixIcon,
   }) : super(
          textInputAction: TextInputAction.done,
          textInputType: TextInputType.emailAddress,
          forceUppercase: false,
+         autoFillHints: const [AutofillHints.email],
+       );
+}
+
+class PasswordTextFormField extends PrimaryTextFormField {
+  PasswordTextFormField({
+    required super.value,
+    super.key,
+    super.onChanged,
+    super.onTap,
+    super.labelText,
+    super.hintText,
+    super.errorText,
+    super.controller,
+    super.focusNode,
+    super.onTapOutside,
+    super.obscureText,
+    super.prefixIcon,
+    super.suffixIconWidget,
+  }) : super(
+         textInputAction: TextInputAction.done,
+         textInputType: TextInputType.visiblePassword,
+         forceUppercase: false,
          textInputFormatter: [
            FilteringTextInputFormatter.allow(
-             RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'),
+             RegExp(r'[a-zA-Z0-9\u0020-\u007E\u0024-\u00A9]'),
              replacementString: value?.input ?? '',
            ),
          ],
-         autoFillHints: const [AutofillHints.email],
+         autoFillHints: const [AutofillHints.password],
        );
 }

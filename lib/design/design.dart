@@ -1,5 +1,6 @@
 export 'package:doc_helper_app/design/atoms/buttons/ds_button.dart';
 export 'package:doc_helper_app/design/atoms/buttons/ds_button_style.dart';
+export 'package:doc_helper_app/design/atoms/text_button/ds_text_button.dart';
 export 'package:doc_helper_app/design/atoms/typography/ds_text.dart';
 export 'package:doc_helper_app/design/atoms/typography/ds_text_style.dart';
 export 'package:doc_helper_app/design/foundations/ds_border_radius.dart';
@@ -8,3 +9,4 @@ export 'package:doc_helper_app/design/foundations/ds_colors.dart';
 export 'package:doc_helper_app/design/foundations/ds_sizing.dart';
 export 'package:doc_helper_app/design/foundations/ds_spacing.dart';
 export 'package:doc_helper_app/design/molecules/text_form_field/ds_text_form_field.dart';
+export 'package:doc_helper_app/design/widgets/ds_image.dart';

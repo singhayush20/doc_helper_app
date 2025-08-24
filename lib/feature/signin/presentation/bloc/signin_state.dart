@@ -7,6 +7,20 @@ sealed class SignInState extends BaseState with _$SignInState {
   const factory SignInState.initial({required SignInStateStore store}) =
       _SignInStateInitial;
 
+  const factory SignInState.onEmailChange({required SignInStateStore store}) =
+      OnEmailChange;
+
+  const factory SignInState.onPasswordChange({
+    required SignInStateStore store,
+  }) = OnPasswordChange;
+
+  const factory SignInState.onSignInClick({required SignInStateStore store}) =
+      OnSignInClick;
+
+  const factory SignInState.onPasswordVisibilityChange({
+    required SignInStateStore store,
+  }) = OnPasswordVisibilityChange;
+
   const factory SignInState.invalidateLoader({
     required SignInStateStore store,
   }) = InvalidateLoader;
@@ -29,6 +43,10 @@ sealed class SignInState extends BaseState with _$SignInState {
 
 @liteFreezed
 sealed class SignInStateStore with _$SignInStateStore {
-  const factory SignInStateStore({@Default(false) bool loading}) =
-      _SignInStateStore;
+  const factory SignInStateStore({
+    EmailAddress? email,
+    Password? password,
+    @Default(false) bool isPasswordVisible,
+    @Default(false) bool loading,
+  }) = _SignInStateStore;
 }

@@ -112,7 +112,7 @@ abstract class BaseTextFormField extends StatelessWidget {
     final decoration = _dsInputDecorationTheme;
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
       spacing: DsSpacing.verticalSpace4,
       children: [
@@ -165,10 +165,12 @@ abstract class BaseTextFormField extends StatelessWidget {
       hintText: _hintText,
       helperText: _helperText,
       errorText: errorText,
-      fillColor: _readOnly ? DsColors.textFieldBackground : null,
-      focusColor: _readOnly ? DsColors.textFieldBackground : null,
-      hoverColor: _readOnly ? DsColors.textFieldBackgroundHover : null,
-      focusedBorder: _readOnly ? _dsInputDecorationTheme.border : null,
+      filled: _dsInputDecorationTheme.filled,
+      fillColor: _dsInputDecorationTheme.fillColor,
+      focusColor: _dsInputDecorationTheme.focusColor,
+      hoverColor: _dsInputDecorationTheme.hoverColor,
+      focusedBorder: !_readOnly ? _dsInputDecorationTheme.focusedBorder : null,
+      border: _dsInputDecorationTheme.border,
       prefix: _prefixIcon == null && _prefixIconWidget == null
           ? null
           : _prefixWidget,

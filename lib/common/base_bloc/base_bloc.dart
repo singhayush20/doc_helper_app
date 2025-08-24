@@ -22,10 +22,10 @@ abstract class BaseBloc<Event extends BaseEvent, State extends BaseState>
   void handleException(Emitter<State> emit, Exception exception) {
     emit(state.getExceptionState(exception) as State);
   }
-
-  B getBloc<B extends BaseBloc>(BuildContext context) =>
-      BlocProvider.of<B>(context);
-
-  S getState<B extends BaseBloc, S>(BuildContext context) =>
-      getBloc<B>(context).state as S;
 }
+
+B getBloc<B extends BaseBloc>(BuildContext context) =>
+    BlocProvider.of<B>(context);
+
+S getState<B extends BaseBloc, S>(BuildContext context) =>
+    getBloc<B>(context).state as S;

@@ -28,6 +28,8 @@ class SplashBloc extends BaseBloc<SplashEvent, SplashState> {
     emit(state.getLoaderState(loading: true) as SplashState);
     final currentUserOrFailure = await _authFacade.getCurrentUser();
 
+    await Future.delayed(const Duration(seconds: 4));
+
     currentUserOrFailure.fold(
       (exception) => emit(state.getExceptionState(exception) as SplashState),
       (user) {

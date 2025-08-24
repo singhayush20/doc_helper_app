@@ -1,4 +1,4 @@
-import 'dart:ui';
+import 'package:flutter/material.dart';
 
 part 'base_colors.dart';
 
@@ -6,6 +6,7 @@ abstract class DsColors {
   // --- Core Brand Colors ---
   static const Color primary = _BaseColors.blue500;
   static const Color primaryLight = _BaseColors.blue300;
+  static const Color primaryLighter = _BaseColors.blue100;
   static const Color primaryDark = _BaseColors.blue700;
   static const Color onPrimary = _BaseColors.white;
 
@@ -85,6 +86,8 @@ abstract class DsColors {
   static const Color borderCritical = _BaseColors.red600;
   static const Color borderInfo = _BaseColors.blue500;
 
+  static const Color borderPrimary = _BaseColors.green700;
+
   // --- Semantic State Colors (Backgrounds/Fills) ---
   static const Color stateBackgroundSuccess = _BaseColors.green100;
   static const Color stateTextSuccess = _BaseColors.green800;
@@ -115,4 +118,6 @@ abstract class DsColors {
 
   // --- Other UI Elements ---
   static const Color divider = _BaseColors.neutral200;
+
+  static const Color transparent = _BaseColors.transparent;
 }

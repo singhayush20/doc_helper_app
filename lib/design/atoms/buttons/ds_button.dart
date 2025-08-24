@@ -3,6 +3,7 @@ import 'package:doc_helper_app/design/foundations/ds_border_radius.dart';
 import 'package:doc_helper_app/design/foundations/ds_colors.dart';
 import 'package:doc_helper_app/design/foundations/ds_spacing.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 part 'base_button.dart';
 
@@ -13,6 +14,10 @@ final class DsButton extends BaseButton {
     super.backgroundColor,
     super.disabledColor,
     super.foregroundColor,
+    super.onTap,
+    super.borderColor,
+    super.disabledBorderColor,
+    super.leadingIcon,
   }) : super(buttonStyleType: DsButtonStyleType.primary);
 
   const DsButton.secondary({
@@ -21,5 +26,9 @@ final class DsButton extends BaseButton {
     super.borderColor,
     super.disabledBorderColor,
     super.foregroundColor,
+    super.onTap,
+    super.backgroundColor,
+    super.disabledColor,
+    super.leadingIcon,
   }) : super(buttonStyleType: DsButtonStyleType.secondary);
 }
