@@ -98,12 +98,14 @@ class _SignInForm extends StatelessWidget {
                 ),
                 DsButton.primary(
                   data: 'Start SSE',
-                  onTap: () {
+                  onTap: () async {
                     print('starting sse...');
                     // Cancel existing subscription if any
-                    _sseSubscription?.cancel();
+                    // await sse.stopListening(); // Stop previous if any
+                    await sse.startListening();
+                    print('started sse...');
 
-                    _sseSubscription = sse.stream.listen(
+                    _sseSubscription = sse.stream?.listen(
                       (event) {
                         print(
                           'Event: ${event.event}, Data: ${event.data}, Id: ${event.id}',
@@ -122,12 +124,9 @@ class _SignInForm extends StatelessWidget {
                 ),
                 DsButton.primary(
                   data: 'Stop SSE',
-                  onTap: () {
-                    if (_sseSubscription != null) {
-                      print('stopping sse...');
-                      _sseSubscription!.cancel();
-                      _sseSubscription = null;
-                    }
+                  onTap: () async {
+                    await _sseSubscription?.cancel();
+                    await sse.stopListening();
                   },
                 ),
               ],

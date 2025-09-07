@@ -16,7 +16,13 @@ class DioProvider implements IDioProvider {
   Future<Dio> get baseDio => _createDio();
 
   Future<Dio> _createDio() async {
-    final dio = Dio(BaseOptions(baseUrl: baseUrl));
+    final dio = Dio(
+      BaseOptions(
+        baseUrl: baseUrl,
+        connectTimeout: const Duration(seconds: 5),
+        receiveTimeout: const Duration(seconds: 20),
+      ),
+    );
     return dio;
   }
 }

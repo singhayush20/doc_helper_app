@@ -2,36 +2,31 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:rxdart/rxdart.dart';
 
 class SseSubscription {
   final Dio _dio;
   final String _url;
   final Map<String, String> _headers;
-  late StreamController<SseEvent> _controller;
+  late BehaviorSubject<SseEvent>? _subject;
   StreamSubscription<String>? _linesSubscription;
-  late CancelToken _cancelToken; // Add cancel token
-  Stream<SseEvent> get stream => _controller.stream;
+  CancelToken? _cancelToken;
+
+  Stream<SseEvent>? get stream => _subject?.stream;
 
   SseSubscription(this._dio, this._url, {Map<String, String>? headers})
-    : _headers = headers ?? {'Accept': 'text/event-stream'} {
-    _controller = StreamController<SseEvent>(
-      onListen: () {
-        _cancelToken = CancelToken(); // Initialize cancel token on listen
-        _startListening();
-      },
-      onCancel: () {
-        _close();
-      },
-    );
-  }
+    : _headers = headers ?? {'Accept': 'text/event-stream'} {}
 
-  Future<void> _startListening() async {
+  Future<void> startListening() async {
+    _cancelToken = CancelToken();
+    _subject = BehaviorSubject<SseEvent>();
     try {
       final response = await _dio.get<ResponseBody>(
         _url,
-        cancelToken: _cancelToken, // Pass cancel token here
+        cancelToken: _cancelToken,
         options: Options(responseType: ResponseType.stream, headers: _headers),
       );
+      print('response: $response');
 
       final stream = response.data!.stream;
       final utf8Stream = stream.cast<List<int>>().transform(utf8.decoder);
@@ -47,8 +42,8 @@ class SseSubscription {
 
           if (line.isEmpty) {
             if (dataBuffer.isNotEmpty) {
-              if (!_controller.isClosed) {
-                _controller.add(
+              if (!(_subject?.isClosed ?? true)) {
+                _subject?.add(
                   SseEvent(
                     event: event ?? 'message',
                     data: dataBuffer.toString().trim(),
@@ -69,28 +64,42 @@ class SseSubscription {
           }
         },
         onError: (error) {
-          _controller.addError(error);
-          _controller.close();
+          print('error...');
+          // this will be invoked in case of some error occurs in the connection
+          // like the server going down
+          //  SSE error: HttpException: Connection closed while receiving data, uri = http://192.168.1.2:8080/sse/stream-sse-json
+          _subject?.addError(error);
+          _subject?.close();
         },
         onDone: () {
-          _controller.close();
+          print('done...');
+          _subject?.close();
         },
       );
     } catch (e) {
-      if (!_controller.isClosed) {
-        _controller.addError(e);
-        await _controller.close();
+      if (!(_subject?.isClosed ?? true)) {
+        _subject?.addError(e);
+        await _subject?.close();
       }
     }
   }
 
-  void _close() {
-    print('closing on controller and cancelling HTTP request ...');
-    _linesSubscription?.cancel();
-    if (!_cancelToken.isCancelled) {
-      _cancelToken.cancel("SSE connection closed by client");
+  Future<void> stopListening() async {
+    print('Stopping SSE and cancelling HTTP request...');
+
+    // Cancel the subscription to the lines stream, stops listening to SSE events
+    await _linesSubscription?.cancel();
+    _linesSubscription = null;
+
+    // Cancel the Dio HTTP request to close connection to server
+    if (!(_cancelToken?.isCancelled ?? true)) {
+      _cancelToken?.cancel("SSE stopped by client");
     }
-    _controller.close();
+
+    // Close the BehaviorSubject so no more events will be emitted
+    if (!(_subject?.isClosed ?? true)) {
+      await _subject?.close();
+    }
   }
 }
 
