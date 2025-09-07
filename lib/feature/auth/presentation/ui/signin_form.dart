@@ -1,7 +1,13 @@
 part of 'sign_in_page.dart';
 
 class _SignInForm extends StatelessWidget {
-  const _SignInForm();
+  _SignInForm();
+  final sse = SseSubscription(
+    getIt<Dio>(),
+    'http://192.168.1.2:8080/sse/stream-sse-json',
+  );
+
+  StreamSubscription<SseEvent>? _sseSubscription;
 
   @override
   Widget build(BuildContext context) => BlocBuilder<SignInBloc, SignInState>(
@@ -89,6 +95,40 @@ class _SignInForm extends StatelessWidget {
                           !state.store.loading
                       ? () => getBloc<SignInBloc>(context).onLoginPressed()
                       : null,
+                ),
+                DsButton.primary(
+                  data: 'Start SSE',
+                  onTap: () {
+                    print('starting sse...');
+                    // Cancel existing subscription if any
+                    _sseSubscription?.cancel();
+
+                    _sseSubscription = sse.stream.listen(
+                      (event) {
+                        print(
+                          'Event: ${event.event}, Data: ${event.data}, Id: ${event.id}',
+                        );
+                        // Parse JSON if needed and handle different events
+                      },
+                      onError: (error) {
+                        print('SSE error: $error');
+                      },
+                      onDone: () {
+                        print('SSE stream closed');
+                      },
+                      cancelOnError: true,
+                    );
+                  },
+                ),
+                DsButton.primary(
+                  data: 'Stop SSE',
+                  onTap: () {
+                    if (_sseSubscription != null) {
+                      print('stopping sse...');
+                      _sseSubscription!.cancel();
+                      _sseSubscription = null;
+                    }
+                  },
                 ),
               ],
             ),
