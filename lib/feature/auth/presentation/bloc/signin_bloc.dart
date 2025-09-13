@@ -30,7 +30,9 @@ class SignInBloc extends BaseBloc<SignInEvent, SignInState> {
     on<_OnLoginPressed>(_onLoginPressed);
   }
 
-  void _onStarted(_Started event, Emitter<SignInState> emit) {}
+  void _onStarted(_Started event, Emitter<SignInState> emit) {
+    emit(SignInState.initial(store: state.store));
+  }
 
   void _onEmailChanged(_OnEmailChanged event, Emitter<SignInState> emit) {
     emit(

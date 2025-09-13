@@ -18,3 +18,11 @@ Either<ValueFailure<String>, String> validatePassword(String input) {
     return left(ValueFailure.invalidPassword(failedValue: input));
   }
 }
+
+Either<ValueFailure<String>, String> validateName(String input) {
+  if (input.length >= 2 || input.trim().isEmpty) {
+    return right(input);
+  } else {
+    return left(ValueFailure.invalidName(failedValue: input));
+  }
+}

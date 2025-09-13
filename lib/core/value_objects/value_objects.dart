@@ -28,3 +28,13 @@ class Password extends IValueObject<String> {
   @override
   final Either<ValueFailure<String>, String> value;
 }
+
+@immutable
+class Name extends IValueObject<String> {
+  const Name._(this.value, {String? initialValue}) : super(initialValue, null);
+
+  factory Name(String input) =>
+      Name._(validateName(input), initialValue: input);
+  @override
+  final Either<ValueFailure<String>, String> value;
+}

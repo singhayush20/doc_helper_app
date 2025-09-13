@@ -1,19 +1,29 @@
 import 'package:dartz/dartz.dart';
+import 'package:doc_helper_app/common/constants/enums.dart';
 import 'package:doc_helper_app/core/exception_handling/server_exception.dart';
 import 'package:doc_helper_app/core/local_storage/i_local_storage_facade.dart';
 import 'package:doc_helper_app/core/value_objects/value_objects.dart';
 import 'package:doc_helper_app/env/env_config.dart';
 import 'package:doc_helper_app/feature/auth/domain/entities/user.dart';
 import 'package:doc_helper_app/feature/auth/domain/interfaces/i_auth_facade.dart';
+import 'package:doc_helper_app/network/api_call_handler.dart';
+import 'package:doc_helper_app/network/retrofit_api_client.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:injectable/injectable.dart';
 
 @Singleton(as: IAuthFacade, env: injectionEnv)
 class AuthFacadeImpl implements IAuthFacade {
-  AuthFacadeImpl(this._firebaseAuth, this._localStorageFacade);
+  AuthFacadeImpl(
+    this._firebaseAuth,
+    this._localStorageFacade,
+    this._retrofitApiClient,
+    this._apiCallHandler,
+  );
 
   final FirebaseAuth _firebaseAuth;
   final ILocalStorageFacade _localStorageFacade;
+  final RetrofitApiClient _retrofitApiClient;
+  final ApiCallHandler _apiCallHandler;
 
   @override
   Future<Either<ServerException, AppUser?>> getCurrentUser() async {
@@ -47,12 +57,29 @@ class AuthFacadeImpl implements IAuthFacade {
 
       final user = userCredential.user;
       if (user == null) {
-        return left(const ServerException('User not found!'));
+        return left(
+          const ServerException(
+            exceptionType: ServerExceptionType.invalidCredentials,
+            metaData: ExceptionMetaData(
+              errorCode: ErrorCodes.invalidCredentials,
+              message: ErrorMessages.invalidCredentialsError,
+            ),
+          ),
+        );
       }
       final idToken = await user.getIdToken();
-
+      print('## user: $user');
+      print('## idToken: $idToken');
       if (idToken?.isEmpty ?? true) {
-        return left(const ServerException('ID token is empty!'));
+        return left(
+          const ServerException(
+            exceptionType: ServerExceptionType.invalidCredentials,
+            metaData: ExceptionMetaData(
+              errorCode: ErrorCodes.invalidCredentials,
+              message: ErrorMessages.invalidCredentialsError,
+            ),
+          ),
+        );
       }
 
       await Future.wait([
@@ -66,7 +93,15 @@ class AuthFacadeImpl implements IAuthFacade {
 
       return right(unit);
     } catch (e) {
-      return left(ServerException(e.toString()));
+      return left(
+        const ServerException(
+          exceptionType: ServerExceptionType.invalidCredentials,
+          metaData: ExceptionMetaData(
+            errorCode: ErrorCodes.invalidCredentials,
+            message: ErrorMessages.invalidCredentialsError,
+          ),
+        ),
+      );
     }
   }
 
@@ -75,5 +110,60 @@ class AuthFacadeImpl implements IAuthFacade {
     _firebaseAuth.signOut();
     await _localStorageFacade.clear();
     return right(unit);
+  }
+
+  @override
+  Future<Either<ServerException, Unit>> signUpUser({
+    required EmailAddress? email,
+    required Password? password,
+  }) async {
+    try {
+      final uerCredential = await _firebaseAuth.createUserWithEmailAndPassword(
+        email: email?.input ?? '',
+        password: password?.input ?? '',
+      );
+      final user = uerCredential.user;
+      if (user == null) {
+        return left(
+          const ServerException(
+            exceptionType: ServerExceptionType.signUpFailed,
+            metaData: ExceptionMetaData(
+              errorCode: ErrorCodes.signUpFailed,
+              message: ErrorMessages.signUpFailedError,
+            ),
+          ),
+        );
+      }
+      final idToken = await user.getIdToken();
+      if (idToken?.isEmpty ?? true) {
+        return left(
+          const ServerException(
+            exceptionType: ServerExceptionType.signUpFailed,
+            metaData: ExceptionMetaData(
+              errorCode: ErrorCodes.signUpFailed,
+              message: ErrorMessages.signUpFailedError,
+            ),
+          ),
+        );
+      }
+      return right(unit);
+    } catch (e) {
+      return left(
+        const ServerException(
+          exceptionType: ServerExceptionType.signUpFailed,
+          metaData: ExceptionMetaData(
+            errorCode: ErrorCodes.signUpFailed,
+            message: ErrorMessages.signUpFailedError,
+          ),
+        ),
+      );
+    }
+  }
+
+  Future<void> saveUserDetails(UserSignUpDto dto) async {
+    final responseOrError = await _apiCallHandler.handleApi(
+      _retrofitApiClient.signUp,
+      [dto],
+    );
   }
 }

@@ -1,13 +1,7 @@
 part of 'sign_in_page.dart';
 
 class _SignInForm extends StatelessWidget {
-  _SignInForm();
-  final sse = SseSubscription(
-    getIt<Dio>(),
-    'http://192.168.1.2:8080/sse/stream-sse-json',
-  );
-
-  StreamSubscription<SseEvent>? _sseSubscription;
+  const _SignInForm();
 
   @override
   Widget build(BuildContext context) => BlocBuilder<SignInBloc, SignInState>(
@@ -96,47 +90,22 @@ class _SignInForm extends StatelessWidget {
                       ? () => getBloc<SignInBloc>(context).onLoginPressed()
                       : null,
                 ),
-                DsButton.primary(
-                  data: 'Start SSE',
-                  onTap: () async {
-                    print('starting sse...');
-                    // Cancel existing subscription if any
-                    // await sse.stopListening(); // Stop previous if any
-                    await sse.startListening();
-                    print('started sse...');
-
-                    _sseSubscription = sse.stream?.listen(
-                      (event) {
-                        print(
-                          'Event: ${event.event}, Data: ${event.data}, Id: ${event.id}',
-                        );
-                        // Parse JSON if needed and handle different events
-                      },
-                      onError: (error) {
-                        print('SSE error: $error');
-                      },
-                      onDone: () {
-                        print('SSE stream closed');
-                      },
-                      cancelOnError: true,
-                    );
-                  },
-                ),
-                DsButton.primary(
-                  data: 'Stop SSE',
-                  onTap: () async {
-                    await _sseSubscription?.cancel();
-                    await sse.stopListening();
-                  },
-                ),
               ],
             ),
-            Align(
-              alignment: Alignment.centerRight,
-              child: DsTextButton.primary(
-                data: 'Forgot Password?',
-                onTap: () {},
-              ),
+            Row(
+              children: [
+                DsTextButton.primary(
+                  data: 'New user? Sign Up!',
+                  onTap: () {},
+                  underline: true,
+                ),
+                const Spacer(),
+                DsTextButton.primary(
+                  data: 'Forgot Password?',
+                  onTap: () {},
+                  underline: true,
+                ),
+              ],
             ),
           ],
         ),

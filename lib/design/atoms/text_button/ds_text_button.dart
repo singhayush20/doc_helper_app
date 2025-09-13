@@ -1,3 +1,4 @@
+import 'package:doc_helper_app/design/atoms/typography/ds_text.dart';
 import 'package:doc_helper_app/design/foundations/ds_colors.dart';
 import 'package:doc_helper_app/design/foundations/ds_sizing.dart';
 import 'package:doc_helper_app/design/foundations/ds_spacing.dart';
@@ -16,6 +17,7 @@ final class DsTextButton extends _BaseTextButton {
     super.trailingIcon,
     super.foregroundColor,
     super.disabledForegroundColor,
+    super.underline,
   }) : super(buttonStyleType: DsTextButtonStyleType.primary);
 
   const DsTextButton.secondary({
@@ -26,5 +28,6 @@ final class DsTextButton extends _BaseTextButton {
     super.trailingIcon,
     super.foregroundColor,
     super.disabledForegroundColor,
+    super.underline,
   }) : super(buttonStyleType: DsTextButtonStyleType.secondary);
 }

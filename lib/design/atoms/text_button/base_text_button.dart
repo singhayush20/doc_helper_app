@@ -10,6 +10,7 @@ base class _BaseTextButton extends StatelessWidget {
     this.trailingIcon,
     this.foregroundColor = DsColors.textPrimary,
     this.disabledForegroundColor = DsColors.textDisabled,
+    this.underline,
   });
 
   final String data;
@@ -19,6 +20,7 @@ base class _BaseTextButton extends StatelessWidget {
   final Color foregroundColor;
   final Color disabledForegroundColor;
   final DsTextButtonStyleType buttonStyleType;
+  final bool? underline;
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +35,12 @@ base class _BaseTextButton extends StatelessWidget {
         children: [
           if (leadingIcon != null) Icon(leadingIcon, size: DsSizing.size16),
           Flexible(
-            child: Text(data, maxLines: 1, overflow: TextOverflow.ellipsis),
+            child: DsText.bodySmall(
+              data: data,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              underline: underline,
+            ),
           ),
           if (trailingIcon != null) Icon(trailingIcon, size: DsSizing.size16),
         ],

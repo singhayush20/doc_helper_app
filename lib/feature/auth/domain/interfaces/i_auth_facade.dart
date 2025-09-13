@@ -13,5 +13,10 @@ abstract class IAuthFacade {
     required Password? password,
   });
 
+  Future<Either<ServerException, Unit>> signUpUser({
+    required EmailAddress? email,
+    required Password? password,
+  });
+
   Future<Either<ServerException, Unit>> signOut();
 }

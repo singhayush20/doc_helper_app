@@ -14,9 +14,6 @@ sealed class SignInState extends BaseState with _$SignInState {
     required SignInStateStore store,
   }) = OnPasswordChange;
 
-  const factory SignInState.onSignInClick({required SignInStateStore store}) =
-      OnSignInClick;
-
   const factory SignInState.onPasswordVisibilityChange({
     required SignInStateStore store,
   }) = OnPasswordVisibilityChange;

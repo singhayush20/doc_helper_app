@@ -8,6 +8,8 @@ base class BaseText extends StatelessWidget {
     this.textAlign,
     this.maxLines,
     this.overflow,
+    this.color,
+    this.underline,
   });
 
   final String data;
@@ -15,13 +17,21 @@ base class BaseText extends StatelessWidget {
   final TextAlign? textAlign;
   final int? maxLines;
   final TextOverflow? overflow;
+  final Color? color;
+  final bool? underline;
 
   @override
   Widget build(BuildContext context) {
     final style = _mapTextStyle(dsTextStyleType);
     return Text(
       data,
-      style: style,
+      style: style.copyWith(
+        color: color ?? DsColors.textPrimary,
+        decoration: (underline ?? false) ? TextDecoration.underline : null,
+        decorationStyle: (underline ?? false)
+            ? TextDecorationStyle.solid
+            : null,
+      ),
       textAlign: textAlign,
       maxLines: maxLines,
       overflow: overflow,

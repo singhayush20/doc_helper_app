@@ -23,6 +23,7 @@ abstract class DsColors {
   static const Color backgroundSecondary = _BaseColors.neutral100;
   static const Color backgroundDark = _BaseColors.neutral800;
   static const Color backgroundInverse = _BaseColors.neutral800;
+  static const Color backgroundAlert = _BaseColors.red500;
 
   // --- Surface Colors (for cards, dialogs, sheets) ---
   static const Color surfacePrimary = _BaseColors.white;
