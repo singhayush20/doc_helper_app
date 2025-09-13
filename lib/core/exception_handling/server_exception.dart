@@ -1,9 +1,9 @@
 import 'package:doc_helper_app/common/constants/enums.dart';
 
 class ExceptionMetaData {
-  const ExceptionMetaData({required this.errorCode, required this.message});
-  final String errorCode;
-  final String message;
+  const ExceptionMetaData({this.errorCode, this.message});
+  final String? errorCode;
+  final String? message;
 }
 
 class ServerException implements Exception {
@@ -15,7 +15,6 @@ class ServerException implements Exception {
 
 class ErrorCodes {
   ErrorCodes._();
-
   static const String invalidCredentials = 'E0001';
   static const String signUpFailed = 'E0002';
 }

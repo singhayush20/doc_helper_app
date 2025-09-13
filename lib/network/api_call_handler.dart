@@ -8,29 +8,38 @@ import 'package:retrofit/dio.dart';
 @singleton
 class ApiCallHandler {
   Future<Either<ServerException, HttpResponse>> handleApi(
-    Future<HttpResponse> Function(List<dynamic>? args) func,
-    List<dynamic>? args,
+    Function func,
+    List<dynamic> args,
   ) async {
     try {
-      final response = await func.call(args);
+      final response = await Function.apply(func, args) as HttpResponse;
       return right(response);
     } on DioException catch (e) {
       if (e.type == DioExceptionType.receiveTimeout) {
         return left(
           const ServerException(
             exceptionType: ServerExceptionType.receiveTimeout,
+            metaData: ExceptionMetaData(
+              message: ErrorMessages.defaultErrorMessage,
+            ),
           ),
         );
       } else if (e.type == DioExceptionType.sendTimeout) {
         return left(
           const ServerException(
             exceptionType: ServerExceptionType.requestTimeout,
+            metaData: ExceptionMetaData(
+              message: ErrorMessages.defaultErrorMessage,
+            ),
           ),
         );
       } else if (e.type == DioExceptionType.connectionTimeout) {
         return left(
           const ServerException(
             exceptionType: ServerExceptionType.connectionTimeout,
+            metaData: ExceptionMetaData(
+              message: ErrorMessages.defaultErrorMessage,
+            ),
           ),
         );
       } else if (e.type == DioExceptionType.badResponse) {
@@ -46,11 +55,21 @@ class ApiCallHandler {
       }
 
       return left(
-        const ServerException(exceptionType: ServerExceptionType.unknown),
+        const ServerException(
+          exceptionType: ServerExceptionType.unknown,
+          metaData: ExceptionMetaData(
+            message: ErrorMessages.defaultErrorMessage,
+          ),
+        ),
       );
     } catch (e) {
       return left(
-        const ServerException(exceptionType: ServerExceptionType.unknown),
+        const ServerException(
+          exceptionType: ServerExceptionType.unknown,
+          metaData: ExceptionMetaData(
+            message: ErrorMessages.defaultErrorMessage,
+          ),
+        ),
       );
     }
   }

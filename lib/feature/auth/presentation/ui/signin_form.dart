@@ -96,13 +96,14 @@ class _SignInForm extends StatelessWidget {
               children: [
                 DsTextButton.primary(
                   data: 'New user? Sign Up!',
-                  onTap: () {},
+                  onTap: () => getBloc<SignInBloc>(context).onSignUpPressed(),
                   underline: true,
                 ),
                 const Spacer(),
                 DsTextButton.primary(
                   data: 'Forgot Password?',
-                  onTap: () {},
+                  onTap: () =>
+                      getBloc<SignInBloc>(context).onForgotPasswordPressed(),
                   underline: true,
                 ),
               ],

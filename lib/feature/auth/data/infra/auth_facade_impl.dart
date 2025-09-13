@@ -4,8 +4,9 @@ import 'package:doc_helper_app/core/exception_handling/server_exception.dart';
 import 'package:doc_helper_app/core/local_storage/i_local_storage_facade.dart';
 import 'package:doc_helper_app/core/value_objects/value_objects.dart';
 import 'package:doc_helper_app/env/env_config.dart';
-import 'package:doc_helper_app/feature/auth/domain/entities/user.dart';
 import 'package:doc_helper_app/feature/auth/domain/interfaces/i_auth_facade.dart';
+import 'package:doc_helper_app/feature/user/data/models/user_dto.dart';
+import 'package:doc_helper_app/feature/user/domain/entity/user.dart';
 import 'package:doc_helper_app/network/api_call_handler.dart';
 import 'package:doc_helper_app/network/retrofit_api_client.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -34,14 +35,18 @@ class AuthFacadeImpl implements IAuthFacade {
     }
     return user == null
         ? right(null)
-        : right(AppUser(id: user.uid, email: user.email));
+        : right(
+            AppUser(userId: user.uid, email: EmailAddress(user.email ?? '')),
+          );
   }
 
   @override
   Stream<Either<ServerException, AppUser?>> authStateChanges() =>
       _firebaseAuth.authStateChanges().map((user) {
         if (user == null) return right(null);
-        return right(AppUser(id: user.uid, email: user.email));
+        return right(
+          AppUser(userId: user.uid, email: EmailAddress(user.email ?? '')),
+        );
       });
 
   @override
@@ -68,8 +73,6 @@ class AuthFacadeImpl implements IAuthFacade {
         );
       }
       final idToken = await user.getIdToken();
-      print('## user: $user');
-      print('## idToken: $idToken');
       if (idToken?.isEmpty ?? true) {
         return left(
           const ServerException(
@@ -113,7 +116,7 @@ class AuthFacadeImpl implements IAuthFacade {
   }
 
   @override
-  Future<Either<ServerException, Unit>> signUpUser({
+  Future<Either<ServerException, Unit>> createUser({
     required EmailAddress? email,
     required Password? password,
   }) async {
@@ -134,8 +137,8 @@ class AuthFacadeImpl implements IAuthFacade {
           ),
         );
       }
-      final idToken = await user.getIdToken();
-      if (idToken?.isEmpty ?? true) {
+      final authToken = await user.getIdToken();
+      if (authToken?.isEmpty ?? true) {
         return left(
           const ServerException(
             exceptionType: ServerExceptionType.signUpFailed,
@@ -146,7 +149,26 @@ class AuthFacadeImpl implements IAuthFacade {
           ),
         );
       }
+      await Future.wait([
+        (() => _localStorageFacade.saveUid(uid: user.uid))(),
+        (() => _localStorageFacade.saveUserEmail(
+          emailAddress: user.email ?? '',
+        ))(),
+        (() => _localStorageFacade.saveAuthToken(token: authToken ?? ''))(),
+        (() => _localStorageFacade.saveLoggedIn(isLoggedIn: true))(),
+      ]);
       return right(unit);
+    } on FirebaseAuthException catch (e) {
+      final message = e.message;
+      return left(
+        ServerException(
+          exceptionType: ServerExceptionType.signUpFailed,
+          metaData: ExceptionMetaData(
+            errorCode: ErrorCodes.signUpFailed,
+            message: message,
+          ),
+        ),
+      );
     } catch (e) {
       return left(
         const ServerException(
@@ -160,10 +182,51 @@ class AuthFacadeImpl implements IAuthFacade {
     }
   }
 
-  Future<void> saveUserDetails(UserSignUpDto dto) async {
+  @override
+  Future<Either<ServerException, Unit>> signUpUser({
+    required Name? firstName,
+    required Name? lastName,
+    required EmailAddress? email,
+    required Password? password,
+  }) async {
+    final userDto = AppUserDto(
+      firstName: firstName?.input,
+      lastName: lastName?.input,
+      password: password?.input,
+      email: email?.input,
+    );
+
     final responseOrError = await _apiCallHandler.handleApi(
       _retrofitApiClient.signUp,
-      [dto],
+      [userDto],
     );
+
+    return responseOrError.fold(
+      (error) => left(error),
+      (response) => right(unit),
+    );
+  }
+
+  String getFirebaseAuthErrorMessage(String code) {
+    switch (code) {
+      case 'invalid-email':
+        return 'The email address is badly formatted.';
+      case 'user-disabled':
+        return 'This user has been disabled.';
+      case 'user-not-found':
+        return 'No user found for that email.';
+      case 'wrong-password':
+        return 'Wrong password provided.';
+      case 'email-already-in-use':
+        return 'This email is already in use by another account.';
+      case 'operation-not-allowed':
+        return 'Email/password accounts are not enabled.';
+      case 'weak-password':
+        return 'The password provided is too weak.';
+      case 'too-many-requests':
+        return 'Too many attempts. Try again later.';
+      default:
+        return 'Authentication failed. Please try again.';
+    }
   }
 }

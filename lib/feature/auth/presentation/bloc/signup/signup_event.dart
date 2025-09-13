@@ -17,8 +17,13 @@ sealed class SignUpEvent extends BaseEvent with _$SignUpEvent {
     required String confirmPasswordString,
   }) = _OnConfirmPasswordChanged;
 
-  const factory SignUpEvent.onNameChanged({required String nameString}) =
-      _OnNameChanged;
+  const factory SignUpEvent.onFirstNameChanged({
+    required String firstNameString,
+  }) = _OnFirstNameChanged;
+
+  const factory SignUpEvent.onLastNameChanged({
+    required String lastNameString,
+  }) = _OnLastNameChanged;
 
   const factory SignUpEvent.onCreateAccountClicked() = _OnCreateAccountClicked;
 

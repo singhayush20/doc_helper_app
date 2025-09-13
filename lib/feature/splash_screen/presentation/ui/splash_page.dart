@@ -1,8 +1,8 @@
 import 'package:doc_helper_app/core/router/route_mapper.dart';
 import 'package:doc_helper_app/design/design.dart';
 import 'package:doc_helper_app/di/injection.dart';
-import 'package:doc_helper_app/feature/auth/domain/entities/user.dart';
 import 'package:doc_helper_app/feature/splash_screen/presentation/bloc/splash_bloc.dart';
+import 'package:doc_helper_app/feature/user/domain/entity/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';

@@ -5,6 +5,126 @@ class _SignUpForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => BlocBuilder<SignUpBloc, SignUpState>(
-    builder: (context, state) => const Placeholder(),
+    builder: (context, state) => SingleChildScrollView(
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+          vertical: DsSpacing.radialSpace20,
+          horizontal: DsSpacing.radialSpace16,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          spacing: DsSpacing.radialSpace24,
+          children: [
+            const DsText.bodyLarge(data: 'Create an account to get started'),
+            Column(
+              spacing: DsSpacing.radialSpace20,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                NameTextFormField(
+                  value: state.store.firstName,
+                  onChanged: (value) => getBloc<SignUpBloc>(
+                    context,
+                  ).onFirstNameChanged(firstNameString: value),
+                  labelText: 'First Name',
+                  errorText: 'First name cannot be a single letter!',
+                  hintText: 'Enter your first name',
+                  prefixIcon: Icons.person,
+                ),
+
+                NameTextFormField(
+                  value: state.store.lastName,
+                  onChanged: (value) => getBloc<SignUpBloc>(
+                    context,
+                  ).onLastNameChanged(lastNameString: value),
+                  labelText: 'Last Name',
+                  errorText: 'Last name cannot be a single letter!',
+                  hintText: 'Enter your last name',
+                  prefixIcon: Icons.person_2,
+                ),
+
+                EmailTextFormField(
+                  value: state.store.email,
+                  onChanged: (value) => getBloc<SignUpBloc>(
+                    context,
+                  ).onEmailChanged(emailString: value),
+                  labelText: 'Email',
+                  errorText: 'Enter a valid email id!',
+                  hintText: 'Enter your email',
+                  prefixIcon: Icons.email,
+                ),
+
+                PasswordTextFormField(
+                  value: state.store.password,
+                  onChanged: (value) => getBloc<SignUpBloc>(
+                    context,
+                  ).onPasswordChanged(passwordString: value),
+                  labelText: 'Password',
+                  hintText: 'Enter your password',
+                  obscureText: !state.store.isPasswordVisible,
+                  errorText:
+                      '''Password must be minimum 8 characters long with at least one special character and one Uppercase alphabet!''',
+                  suffixIconWidget: IconButton(
+                    icon: Icon(
+                      state.store.isPasswordVisible
+                          ? Icons.visibility
+                          : Icons.visibility_off,
+                    ),
+                    onPressed: () => getBloc<SignUpBloc>(
+                      context,
+                    ).onPasswordVisibilityChanged(),
+                  ),
+                  prefixIcon: Icons.lock,
+                ),
+
+                PasswordTextFormField(
+                  value: state.store.confirmPassword,
+                  onChanged: (value) => getBloc<SignUpBloc>(
+                    context,
+                  ).onConfirmPasswordChanged(passwordString: value),
+                  labelText: 'Confirm Password',
+                  hintText: 'Confirm your password',
+                  errorText:
+                      '''Password must be minimum 8 characters long with at least one special character and one Uppercase alphabet!''',
+                  obscureText: !state.store.isPasswordVisible,
+                  suffixIconWidget: IconButton(
+                    icon: Icon(
+                      state.store.isPasswordVisible
+                          ? Icons.visibility
+                          : Icons.visibility_off,
+                    ),
+                    onPressed: () => getBloc<SignUpBloc>(
+                      context,
+                    ).onPasswordVisibilityChanged(),
+                  ),
+                  prefixIcon: Icons.lock,
+                  formFieldValidator: (value) {
+                    final result = state.store.password?.input == value?.input;
+                    return result ? null : 'Passwords do not match!';
+                  },
+                ),
+              ],
+            ),
+            DsButton.primary(
+              data: 'Sign Up',
+              onTap: _isFormValid(state)
+                  ? () => getBloc<SignUpBloc>(context).onCreateAccountClicked()
+                  : null,
+            ),
+          ],
+        ),
+      ),
+    ),
   );
+
+  bool _isFormValid(SignUpState state) =>
+      (state.store.firstName?.input.isNotEmpty ?? false) &&
+      (state.store.lastName?.input.isNotEmpty ?? false) &&
+      (state.store.email?.input.isNotEmpty ?? false) &&
+      (state.store.password?.input.isNotEmpty ?? false) &&
+      (state.store.confirmPassword?.input.isNotEmpty ?? false) &&
+      (state.store.firstName?.isValid() ?? false) &&
+      (state.store.lastName?.isValid() ?? false) &&
+      (state.store.email?.isValid() ?? false) &&
+      (state.store.password?.isValid() ?? false) &&
+      (state.store.confirmPassword?.isValid() ?? false);
 }

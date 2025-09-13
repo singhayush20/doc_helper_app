@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 void handleException(Exception exception, BuildContext context) {
   if (exception is ServerException) {
-    showSnackBar(context: context, message: exception.metaData.message);
+    showSnackBar(context: context, message: exception.metaData?.message ?? '');
   } else {
     showSnackBar(context: context, message: ErrorMessages.defaultErrorMessage);
   }

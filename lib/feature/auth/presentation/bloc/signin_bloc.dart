@@ -28,6 +28,8 @@ class SignInBloc extends BaseBloc<SignInEvent, SignInState> {
     on<_OnPasswordChanged>(_onPasswordChanged);
     on<_OnPasswordVisibilityChanged>(_onPasswordVisibilityChanged);
     on<_OnLoginPressed>(_onLoginPressed);
+    on<_OnSignUpPressed>(_onSignUpPressed);
+    on<_OnForgotPasswordPressed>(_onForgotPasswordPressed);
   }
 
   void _onStarted(_Started event, Emitter<SignInState> emit) {
@@ -78,6 +80,16 @@ class SignInBloc extends BaseBloc<SignInEvent, SignInState> {
     );
   }
 
+  void _onSignUpPressed(_, Emitter<SignInState> emit) {
+    invalidateLoader(emit, loading: false);
+    emit(SignInState.onSignUpPressed(store: state.store));
+  }
+
+  void _onForgotPasswordPressed(_, Emitter<SignInState> emit) {
+    invalidateLoader(emit, loading: false);
+    emit(SignInState.onForgotPasswordPressed(store: state.store));
+  }
+
   @override
   void started({Map<String, dynamic>? args}) {
     add(const SignInEvent.started());
@@ -97,5 +109,13 @@ class SignInBloc extends BaseBloc<SignInEvent, SignInState> {
 
   void onLoginPressed() {
     add(const SignInEvent.onLoginPressed());
+  }
+
+  void onSignUpPressed() {
+    add(const SignInEvent.onSignUpPressed());
+  }
+
+  void onForgotPasswordPressed() {
+    add(const SignInEvent.onForgotPasswordPressed());
   }
 }

@@ -48,6 +48,27 @@ class PrimaryTextFormField extends BaseTextFormField {
   });
 }
 
+class NameTextFormField extends PrimaryTextFormField {
+  const NameTextFormField({
+    required super.value,
+    super.key,
+    super.onChanged,
+    super.onTap,
+    super.labelText,
+    super.hintText,
+    super.errorText,
+    super.controller,
+    super.focusNode,
+    super.onTapOutside,
+    super.prefixIcon,
+  }) : super(
+         textInputAction: TextInputAction.done,
+         textInputType: TextInputType.name,
+         forceUppercase: false,
+         autoFillHints: const [AutofillHints.name],
+       );
+}
+
 class EmailTextFormField extends PrimaryTextFormField {
   const EmailTextFormField({
     required super.value,
@@ -84,6 +105,7 @@ class PasswordTextFormField extends PrimaryTextFormField {
     super.obscureText,
     super.prefixIcon,
     super.suffixIconWidget,
+    super.formFieldValidator,
   }) : super(
          textInputAction: TextInputAction.done,
          textInputType: TextInputType.visiblePassword,

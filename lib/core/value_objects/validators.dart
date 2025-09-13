@@ -12,11 +12,21 @@ Either<ValueFailure<String>, String> validateEmail(String input) {
 }
 
 Either<ValueFailure<String>, String> validatePassword(String input) {
-  if (input.length >= 6 || input.trim().isEmpty) {
-    return right(input);
-  } else {
+  if (input.length < 8) {
     return left(ValueFailure.invalidPassword(failedValue: input));
   }
+
+  const uppercaseRegex = r'.*[A-Z].*';
+  if (!RegExp(uppercaseRegex).hasMatch(input)) {
+    return left(ValueFailure.invalidPassword(failedValue: input));
+  }
+
+  const nonAlphanumericRegex = r'.*[^a-zA-Z0-9\s].*';
+  if (!RegExp(nonAlphanumericRegex).hasMatch(input)) {
+    return left(ValueFailure.invalidPassword(failedValue: input));
+  }
+
+  return right(input);
 }
 
 Either<ValueFailure<String>, String> validateName(String input) {

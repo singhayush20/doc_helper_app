@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:doc_helper_app/common/base_bloc/base_bloc.dart';
 import 'package:doc_helper_app/common/base_bloc/base_event.dart';
 import 'package:doc_helper_app/common/base_bloc/base_state.dart';
@@ -6,11 +8,13 @@ import 'package:doc_helper_app/core/value_objects/value_objects.dart';
 import 'package:doc_helper_app/feature/auth/domain/interfaces/i_auth_facade.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:injectable/injectable.dart';
 
 part 'signup_bloc.freezed.dart';
 part 'signup_event.dart';
 part 'signup_state.dart';
 
+@injectable
 class SignUpBloc extends BaseBloc<SignUpEvent, SignUpState> {
   SignUpBloc(this._authFacade)
     : super(const SignUpState.initial(store: SignUpStateStore()));
@@ -23,7 +27,8 @@ class SignUpBloc extends BaseBloc<SignUpEvent, SignUpState> {
     on<_OnEmailChanged>(_onEmailChanged);
     on<_OnPasswordChanged>(_onPasswordChanged);
     on<_OnConfirmPasswordChanged>(_onConfirmPasswordChanged);
-    on<_OnNameChanged>(_onNameChanged);
+    on<_OnLastNameChanged>(_onLastNameChanged);
+    on<_OnFirstNameChanged>(_onFirstNameChanged);
     on<_OnCreateAccountClicked>(_onCreateAccountClicked);
     on<_OnPasswordVisibilityChanged>(_onPasswordVisibilityChanged);
   }
@@ -61,10 +66,13 @@ class SignUpBloc extends BaseBloc<SignUpEvent, SignUpState> {
     );
   }
 
-  void _onNameChanged(_OnNameChanged event, Emitter<SignUpState> emit) {
+  void _onFirstNameChanged(
+    _OnFirstNameChanged event,
+    Emitter<SignUpState> emit,
+  ) {
     emit(
-      SignUpState.onNameChange(
-        store: state.store.copyWith(name: Name(event.nameString)),
+      SignUpState.onFirstNameChange(
+        store: state.store.copyWith(firstName: Name(event.firstNameString)),
       ),
     );
   }
@@ -76,15 +84,36 @@ class SignUpBloc extends BaseBloc<SignUpEvent, SignUpState> {
     if ((state.store.email?.isValid() ?? false) &&
         (state.store.password?.isValid() ?? false) &&
         (state.store.password?.input == state.store.confirmPassword?.input)) {
-      final createUserOrFailure = await _authFacade.signInWithEmailAndPassword(
+      invalidateLoader(emit, loading: true);
+      final createUserOrFailure = await _authFacade.createUser(
         email: state.store.email,
         password: state.store.password,
       );
 
-      createUserOrFailure.fold(
-        (exception) => handleException(emit, exception),
-        (_) {},
-      );
+      createUserOrFailure.fold((exception) {
+        handleException(emit, exception);
+        return;
+      }, (_) {});
+
+      if (createUserOrFailure.isRight()) {
+        final signUpUserOrError = await _authFacade.signUpUser(
+          email: state.store.email,
+          password: state.store.password,
+          firstName: state.store.firstName,
+          lastName: state.store.lastName,
+        );
+
+        signUpUserOrError.fold(
+          (exception) => handleException(emit, exception),
+          (_) {
+            emit(
+              SignUpState.onAccountCreate(
+                store: state.store.copyWith(loading: false),
+              ),
+            );
+          },
+        );
+      }
     }
   }
 
@@ -97,6 +126,14 @@ class SignUpBloc extends BaseBloc<SignUpEvent, SignUpState> {
         store: state.store.copyWith(
           isPasswordVisible: !state.store.isPasswordVisible,
         ),
+      ),
+    );
+  }
+
+  void _onLastNameChanged(_OnLastNameChanged event, Emitter<SignUpState> emit) {
+    emit(
+      SignUpState.onLastNameChange(
+        store: state.store.copyWith(lastName: Name(event.lastNameString)),
       ),
     );
   }
@@ -122,8 +159,12 @@ class SignUpBloc extends BaseBloc<SignUpEvent, SignUpState> {
     );
   }
 
-  void onNameChanged({required String nameString}) {
-    add(SignUpEvent.onNameChanged(nameString: nameString));
+  void onFirstNameChanged({required String firstNameString}) {
+    add(SignUpEvent.onFirstNameChanged(firstNameString: firstNameString));
+  }
+
+  void onLastNameChanged({required String lastNameString}) {
+    add(SignUpEvent.onLastNameChanged(lastNameString: lastNameString));
   }
 
   void onCreateAccountClicked() {

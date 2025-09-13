@@ -16,13 +16,13 @@ class DsTextStyle {
   static final TextStyle titleLarge = TextStyle(
     fontFamily: _fontFamily,
     fontWeight: FontWeight.w700,
-    fontSize: 28.spMin,
+    fontSize: 22.spMin,
   );
 
   static final TextStyle titleMedium = TextStyle(
     fontFamily: _fontFamily,
     fontWeight: FontWeight.w600,
-    fontSize: 22.spMin,
+    fontSize: 20.spMin,
   );
 
   static final TextStyle titleSmall = TextStyle(
@@ -47,6 +47,5 @@ class DsTextStyle {
     fontFamily: _fontFamily,
     fontWeight: FontWeight.w400,
     fontSize: 12.spMin,
-    letterSpacing: 0.4,
   );
 }

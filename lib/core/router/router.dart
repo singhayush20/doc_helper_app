@@ -1,6 +1,8 @@
 import 'package:doc_helper_app/core/router/route_mapper.dart';
 import 'package:doc_helper_app/di/injection.dart';
+import 'package:doc_helper_app/feature/auth/presentation/ui/password_reset/password_reset_page.dart';
 import 'package:doc_helper_app/feature/auth/presentation/ui/sign_in_page.dart';
+import 'package:doc_helper_app/feature/auth/presentation/ui/sign_up/signup_page.dart';
 import 'package:doc_helper_app/feature/home/presentation/ui/home_page.dart';
 import 'package:doc_helper_app/feature/splash_screen/presentation/ui/splash_page.dart';
 import 'package:go_router/go_router.dart';
@@ -35,6 +37,16 @@ GoRouter buildRouter(AuthNotifier authNotifier) => GoRouter(
       name: Routes.signIn,
       path: '/signIn',
       builder: (context, state) => const SignInPage(),
+    ),
+    GoRoute(
+      name: Routes.signUp,
+      path: '/signUp',
+      builder: (context, state) => const SignUpPage(),
+    ),
+    GoRoute(
+      name: Routes.passwordReset,
+      path: '/passwordReset',
+      builder: (context, state) => const PasswordResetPage(),
     ),
     GoRoute(
       name: Routes.home,

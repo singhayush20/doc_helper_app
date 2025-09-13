@@ -18,8 +18,13 @@ sealed class SignUpState extends BaseState with _$SignUpState {
     required SignUpStateStore store,
   }) = OnConfirmPasswordChanged;
 
-  const factory SignUpState.onNameChange({required SignUpStateStore store}) =
-      OnNameChange;
+  const factory SignUpState.onFirstNameChange({
+    required SignUpStateStore store,
+  }) = OnFirstNameChange;
+
+  const factory SignUpState.onLastNameChange({
+    required SignUpStateStore store,
+  }) = OnLastNameChange;
 
   const factory SignUpState.onAccountCreate({required SignUpStateStore store}) =
       OnAccountCreate;
@@ -54,7 +59,8 @@ sealed class SignUpStateStore with _$SignUpStateStore {
     EmailAddress? email,
     Password? password,
     Password? confirmPassword,
-    Name? name,
+    Name? firstName,
+    Name? lastName,
     @Default(false) bool isPasswordVisible,
     @Default(false) bool loading,
   }) = _SignUpStateStore;

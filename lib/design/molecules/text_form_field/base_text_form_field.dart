@@ -165,6 +165,7 @@ abstract class BaseTextFormField extends StatelessWidget {
       hintText: _hintText,
       helperText: _helperText,
       errorText: errorText,
+      errorMaxLines: 2,
       filled: _dsInputDecorationTheme.filled,
       fillColor: _dsInputDecorationTheme.fillColor,
       focusColor: _dsInputDecorationTheme.focusColor,

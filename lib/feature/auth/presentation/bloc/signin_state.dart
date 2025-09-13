@@ -21,6 +21,13 @@ sealed class SignInState extends BaseState with _$SignInState {
   const factory SignInState.onLogin({required SignInStateStore store}) =
       OnLogin;
 
+  const factory SignInState.onSignUpPressed({required SignInStateStore store}) =
+      OnSignUpPressed;
+
+  const factory SignInState.onForgotPasswordPressed({
+    required SignInStateStore store,
+  }) = OnForgotPasswordPressed;
+
   const factory SignInState.invalidateLoader({
     required SignInStateStore store,
   }) = InvalidateLoader;
