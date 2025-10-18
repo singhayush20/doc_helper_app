@@ -110,7 +110,7 @@ class AuthFacadeImpl implements IAuthFacade {
 
   @override
   Future<Either<ServerException, Unit>> signOut() async {
-    _firebaseAuth.signOut();
+    await _firebaseAuth.signOut();
     await _localStorageFacade.clear();
     return right(unit);
   }
@@ -159,14 +159,11 @@ class AuthFacadeImpl implements IAuthFacade {
       ]);
       return right(unit);
     } on FirebaseAuthException catch (e) {
-      final message = e.message;
+      final errorMessage = _getFirebaseAuthErrorMessage(e.code);
       return left(
         ServerException(
           exceptionType: ServerExceptionType.signUpFailed,
-          metaData: ExceptionMetaData(
-            errorCode: ErrorCodes.signUpFailed,
-            message: message,
-          ),
+          metaData: ExceptionMetaData(errorCode: e.code, message: errorMessage),
         ),
       );
     } catch (e) {
@@ -201,32 +198,39 @@ class AuthFacadeImpl implements IAuthFacade {
       [userDto],
     );
 
-    return responseOrError.fold(
-      (error) => left(error),
-      (response) => right(unit),
-    );
+    return await responseOrError.fold((error) async => left(error), (
+      response,
+    ) async {
+      final refreshedUserToken = await _firebaseAuth.currentUser?.getIdToken(
+        true,
+      );
+      if (refreshedUserToken != null) {
+        _localStorageFacade.saveAuthToken(token: refreshedUserToken);
+      }
+      return right(unit);
+    });
   }
 
-  String getFirebaseAuthErrorMessage(String code) {
+  String _getFirebaseAuthErrorMessage(String code) {
     switch (code) {
-      case 'invalid-email':
-        return 'The email address is badly formatted.';
-      case 'user-disabled':
-        return 'This user has been disabled.';
-      case 'user-not-found':
-        return 'No user found for that email.';
-      case 'wrong-password':
-        return 'Wrong password provided.';
-      case 'email-already-in-use':
-        return 'This email is already in use by another account.';
-      case 'operation-not-allowed':
-        return 'Email/password accounts are not enabled.';
-      case 'weak-password':
-        return 'The password provided is too weak.';
-      case 'too-many-requests':
-        return 'Too many attempts. Try again later.';
+      case ErrorCodes.firebaseInvalidEmail:
+        return ErrorMessages.firebaseInvalidEmailError;
+      case ErrorCodes.firebaseUserDisabled:
+        return ErrorMessages.firebaseUserDisabledError;
+      case ErrorCodes.firebaseUserNotFound:
+        return ErrorMessages.firebaseUserNotFoundError;
+      case ErrorCodes.firebaseWrongPassword:
+        return ErrorMessages.firebaseWrongPasswordError;
+      case ErrorCodes.firebaseEmailAlreadyInUse:
+        return ErrorMessages.firebaseEmailAlreadyInUseError;
+      case ErrorCodes.firebaseOperationNotAllowed:
+        return ErrorMessages.firebaseOperationNotAllowedError;
+      case ErrorCodes.firebaseWeakPassword:
+        return ErrorMessages.firebaseWeakPasswordError;
+      case ErrorCodes.firebaseTooManyRequests:
+        return ErrorMessages.firebaseTooManyRequestsError;
       default:
-        return 'Authentication failed. Please try again.';
+        return ErrorMessages.firebaseDefaultErrorMessage;
     }
   }
 }
