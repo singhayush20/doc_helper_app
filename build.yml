@@ -10,7 +10,7 @@ targets:
         enabled: true
         generate_for:
         include:
-          - lib/featueres/**/data/models/**_dto.dart
+          - lib/features/**/data/models/**_dto.dart
           - lib/features/**/**/data/models/**_dto.dart
           - lib/features/**/domain/entities/**.dart
           - lib/features/**/**/domain/entities/**.dart

@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:doc_helper_app/core/exception_handling/server_exception.dart';
 import 'package:doc_helper_app/core/value_objects/value_objects.dart';
+import 'package:doc_helper_app/feature/auth/domain/entities/auth_entity.dart';
 import 'package:doc_helper_app/feature/user/domain/entity/user.dart';
 
 abstract class IAuthFacade {
@@ -26,4 +27,23 @@ abstract class IAuthFacade {
   });
 
   Future<Either<ServerException, Unit>> signOut();
+
+  Future<Either<ServerException, Unit>> sendEmailVerificationOtp({
+    required EmailAddress? email,
+  });
+
+  Future<Either<ServerException, VerificationResponse>> verifyEmailVerificationOtp({
+    required EmailAddress? email,
+    required Otp? otp,
+  });
+
+  Future<Either<ServerException, Unit>> sendPasswordResetOtp({
+    required EmailAddress? email,
+  });
+
+  Future<Either<ServerException, Unit>> resetPassword({
+    required EmailAddress? email,
+    required Otp? otp,
+    required Password? password,
+  });
 }

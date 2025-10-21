@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 class DsInputDecorationTheme extends InputDecorationTheme {
   DsInputDecorationTheme({
+    super.key,
     required this.inputTextStyle,
     required this.hintTextStyle,
   }) : super(

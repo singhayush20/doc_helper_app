@@ -7,13 +7,14 @@ import 'package:flutter/material.dart';
 @immutable
 class EmailAddress extends IValueObject<String> {
   const EmailAddress._(this.value, {String? initialValue, String? regEx})
-    : super(initialValue, regEx);
+      : super(initialValue, regEx);
 
-  factory EmailAddress(String input) => EmailAddress._(
-    validateEmail(input),
-    initialValue: input,
-    regEx: r'''^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$''',
-  );
+  factory EmailAddress(String input) =>
+      EmailAddress._(
+        validateEmail(input),
+        initialValue: input,
+        regEx: r'''^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$''',
+      );
   @override
   final Either<ValueFailure<String>, String> value;
 }
@@ -21,7 +22,7 @@ class EmailAddress extends IValueObject<String> {
 @immutable
 class Password extends IValueObject<String> {
   const Password._(this.value, {String? initialValue})
-    : super(initialValue, null);
+      : super(initialValue, null);
 
   factory Password(String input) =>
       Password._(validatePassword(input), initialValue: input);
@@ -35,6 +36,16 @@ class Name extends IValueObject<String> {
 
   factory Name(String input) =>
       Name._(validateName(input), initialValue: input);
+  @override
+  final Either<ValueFailure<String>, String> value;
+}
+
+@immutable
+class Otp extends IValueObject<String> {
+  const Otp._(this.value, {String? initialValue}) : super(initialValue, null);
+
+  factory Otp(String input) => Otp._(validateOtp(input), initialValue: input);
+
   @override
   final Either<ValueFailure<String>, String> value;
 }

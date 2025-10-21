@@ -15,11 +15,11 @@ class AppUserDto {
   factory AppUserDto.fromJson(Map<String, dynamic> json) =>
       _$AppUserDtoFromJson(json);
 
+  Map<String, dynamic> toJson() => _$AppUserDtoToJson(this);
+
   final String? firstName;
   final String? lastName;
   final String? password;
   final String? email;
   final String? userId;
-
-  Map<String, dynamic> toJson() => _$AppUserDtoToJson(this);
 }

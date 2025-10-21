@@ -36,3 +36,10 @@ Either<ValueFailure<String>, String> validateName(String input) {
     return left(ValueFailure.invalidName(failedValue: input));
   }
 }
+
+Either<ValueFailure<String>, String> validateOtp(String input) {
+  if (input.toString().length == 6) {
+    return right(input);
+  }
+  return left(ValueFailure.invalidOtp(failedValue: input));
+}

@@ -4,6 +4,9 @@ import 'package:doc_helper_app/core/exception_handling/server_exception.dart';
 import 'package:doc_helper_app/core/local_storage/i_local_storage_facade.dart';
 import 'package:doc_helper_app/core/value_objects/value_objects.dart';
 import 'package:doc_helper_app/env/env_config.dart';
+import 'package:doc_helper_app/feature/auth/data/models/auth_dto.dart';
+import 'package:doc_helper_app/feature/auth/data/models/dto_to_model_mapper.dart';
+import 'package:doc_helper_app/feature/auth/domain/entities/auth_entity.dart';
 import 'package:doc_helper_app/feature/auth/domain/interfaces/i_auth_facade.dart';
 import 'package:doc_helper_app/feature/user/data/models/user_dto.dart';
 import 'package:doc_helper_app/feature/user/domain/entity/user.dart';
@@ -199,6 +202,81 @@ class AuthFacadeImpl implements IAuthFacade {
     final responseOrError = await _apiCallHandler.handleApi(
       _retrofitApiClient.signUp,
       [userDto],
+    );
+
+    return responseOrError.fold(
+      (error) => left(error),
+      (response) => right(unit),
+    );
+  }
+
+  @override
+  Future<Either<ServerException, Unit>> sendEmailVerificationOtp({
+    required EmailAddress? email,
+  }) async {
+    final emailVerificationDto = EmailVerificationDto(email: email?.input);
+    final responseOrError = await _apiCallHandler.handleApi(
+      _retrofitApiClient.sendEmailVerificationOtp,
+      [emailVerificationDto],
+    );
+
+    return responseOrError.fold(
+      (error) => left(error),
+      (response) => right(unit),
+    );
+  }
+
+  @override
+  Future<Either<ServerException, VerificationResponse>>
+  verifyEmailVerificationOtp({
+    required EmailAddress? email,
+    required Otp? otp,
+  }) async {
+    final emailVerificationDto = EmailVerificationDto(
+      email: email?.input,
+      otp: otp?.input,
+    );
+    final responseOrError = await _apiCallHandler.handleApi(
+      _retrofitApiClient.verifyEmailVerificationOtp,
+      [emailVerificationDto],
+    );
+
+    return responseOrError.fold((error) => left(error), (response) {
+      final dto = VerificationResponseDto.fromJson(response.data);
+      return right(dto.toDomain());
+    });
+  }
+
+  @override
+  Future<Either<ServerException, Unit>> sendPasswordResetOtp({
+    required EmailAddress? email,
+  }) async {
+    final emailVerificationDto = EmailVerificationDto(email: email?.input);
+    final responseOrError = await _apiCallHandler.handleApi(
+      _retrofitApiClient.sendPasswordResetOtp,
+      [emailVerificationDto],
+    );
+
+    return responseOrError.fold(
+      (error) => left(error),
+      (response) => right(unit),
+    );
+  }
+
+  @override
+  Future<Either<ServerException, Unit>> resetPassword({
+    required EmailAddress? email,
+    required Otp? otp,
+    required Password? password,
+  }) async {
+    final passwordResetRequestDto = PasswordResetRequestDto(
+      email: email?.input,
+      otp: otp?.input,
+      password: password?.input,
+    );
+    final responseOrError = await _apiCallHandler.handleApi(
+      _retrofitApiClient.resetPassword,
+      [passwordResetRequestDto],
     );
 
     return responseOrError.fold(
