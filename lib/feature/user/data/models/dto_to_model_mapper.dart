@@ -1,6 +1,4 @@
 import 'package:doc_helper_app/core/value_objects/value_objects.dart';
-import 'package:doc_helper_app/feature/auth/data/models/auth_dto.dart';
-import 'package:doc_helper_app/feature/auth/domain/entities/auth_entity.dart';
 import 'package:doc_helper_app/feature/user/data/models/user_dto.dart';
 import 'package:doc_helper_app/feature/user/domain/entity/user.dart';
 

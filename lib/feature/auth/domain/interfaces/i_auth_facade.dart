@@ -32,10 +32,8 @@ abstract class IAuthFacade {
     required EmailAddress? email,
   });
 
-  Future<Either<ServerException, VerificationResponse>> verifyEmailVerificationOtp({
-    required EmailAddress? email,
-    required Otp? otp,
-  });
+  Future<Either<ServerException, VerificationResponse>>
+  verifyEmailVerificationOtp({required EmailAddress? email, required Otp? otp});
 
   Future<Either<ServerException, Unit>> sendPasswordResetOtp({
     required EmailAddress? email,

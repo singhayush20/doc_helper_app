@@ -4,8 +4,8 @@ import 'package:doc_helper_app/core/exception_handling/server_exception.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-abstract class BaseBloc<Event extends BaseEvent, State extends BaseState>
-    extends Bloc<Event, State> {
+abstract class BaseBloc<Event extends BaseEvent, S extends BaseState>
+    extends Bloc<Event, S> {
   BaseBloc(super.initialState) {
     if (!isClosed) {
       handleEvents();
@@ -16,12 +16,12 @@ abstract class BaseBloc<Event extends BaseEvent, State extends BaseState>
 
   void started({Map<String, dynamic>? args});
 
-  void invalidateLoader(Emitter<State> emit, {bool loading = false}) {
-    emit(state.getLoaderState(loading: loading) as State);
+  void invalidateLoader(Emitter<S> emit, {bool loading = false}) {
+    emit(state.getLoaderState(loading: loading) as S);
   }
 
-  void handleException(Emitter<State> emit, ServerException exception) {
-    emit(state.getExceptionState(exception) as State);
+  void handleException(Emitter<S> emit, ServerException exception) {
+    emit(state.getExceptionState(exception) as S);
   }
 }
 
