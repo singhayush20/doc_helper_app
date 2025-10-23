@@ -56,4 +56,4 @@ targets:
         enabled: true
         generate_for:
           include:
-            - lib/network/**_client.dart
+            - lib/core/network/**_client.dart

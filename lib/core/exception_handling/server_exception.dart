@@ -18,6 +18,7 @@ class ErrorCodes {
   ErrorCodes._();
   static const String invalidCredentials = 'E0001';
   static const String signUpFailed = 'E0002';
+  static const String unknownError = 'E0003';
   static const String firebaseInvalidEmail = 'invalid-email';
   static const String firebaseUserDisabled = 'user-disabled';
   static const String firebaseUserNotFound = 'user-not-found';
@@ -50,4 +51,5 @@ class ErrorMessages {
       'Too many attempts. Try again later.';
   static const String firebaseDefaultErrorMessage =
       'Authentication failed. Please try again.';
+  static const String unknownErrorMessage = 'Something went wrong!';
 }

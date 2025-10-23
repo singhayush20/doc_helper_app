@@ -1,5 +1,5 @@
-
 import 'package:doc_helper_app/core/common/utils/app_utils.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'chat_entities.freezed.dart';
 

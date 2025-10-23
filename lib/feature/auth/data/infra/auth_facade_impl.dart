@@ -67,7 +67,7 @@ class AuthFacadeImpl implements IAuthFacade {
       if (user == null) {
         return left(
           const ServerException(
-            exceptionType: ServerExceptionType.invalidCredentials,
+            exceptionType: ServerExceptionType.signInFailure,
             metaData: ExceptionMetaData(
               errorCode: ErrorCodes.invalidCredentials,
               message: ErrorMessages.invalidCredentialsError,
@@ -79,7 +79,7 @@ class AuthFacadeImpl implements IAuthFacade {
       if (idToken?.isEmpty ?? true) {
         return left(
           const ServerException(
-            exceptionType: ServerExceptionType.invalidCredentials,
+            exceptionType: ServerExceptionType.signInFailure,
             metaData: ExceptionMetaData(
               errorCode: ErrorCodes.invalidCredentials,
               message: ErrorMessages.invalidCredentialsError,
@@ -98,13 +98,25 @@ class AuthFacadeImpl implements IAuthFacade {
       ]);
 
       return right(unit);
-    } catch (e) {
+    } on FirebaseAuthException catch (e) {
+      final errorMessage = _getFirebaseAuthErrorMessage(e.code);
+      return left(
+        ServerException(
+        exceptionType: ServerExceptionType.signInFailure,
+          metaData: ExceptionMetaData(
+            errorCode: e.code,
+            message: errorMessage,
+          ),
+        ),
+      );
+    }
+    catch (e) {
       return left(
         const ServerException(
-          exceptionType: ServerExceptionType.invalidCredentials,
+          exceptionType: ServerExceptionType.unknown,
           metaData: ExceptionMetaData(
-            errorCode: ErrorCodes.invalidCredentials,
-            message: ErrorMessages.invalidCredentialsError,
+            errorCode: ErrorCodes.unknownError,
+            message: ErrorMessages.unknownErrorMessage,
           ),
         ),
       );
@@ -116,70 +128,6 @@ class AuthFacadeImpl implements IAuthFacade {
     await _firebaseAuth.signOut();
     await _localStorageFacade.clear();
     return right(unit);
-  }
-
-  @override
-  Future<Either<ServerException, Unit>> createUser({
-    required EmailAddress? email,
-    required Password? password,
-  }) async {
-    try {
-      final uerCredential = await _firebaseAuth.createUserWithEmailAndPassword(
-        email: email?.input ?? '',
-        password: password?.input ?? '',
-      );
-      final user = uerCredential.user;
-      if (user == null) {
-        return left(
-          const ServerException(
-            exceptionType: ServerExceptionType.signUpFailed,
-            metaData: ExceptionMetaData(
-              errorCode: ErrorCodes.signUpFailed,
-              message: ErrorMessages.signUpFailedError,
-            ),
-          ),
-        );
-      }
-      final authToken = await user.getIdToken();
-      if (authToken?.isEmpty ?? true) {
-        return left(
-          const ServerException(
-            exceptionType: ServerExceptionType.signUpFailed,
-            metaData: ExceptionMetaData(
-              errorCode: ErrorCodes.signUpFailed,
-              message: ErrorMessages.signUpFailedError,
-            ),
-          ),
-        );
-      }
-      await Future.wait([
-        (() => _localStorageFacade.saveUid(uid: user.uid))(),
-        (() => _localStorageFacade.saveUserEmail(
-          emailAddress: user.email ?? '',
-        ))(),
-        (() => _localStorageFacade.saveAuthToken(token: authToken ?? ''))(),
-        (() => _localStorageFacade.saveLoggedIn(isLoggedIn: true))(),
-      ]);
-      return right(unit);
-    } on FirebaseAuthException catch (e) {
-      final errorMessage = _getFirebaseAuthErrorMessage(e.code);
-      return left(
-        ServerException(
-          exceptionType: ServerExceptionType.signUpFailed,
-          metaData: ExceptionMetaData(errorCode: e.code, message: errorMessage),
-        ),
-      );
-    } catch (e) {
-      return left(
-        const ServerException(
-          exceptionType: ServerExceptionType.signUpFailed,
-          metaData: ExceptionMetaData(
-            errorCode: ErrorCodes.signUpFailed,
-            message: ErrorMessages.signUpFailedError,
-          ),
-        ),
-      );
-    }
   }
 
   @override

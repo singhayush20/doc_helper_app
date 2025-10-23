@@ -14,11 +14,6 @@ abstract class IAuthFacade {
     required Password? password,
   });
 
-  Future<Either<ServerException, Unit>> createUser({
-    required EmailAddress? email,
-    required Password? password,
-  });
-
   Future<Either<ServerException, Unit>> signUpUser({
     required Name? firstName,
     required Name? lastName,

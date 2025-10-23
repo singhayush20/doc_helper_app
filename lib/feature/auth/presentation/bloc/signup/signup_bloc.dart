@@ -85,7 +85,7 @@ class SignUpBloc extends BaseBloc<SignUpEvent, SignUpState> {
         (state.store.password?.isValid() ?? false) &&
         (state.store.password?.input == state.store.confirmPassword?.input)) {
       invalidateLoader(emit, loading: true);
-      final createUserOrFailure = await _authFacade.createUser(
+      final createUserOrFailure = await _authFacade.signInWithEmailAndPassword(
         email: state.store.email,
         password: state.store.password,
       );
