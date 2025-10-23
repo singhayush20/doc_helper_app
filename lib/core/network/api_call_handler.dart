@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart' show Either, right, left;
 import 'package:dio/dio.dart';
-import 'package:doc_helper_app/common/constants/enums.dart';
+import 'package:doc_helper_app/core/common/constants/enums.dart';
 import 'package:doc_helper_app/core/exception_handling/server_exception.dart';
 import 'package:injectable/injectable.dart';
 import 'package:retrofit/dio.dart';

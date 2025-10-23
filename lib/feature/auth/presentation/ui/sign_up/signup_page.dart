@@ -1,5 +1,5 @@
-import 'package:doc_helper_app/common/base_bloc/base_bloc.dart';
-import 'package:doc_helper_app/common/base_widget/base_widget_utils.dart';
+import 'package:doc_helper_app/core/common/base_bloc/base_bloc.dart';
+import 'package:doc_helper_app/core/common/base_widget/base_widget_utils.dart';
 import 'package:doc_helper_app/design/atoms/buttons/ds_button.dart';
 import 'package:doc_helper_app/design/atoms/typography/ds_text.dart';
 import 'package:doc_helper_app/design/foundations/ds_spacing.dart';

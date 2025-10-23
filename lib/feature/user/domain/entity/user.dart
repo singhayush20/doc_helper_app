@@ -1,4 +1,4 @@
-import 'package:doc_helper_app/common/utils/app_utils.dart';
+import 'package:doc_helper_app/core/common/utils/app_utils.dart';
 import 'package:doc_helper_app/core/value_objects/value_objects.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 

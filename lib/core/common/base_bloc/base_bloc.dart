@@ -1,5 +1,5 @@
-import 'package:doc_helper_app/common/base_bloc/base_event.dart';
-import 'package:doc_helper_app/common/base_bloc/base_state.dart';
+import 'package:doc_helper_app/core/common/base_bloc/base_event.dart';
+import 'package:doc_helper_app/core/common/base_bloc/base_state.dart';
 import 'package:doc_helper_app/core/exception_handling/server_exception.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

@@ -1,6 +1,7 @@
-import 'package:doc_helper_app/common/base_bloc/base_bloc.dart';
-import 'package:doc_helper_app/common/base_widget/base_widget_utils.dart';
-import 'package:doc_helper_app/common/constants/media_constants/image_keys.dart';
+
+import 'package:doc_helper_app/core/common/base_bloc/base_bloc.dart';
+import 'package:doc_helper_app/core/common/base_widget/base_widget_utils.dart';
+import 'package:doc_helper_app/core/common/constants/media_constants/image_keys.dart';
 import 'package:doc_helper_app/core/router/route_mapper.dart';
 import 'package:doc_helper_app/core/value_objects/value_objects.dart';
 import 'package:doc_helper_app/design/design.dart'

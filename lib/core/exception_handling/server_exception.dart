@@ -1,4 +1,5 @@
-import 'package:doc_helper_app/common/constants/enums.dart';
+
+import 'package:doc_helper_app/core/common/constants/enums.dart';
 
 class ExceptionMetaData {
   const ExceptionMetaData({this.errorCode, this.message});

@@ -1,4 +1,4 @@
-import 'package:doc_helper_app/common/utils/app_utils.dart';
+import 'package:doc_helper_app/core/common/utils/app_utils.dart';
 
 part 'auth_entity.freezed.dart';
 

@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:doc_helper_app/core/local_storage/i_local_storage_facade.dart';
-import 'package:doc_helper_app/network/dio/i_dio_provider.dart';
-import 'package:doc_helper_app/network/logger_interceptor.dart';
+import 'package:doc_helper_app/core/network/dio/i_dio_provider.dart';
+import 'package:doc_helper_app/core/network/logger_interceptor.dart';
 import 'package:injectable/injectable.dart';
 
 @Singleton(as: IDioProvider)

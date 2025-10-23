@@ -1,7 +1,7 @@
 part of 'signin_bloc.dart';
 
 @freezed
-sealed class SignInState extends BaseState with _$SignInState {
+sealed class SignInState extends BaseState  with _$SignInState {
   const SignInState._();
 
   const factory SignInState.initial({required SignInStateStore store}) =

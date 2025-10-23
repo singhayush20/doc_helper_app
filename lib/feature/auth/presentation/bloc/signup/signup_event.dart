@@ -1,7 +1,7 @@
 part of 'signup_bloc.dart';
 
 @freezed
-sealed class SignUpEvent extends BaseEvent with _$SignUpEvent {
+sealed class SignUpEvent extends BaseEvent with _$SignUpEvent  {
   const SignUpEvent._() : super();
 
   const factory SignUpEvent.started() = _Started;

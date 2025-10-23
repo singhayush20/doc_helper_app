@@ -1,13 +1,13 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:doc_helper_app/core/exception_handling/server_exception.dart';
+import 'package:doc_helper_app/core/network/api_call_handler.dart';
+import 'package:doc_helper_app/core/network/retrofit_api_client.dart';
 import 'package:doc_helper_app/env/env_config.dart';
 import 'package:doc_helper_app/feature/user_docs/data/models/dto_to_model_mapper.dart';
 import 'package:doc_helper_app/feature/user_docs/data/models/user_doc_dto.dart';
 import 'package:doc_helper_app/feature/user_docs/domain/entities/user_doc_entity.dart';
 import 'package:doc_helper_app/feature/user_docs/domain/interfaces/i_user_doc_facade.dart';
-import 'package:doc_helper_app/network/api_call_handler.dart';
-import 'package:doc_helper_app/network/retrofit_api_client.dart';
 import 'package:injectable/injectable.dart';
 
 @Singleton(as: IUserDocFacade, env: injectionEnv)

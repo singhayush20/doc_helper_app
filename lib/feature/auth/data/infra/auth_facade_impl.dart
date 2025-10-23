@@ -1,7 +1,9 @@
 import 'package:dartz/dartz.dart';
-import 'package:doc_helper_app/common/constants/enums.dart';
+import 'package:doc_helper_app/core/common/constants/enums.dart';
 import 'package:doc_helper_app/core/exception_handling/server_exception.dart';
 import 'package:doc_helper_app/core/local_storage/i_local_storage_facade.dart';
+import 'package:doc_helper_app/core/network/api_call_handler.dart';
+import 'package:doc_helper_app/core/network/retrofit_api_client.dart';
 import 'package:doc_helper_app/core/value_objects/value_objects.dart';
 import 'package:doc_helper_app/env/env_config.dart';
 import 'package:doc_helper_app/feature/auth/data/models/auth_dto.dart';
@@ -10,8 +12,6 @@ import 'package:doc_helper_app/feature/auth/domain/entities/auth_entity.dart';
 import 'package:doc_helper_app/feature/auth/domain/interfaces/i_auth_facade.dart';
 import 'package:doc_helper_app/feature/user/data/models/user_dto.dart';
 import 'package:doc_helper_app/feature/user/domain/entity/user.dart';
-import 'package:doc_helper_app/network/api_call_handler.dart';
-import 'package:doc_helper_app/network/retrofit_api_client.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:injectable/injectable.dart';
 
@@ -287,7 +287,7 @@ class AuthFacadeImpl implements IAuthFacade {
           (error) => left(error),
           (response) => right(unit),
     );
-    }
+  }
 
   String _getFirebaseAuthErrorMessage(String code) {
     switch (code) {

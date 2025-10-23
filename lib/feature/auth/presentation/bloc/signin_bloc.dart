@@ -1,9 +1,8 @@
 import 'dart:async';
-
-import 'package:doc_helper_app/common/base_bloc/base_bloc.dart';
-import 'package:doc_helper_app/common/base_bloc/base_event.dart';
-import 'package:doc_helper_app/common/base_bloc/base_state.dart';
-import 'package:doc_helper_app/common/utils/app_utils.dart';
+import 'package:doc_helper_app/core/common/base_bloc/base_bloc.dart';
+import 'package:doc_helper_app/core/common/base_bloc/base_event.dart';
+import 'package:doc_helper_app/core/common/base_bloc/base_state.dart';
+import 'package:doc_helper_app/core/common/utils/app_utils.dart';
 import 'package:doc_helper_app/core/value_objects/value_objects.dart';
 import 'package:doc_helper_app/feature/auth/domain/interfaces/i_auth_facade.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
