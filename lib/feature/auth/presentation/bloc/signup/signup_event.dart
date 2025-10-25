@@ -1,7 +1,7 @@
 part of 'signup_bloc.dart';
 
 @freezed
-sealed class SignUpEvent extends BaseEvent with _$SignUpEvent  {
+sealed class SignUpEvent extends BaseEvent with _$SignUpEvent {
   const SignUpEvent._() : super();
 
   const factory SignUpEvent.started() = _Started;
@@ -29,4 +29,19 @@ sealed class SignUpEvent extends BaseEvent with _$SignUpEvent  {
 
   const factory SignUpEvent.onPasswordVisibilityChanged() =
       _OnPasswordVisibilityChanged;
+
+  const factory SignUpEvent.onSignInPressed() = _OnSignInPressed;
+
+  const factory SignUpEvent.onEmailOTPChanged({
+    required String? emailOTPString,
+  }) = _OnEmailOTPChanged;
+
+  const factory SignUpEvent.onResendOTPPressed() = _OnResendOTPPressed;
+
+  const factory SignUpEvent.onTimerStarted() = _OnTimerStarted;
+
+  const factory SignUpEvent.onTimerTicked({required int timerValue}) =
+      _OnTimerTicked;
+
+  const factory SignUpEvent.onVerifyOTPPressed() = _OnVerifyOTPPressed;
 }

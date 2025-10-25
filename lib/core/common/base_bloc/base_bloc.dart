@@ -16,6 +16,10 @@ abstract class BaseBloc<Event extends BaseEvent, S extends BaseState>
 
   void started({Map<String, dynamic>? args});
 
+  @mustCallSuper
+  @override
+  Future<void> close() => super.close();
+
   void invalidateLoader(Emitter<S> emit, {bool loading = false}) {
     emit(state.getLoaderState(loading: loading) as S);
   }

@@ -11,10 +11,7 @@ import 'package:injectable/injectable.dart';
 
 @Singleton(as: IChatFacade, env: injectionEnv)
 class ChatFacadeImpl implements IChatFacade {
-  ChatFacadeImpl(
-    this._retrofitApiClient,
-    this._apiCallHandler,
-  );
+  ChatFacadeImpl(this._retrofitApiClient, this._apiCallHandler);
 
   final RetrofitApiClient _retrofitApiClient;
   final ApiCallHandler _apiCallHandler;
@@ -34,13 +31,10 @@ class ChatFacadeImpl implements IChatFacade {
       [webSearch, chatRequest],
     );
 
-    return responseOrError.fold(
-      (error) => left(error),
-      (response) {
-        final dto = ChatMessageDto.fromJson(response.data);
-        return right(dto.toDomain());
-      },
-    );
+    return responseOrError.fold((error) => left(error), (response) {
+      final dto = ChatMessageDto.fromJson(response.data);
+      return right(dto.toDomain());
+    });
   }
 
   @override
@@ -53,12 +47,9 @@ class ChatFacadeImpl implements IChatFacade {
       [documentId, page],
     );
 
-    return responseOrError.fold(
-      (error) => left(error),
-      (response) {
-        final dto = ChatHistoryDto.fromJson(response.data);
-        return right(dto.toDomain());
-      },
-    );
+    return responseOrError.fold((error) => left(error), (response) {
+      final dto = ChatHistoryDto.fromJson(response.data);
+      return right(dto.toDomain());
+    });
   }
 }

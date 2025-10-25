@@ -102,15 +102,11 @@ class AuthFacadeImpl implements IAuthFacade {
       final errorMessage = _getFirebaseAuthErrorMessage(e.code);
       return left(
         ServerException(
-        exceptionType: ServerExceptionType.signInFailure,
-          metaData: ExceptionMetaData(
-            errorCode: e.code,
-            message: errorMessage,
-          ),
+          exceptionType: ServerExceptionType.signInFailure,
+          metaData: ExceptionMetaData(errorCode: e.code, message: errorMessage),
         ),
       );
-    }
-    catch (e) {
+    } catch (e) {
       return left(
         const ServerException(
           exceptionType: ServerExceptionType.unknown,
@@ -173,8 +169,8 @@ class AuthFacadeImpl implements IAuthFacade {
     );
 
     return responseOrError.fold(
-          (error) => left(error),
-          (response) => right(unit),
+      (error) => left(error),
+      (response) => right(unit),
     );
   }
 
@@ -210,8 +206,8 @@ class AuthFacadeImpl implements IAuthFacade {
     );
 
     return responseOrError.fold(
-          (error) => left(error),
-          (response) => right(unit),
+      (error) => left(error),
+      (response) => right(unit),
     );
   }
 
@@ -232,8 +228,8 @@ class AuthFacadeImpl implements IAuthFacade {
     );
 
     return responseOrError.fold(
-          (error) => left(error),
-          (response) => right(unit),
+      (error) => left(error),
+      (response) => right(unit),
     );
   }
 

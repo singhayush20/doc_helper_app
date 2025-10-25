@@ -1,4 +1,3 @@
-
 import 'package:doc_helper_app/core/common/base_bloc/base_bloc.dart';
 import 'package:doc_helper_app/core/common/base_bloc/base_event.dart';
 import 'package:doc_helper_app/core/common/base_bloc/base_state.dart';

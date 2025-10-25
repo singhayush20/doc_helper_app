@@ -19,7 +19,7 @@ abstract class DsTextButtonStyle {
     ),
     overlayColor: WidgetStateProperty.resolveWith<Color?>((states) {
       if (states.contains(WidgetState.pressed)) {
-        return DsColors.buttonPrimaryBackground.withAlpha(10);
+        return DsColors.buttonPrimaryPressed;
       }
       return null;
     }),
@@ -37,7 +37,7 @@ abstract class DsTextButtonStyle {
     ),
     overlayColor: WidgetStateProperty.resolveWith<Color?>((states) {
       if (states.contains(WidgetState.pressed)) {
-        return DsColors.borderDefault.withAlpha(10);
+        return DsColors.buttonSecondaryPressed;
       }
       return null;
     }),

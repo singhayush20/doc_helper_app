@@ -10,7 +10,9 @@ class DsTextFormFieldStyle {
     Set<WidgetState> states,
   ) {
     if (states.contains(WidgetState.disabled)) {
-      return DsTextStyle.bodySmall.copyWith(color: DsColors.textDisabled);
+      return DsTextStyle.bodySmall.copyWith(
+        color: DsColors.textFieldTextDisabled,
+      );
     }
     return DsTextStyle.bodySmall;
   });
@@ -20,9 +22,11 @@ class DsTextFormFieldStyle {
   ) {
     if (states.contains(WidgetState.disabled) ||
         states.contains(WidgetState.hovered)) {
-      return DsTextStyle.bodySmall.copyWith(color: DsColors.textDisabled);
+      return DsTextStyle.bodySmall.copyWith(
+        color: DsColors.textFieldTextDisabled,
+      );
     }
-    return DsTextStyle.bodySmall.copyWith(color: DsColors.textHint);
+    return DsTextStyle.bodySmall.copyWith(color: DsColors.textFieldHint);
   });
 
   static final primary = DsInputDecorationTheme(

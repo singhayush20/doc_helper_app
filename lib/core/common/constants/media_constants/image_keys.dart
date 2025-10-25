@@ -1,5 +1,6 @@
 final class ImageKeys {
   ImageKeys._();
 
-  static const String docHelper = 'assets/images/doc_helper_intro.webp';
+  static const String docHelper = 'assets/vectors/doc-helper-logo.svg';
+  static const String docHelperLogo = 'assets/vectors/doc-helper-logo-2.svg';
 }

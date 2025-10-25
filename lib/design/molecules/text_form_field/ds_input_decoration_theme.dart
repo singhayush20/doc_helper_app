@@ -38,32 +38,34 @@ class DsInputDecorationTheme extends InputDecorationTheme {
     Set<WidgetState> states,
   ) {
     if (states.contains(WidgetState.disabled)) {
-      return DsColors.surfaceSecondary;
+      return DsColors.textFieldBackgroundDisabled;
     }
-    return DsColors.surfacePrimary;
+    return DsColors.textFieldBackground;
   });
 
   static final _defaultContentPadding = EdgeInsets.all(DsSpacing.radialSpace12);
 
-  static final _defaultLabelTextStyle = DsTextStyle.bodySmall.copyWith(
-    color: DsColors.textSecondary,
+  static final _defaultLabelTextStyle = DsTextStyle.bodyBoldSmall.copyWith(
+    color: DsColors.textFieldLabel,
   );
 
   static final _defaultHelperTextStyle = DsTextStyle.caption.copyWith(
-    color: DsColors.textSecondary,
+    color: DsColors.textFieldHelper,
   );
 
   static final _defaultErrorTextStyle = WidgetStateTextStyle.resolveWith((
     Set<WidgetState> states,
   ) {
     if (states.contains(WidgetState.disabled)) {
-      return DsTextStyle.caption.copyWith(color: DsColors.textTertiary);
+      return DsTextStyle.caption.copyWith(
+        color: DsColors.textFieldTextDisabled,
+      );
     }
-    return DsTextStyle.caption.copyWith(color: DsColors.stateTextCritical);
+    return DsTextStyle.caption.copyWith(color: DsColors.textFieldErrorText);
   });
 
   static final _defaultBorder = OutlineInputBorder(
-    borderSide: const BorderSide(color: DsColors.borderInput),
+    borderSide: const BorderSide(color: DsColors.textFieldBorder),
     borderRadius: BorderRadius.all(
       Radius.circular(DsBorderRadius.borderRadius4),
     ),
@@ -71,13 +73,13 @@ class DsInputDecorationTheme extends InputDecorationTheme {
 
   static final _defaultFocusedBorder = _defaultBorder.copyWith(
     borderSide: _defaultBorder.borderSide.copyWith(
-      color: DsColors.borderInputFocused,
+      color: DsColors.textFieldBorderFocused,
     ),
   );
 
   static final _defaultErrorBorder = _defaultBorder.copyWith(
     borderSide: _defaultBorder.borderSide.copyWith(
-      color: DsColors.borderCritical,
+      color: DsColors.textFieldBorderError,
     ),
   );
 
@@ -98,7 +100,7 @@ class DsInputDecorationTheme extends InputDecorationTheme {
     }
 
     if (states.contains(WidgetState.error)) {
-      return DsColors.stateIconCritical;
+      return DsColors.iconError;
     }
 
     return DsColors.iconPrimary;

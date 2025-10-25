@@ -5,6 +5,7 @@ import 'package:doc_helper_app/feature/splash_screen/presentation/bloc/splash_bl
 import 'package:doc_helper_app/feature/user/domain/entity/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 part 'splash_form.dart';
@@ -29,7 +30,7 @@ class SplashPage extends StatelessWidget {
       if (user == null)
         {context.goNamed(Routes.signIn)}
       else
-        {context.goNamed(Routes.signIn)},
+        {context.goNamed(Routes.home)},
     },
     _ => {},
   };

@@ -48,6 +48,8 @@ base class BaseText extends StatelessWidget {
         return DsTextStyle.titleSmall;
       case DsTextStyleType.bodyLarge:
         return DsTextStyle.bodyLarge;
+      case DsTextStyleType.bodyBoldSmall:
+        return DsTextStyle.bodyBoldSmall;
       case DsTextStyleType.bodySmall:
         return DsTextStyle.bodySmall;
       case DsTextStyleType.caption:

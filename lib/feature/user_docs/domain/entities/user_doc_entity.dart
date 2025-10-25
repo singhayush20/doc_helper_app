@@ -5,11 +5,7 @@ part 'user_doc_entity.freezed.dart';
 
 @liteFreezed
 abstract class UserDoc with _$UserDoc {
-  const factory UserDoc({
-    int? id,
-    String? fileName,
-    String? status,
-  }) = _UserDoc;
+  const factory UserDoc({int? id, String? fileName, String? status}) = _UserDoc;
 }
 
 @liteFreezed

@@ -17,10 +17,7 @@ class ChatRequestDto {
 
 @JsonSerializable()
 class ChatHistoryDto {
-  const ChatHistoryDto({
-    required this.threadId,
-    required this.messages,
-  });
+  const ChatHistoryDto({required this.threadId, required this.messages});
 
   factory ChatHistoryDto.fromJson(Map<String, dynamic> json) =>
       _$ChatHistoryDtoFromJson(json);
@@ -30,7 +27,7 @@ class ChatHistoryDto {
 }
 
 @JsonSerializable()
-class ChatMessageDto{
+class ChatMessageDto {
   const ChatMessageDto({
     required this.id,
     required this.content,

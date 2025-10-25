@@ -14,7 +14,7 @@ void showSnackBar({
 }) {
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
-      backgroundColor: backgroundColor ?? DsColors.backgroundAlert,
+      backgroundColor: backgroundColor ?? DsColors.backgroundWarning,
       padding: padding,
       shape: shape,
       showCloseIcon: showCloseIcon ?? true,

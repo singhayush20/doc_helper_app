@@ -1,9 +1,9 @@
-
 import 'package:doc_helper_app/core/common/base_bloc/base_bloc.dart';
 import 'package:doc_helper_app/core/common/base_widget/base_widget_utils.dart';
 import 'package:doc_helper_app/core/common/constants/media_constants/image_keys.dart';
 import 'package:doc_helper_app/core/router/route_mapper.dart';
 import 'package:doc_helper_app/core/value_objects/value_objects.dart';
+import 'package:doc_helper_app/design/atoms/typography/ds_text_style.dart';
 import 'package:doc_helper_app/design/design.dart'
     show
         DsSpacing,
@@ -15,9 +15,9 @@ import 'package:doc_helper_app/design/design.dart'
         DsButton,
         DsTextButton,
         DsImage;
-import 'package:doc_helper_app/design/foundations/ds_border_width.dart';
 import 'package:doc_helper_app/di/injection.dart';
 import 'package:doc_helper_app/feature/auth/presentation/bloc/signin_bloc.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -35,7 +35,7 @@ class SignInPage extends StatelessWidget {
     child: LoaderOverlay(
       child: Scaffold(
         resizeToAvoidBottomInset: true,
-        backgroundColor: DsColors.backgroundPrimary,
+        backgroundColor: DsColors.backgroundSurface,
         body: SafeArea(
           child: BlocConsumer<SignInBloc, SignInState>(
             listener: (context, state) {
@@ -51,6 +51,7 @@ class SignInPage extends StatelessWidget {
                 OnForgotPasswordPressed _ => GoRouter.of(
                   context,
                 ).pushNamed(Routes.passwordReset),
+                OnLogin _ => GoRouter.of(context).pushNamed(Routes.home),
                 OnException(:final exception) => handleException(
                   exception,
                   context,

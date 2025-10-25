@@ -30,7 +30,7 @@ abstract class DsButtonStyle {
 
   static final secondaryButtonStyle = ButtonStyle(
     backgroundColor: const WidgetStatePropertyAll<Color>(
-      DsColors.buttonPrimaryBackground,
+      DsColors.buttonSecondary,
     ),
     textStyle: WidgetStatePropertyAll<TextStyle>(_primaryButtonTextStyle),
     padding: WidgetStatePropertyAll<EdgeInsetsGeometry>(

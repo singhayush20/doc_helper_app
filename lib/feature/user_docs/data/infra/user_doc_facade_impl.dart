@@ -12,10 +12,7 @@ import 'package:injectable/injectable.dart';
 
 @Singleton(as: IUserDocFacade, env: injectionEnv)
 class UserDocFacadeImpl implements IUserDocFacade {
-  UserDocFacadeImpl(
-    this._retrofitApiClient,
-    this._apiCallHandler,
-  );
+  UserDocFacadeImpl(this._retrofitApiClient, this._apiCallHandler);
 
   final RetrofitApiClient _retrofitApiClient;
   final ApiCallHandler _apiCallHandler;
@@ -29,13 +26,10 @@ class UserDocFacadeImpl implements IUserDocFacade {
       [file],
     );
 
-    return responseOrError.fold(
-      (error) => left(error),
-      (response) {
-        final dto = FileUploadResponseDto.fromJson(response.data);
-        return right(dto.toDomain());
-      },
-    );
+    return responseOrError.fold((error) => left(error), (response) {
+      final dto = FileUploadResponseDto.fromJson(response.data);
+      return right(dto.toDomain());
+    });
   }
 
   @override
@@ -50,13 +44,10 @@ class UserDocFacadeImpl implements IUserDocFacade {
       [page, size, sortField, direction],
     );
 
-    return responseOrError.fold(
-      (error) => left(error),
-      (response) {
-        final dto = UserDocListDto.fromJson(response.data);
-        return right(dto.toDomain());
-      },
-    );
+    return responseOrError.fold((error) => left(error), (response) {
+      final dto = UserDocListDto.fromJson(response.data);
+      return right(dto.toDomain());
+    });
   }
 
   @override
@@ -68,12 +59,9 @@ class UserDocFacadeImpl implements IUserDocFacade {
       [documentId],
     );
 
-    return responseOrError.fold(
-      (error) => left(error),
-      (response) {
-        final dto = FileDeletionResponseDto.fromJson(response.data);
-        return right(dto.toDomain());
-      },
-    );
+    return responseOrError.fold((error) => left(error), (response) {
+      final dto = FileDeletionResponseDto.fromJson(response.data);
+      return right(dto.toDomain());
+    });
   }
 }

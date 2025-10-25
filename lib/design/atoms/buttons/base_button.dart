@@ -7,8 +7,8 @@ base class BaseButton extends StatelessWidget {
     required this.buttonStyleType,
     this.onTap,
     this.leadingIcon,
-    this.backgroundColor = DsColors.buttonPrimaryBackground,
-    this.disabledColor = DsColors.buttonPrimaryBackgroundDisabled,
+    this.backgroundColor = DsColors.buttonPrimary,
+    this.disabledColor = DsColors.buttonPrimaryDisabled,
     this.foregroundColor = DsColors.buttonPrimaryText,
     this.disabledForegroundColor = DsColors.buttonPrimaryTextDisabled,
     this.borderColor,
@@ -81,13 +81,16 @@ base class BaseButton extends StatelessWidget {
           return RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(DsBorderRadius.borderRadius8),
             side: BorderSide(
-              color: disabledBorderColor ?? DsColors.borderDisabled,
+              color:
+                  disabledBorderColor ?? DsColors.buttonSecondaryBorderDisabled,
             ),
           );
         }
         return RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(DsBorderRadius.borderRadius2),
-          side: BorderSide(color: borderColor ?? DsColors.borderDefault),
+          side: BorderSide(
+            color: borderColor ?? DsColors.buttonSecondaryBorder,
+          ),
         );
       }),
     ),

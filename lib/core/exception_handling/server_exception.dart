@@ -1,4 +1,3 @@
-
 import 'package:doc_helper_app/core/common/constants/enums.dart';
 
 class ExceptionMetaData {

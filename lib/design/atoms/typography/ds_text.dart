@@ -45,6 +45,16 @@ final class DsText extends BaseText {
     super.underline,
   }) : super(dsTextStyleType: DsTextStyleType.bodyLarge);
 
+  const DsText.bodyBoldSmall({
+    super.key,
+    required super.data,
+    super.textAlign,
+    super.maxLines,
+    super.overflow,
+    super.color,
+    super.underline,
+  }) : super(dsTextStyleType: DsTextStyleType.bodyBoldSmall);
+
   const DsText.bodySmall({
     super.key,
     required super.data,

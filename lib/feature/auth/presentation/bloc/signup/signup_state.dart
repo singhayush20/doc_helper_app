@@ -5,7 +5,7 @@ sealed class SignUpState extends BaseState with _$SignUpState {
   const SignUpState._();
 
   const factory SignUpState.initial({required SignUpStateStore store}) =
-      _SignInStateInitial;
+      _Initial;
 
   const factory SignUpState.onEmailChange({required SignUpStateStore store}) =
       OnEmailChange;
@@ -16,7 +16,7 @@ sealed class SignUpState extends BaseState with _$SignUpState {
 
   const factory SignUpState.onConfirmPasswordChange({
     required SignUpStateStore store,
-  }) = OnConfirmPasswordChanged;
+  }) = OnConfirmPasswordChange;
 
   const factory SignUpState.onFirstNameChange({
     required SignUpStateStore store,
@@ -32,6 +32,20 @@ sealed class SignUpState extends BaseState with _$SignUpState {
   const factory SignUpState.onPasswordVisibilityChange({
     required SignUpStateStore store,
   }) = OnPasswordVisibilityChange;
+
+  const factory SignUpState.onSignInPress({required SignUpStateStore store}) =
+      OnSignInPress;
+
+  const factory SignUpState.onEmailOTPChange({
+    required SignUpStateStore store,
+  }) = OnEmailOTPChange;
+
+  const factory SignUpState.onOTPVerificationSuccess({
+    required SignUpStateStore store,
+  }) = OnOTPVerificationSuccess;
+
+  const factory SignUpState.onTimerUpdate({required SignUpStateStore store}) =
+      OnTimerUpdate;
 
   const factory SignUpState.invalidateLoader({
     required SignUpStateStore store,
@@ -61,6 +75,9 @@ sealed class SignUpStateStore with _$SignUpStateStore {
     Password? confirmPassword,
     Name? firstName,
     Name? lastName,
+    int? timerValue,
+    Otp? otp,
+    @Default(false) bool userDetailsEntered,
     @Default(false) bool isPasswordVisible,
     @Default(false) bool loading,
   }) = _SignUpStateStore;

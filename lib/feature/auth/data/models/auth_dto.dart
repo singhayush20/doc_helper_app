@@ -17,11 +17,7 @@ class EmailVerificationDto {
 
 @JsonSerializable()
 class PasswordResetRequestDto {
-  const PasswordResetRequestDto({
-    this.otp,
-    this.password,
-    this.email,
-  });
+  const PasswordResetRequestDto({this.otp, this.password, this.email});
 
   factory PasswordResetRequestDto.fromJson(Map<String, dynamic> json) =>
       _$PasswordResetRequestDtoFromJson(json);
@@ -33,10 +29,8 @@ class PasswordResetRequestDto {
   final String? email;
 }
 
-
 @JsonSerializable()
 class VerificationResponseDto {
-
   const VerificationResponseDto({required this.success});
 
   factory VerificationResponseDto.fromJson(Map<String, dynamic> json) =>

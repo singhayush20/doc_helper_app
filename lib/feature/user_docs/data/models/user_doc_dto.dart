@@ -5,11 +5,7 @@ part 'user_doc_dto.g.dart';
 // TODO: Need to be verified and fixed
 @JsonSerializable()
 class UserDocDto {
-  const UserDocDto({
-    this.id,
-    this.fileName,
-    this.status,
-  });
+  const UserDocDto({this.id, this.fileName, this.status});
 
   factory UserDocDto.fromJson(Map<String, dynamic> json) =>
       _$UserDocDtoFromJson(json);
@@ -23,12 +19,7 @@ class UserDocDto {
 
 @JsonSerializable()
 class UserDocListDto {
-  const UserDocListDto({
-    this.docs,
-    this.total,
-    this.page,
-    this.size,
-  });
+  const UserDocListDto({this.docs, this.total, this.page, this.size});
 
   factory UserDocListDto.fromJson(Map<String, dynamic> json) =>
       _$UserDocListDtoFromJson(json);

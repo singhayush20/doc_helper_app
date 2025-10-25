@@ -35,11 +35,12 @@ base class _BaseTextButton extends StatelessWidget {
         children: [
           if (leadingIcon != null) Icon(leadingIcon, size: DsSizing.size16),
           Flexible(
-            child: DsText.bodySmall(
+            child: DsText.bodyBoldSmall(
               data: data,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               underline: underline,
+              color: DsColors.textLink,
             ),
           ),
           if (trailingIcon != null) Icon(trailingIcon, size: DsSizing.size16),

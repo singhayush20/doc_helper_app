@@ -11,19 +11,26 @@ import 'auth_notifier.dart';
 
 GoRouter buildRouter(AuthNotifier authNotifier) => GoRouter(
   initialLocation: '/splash',
-  refreshListenable: authNotifier, // re-run redirect on auth change
+  refreshListenable: authNotifier,
   redirect: (context, state) {
     final authed = authNotifier.isAuthenticated;
     final loc = state.uri.toString();
 
-    // Let splash run its logic (async init / reading DI) to choose next route.
+    // Let splash run its logic
     if (loc == '/splash') return null;
 
-    // Public routes: splash, signIn
-    final isOnSignIn = loc == '/signIn';
+    // Define public routes (routes accessible without authentication)
+    final publicRoutes = ['/signIn', '/signUp', '/passwordReset'];
+    final isPublicRoute = publicRoutes.contains(loc);
 
-    // If not authenticated, force sign-in for any protected route.
-    if (!authed && !isOnSignIn) return '/signIn';
+    if (!authed && !isPublicRoute) {
+      return '/signIn';
+    }
+
+    // Optional: If authenticated and on sign-in page, redirect to home
+    if (authed && loc == '/signIn') {
+      return '/home';
+    }
 
     return null;
   },

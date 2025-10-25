@@ -9,7 +9,7 @@ class _SignInForm extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.symmetric(
           horizontal: DsSpacing.radialSpace16,
-          vertical: DsSpacing.radialSpace20,
+          vertical: DsSpacing.radialSpace24,
         ),
         child: Column(
           children: [
@@ -20,64 +20,49 @@ class _SignInForm extends StatelessWidget {
                 ),
               ),
               clipBehavior: Clip.antiAlias,
-              child: DsImage(mediaUrl: ImageKeys.docHelper, height: 150.h),
+              child: DsImage(mediaUrl: ImageKeys.docHelperLogo, height: 200.h),
             ),
-            const DsText.titleMedium(data: 'Doc Assistant'),
+            const DsText.titleLarge(data: 'DocuHelper'),
             DsSpacing.verticalSpaceSizedBox24,
             Column(
               spacing: DsSpacing.verticalSpace16,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const DsText.titleSmall(data: 'Login to your account'),
-                DecoratedBox(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(
-                      DsBorderRadius.borderRadius8,
+                Column(
+                  spacing: DsSpacing.verticalSpace16,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    EmailTextFormField(
+                      value: state.store.email,
+                      prefixIcon: Icons.email,
+                      labelText: 'Email Address',
+                      hintText: 'Enter your email address',
+                      errorText: 'Enter a valid email id!',
+                      onChanged: (value) => getBloc<SignInBloc>(
+                        context,
+                      ).onEmailChanged(emailString: value),
                     ),
-                    border: Border.all(
-                      color: DsColors.borderStrong,
-                      width: DsBorderWidth.borderWidth2,
+                    PasswordTextFormField(
+                      value: state.store.password,
+                      prefixIcon: Icons.password,
+                      labelText: 'Password',
+                      hintText: 'Enter your password',
+                      onChanged: (value) => getBloc<SignInBloc>(
+                        context,
+                      ).onPasswordChanged(passwordString: value),
+                      errorText: 'Password must be minimum 6 characters long!',
+                      suffixIconWidget: IconButton(
+                        icon: state.store.isPasswordVisible
+                            ? const Icon(Icons.visibility)
+                            : const Icon(Icons.visibility_off),
+                        onPressed: () => getBloc<SignInBloc>(
+                          context,
+                        ).onPasswordVisibilityChanged(),
+                      ),
+                      obscureText: !state.store.isPasswordVisible,
                     ),
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.all(DsSpacing.radialSpace16),
-                    child: Column(
-                      spacing: DsSpacing.verticalSpace16,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        EmailTextFormField(
-                          value: state.store.email,
-                          prefixIcon: Icons.email,
-                          labelText: 'Email Address',
-                          hintText: 'Enter your email address',
-                          errorText: 'Enter a valid email id!',
-                          onChanged: (value) => getBloc<SignInBloc>(
-                            context,
-                          ).onEmailChanged(emailString: value),
-                        ),
-                        PasswordTextFormField(
-                          value: state.store.password,
-                          prefixIcon: Icons.password,
-                          labelText: 'Password',
-                          hintText: 'Enter your password',
-                          onChanged: (value) => getBloc<SignInBloc>(
-                            context,
-                          ).onPasswordChanged(passwordString: value),
-                          errorText:
-                              'Password must be minimum 6 characters long!',
-                          suffixIconWidget: IconButton(
-                            icon: state.store.isPasswordVisible
-                                ? const Icon(Icons.visibility)
-                                : const Icon(Icons.visibility_off),
-                            onPressed: () => getBloc<SignInBloc>(
-                              context,
-                            ).onPasswordVisibilityChanged(),
-                          ),
-                          obscureText: !state.store.isPasswordVisible,
-                        ),
-                      ],
-                    ),
-                  ),
+                  ],
                 ),
                 DsButton.primary(
                   data: 'Sign In',
@@ -92,22 +77,7 @@ class _SignInForm extends StatelessWidget {
                 ),
               ],
             ),
-            Row(
-              children: [
-                DsTextButton.primary(
-                  data: 'New user? Sign Up!',
-                  onTap: () => getBloc<SignInBloc>(context).onSignUpPressed(),
-                  underline: true,
-                ),
-                const Spacer(),
-                DsTextButton.primary(
-                  data: 'Forgot Password?',
-                  onTap: () =>
-                      getBloc<SignInBloc>(context).onForgotPasswordPressed(),
-                  underline: true,
-                ),
-              ],
-            ),
+            _FooterButtons(),
           ],
         ),
       ),
@@ -119,4 +89,39 @@ class _SignInForm extends StatelessWidget {
       (password?.input.isNotEmpty ?? false) &&
       (email?.isValid() ?? false) &&
       (password?.isValid() ?? false);
+}
+
+class _FooterButtons extends StatelessWidget {
+  _FooterButtons();
+
+  final _tapRecognizer = TapGestureRecognizer();
+
+  @override
+  Widget build(BuildContext context) => Row(
+    children: [
+      RichText(
+        text: TextSpan(
+          text: 'New User?',
+          style: DsTextStyle.bodySmall,
+          children: [
+            const TextSpan(text: ' '),
+            TextSpan(
+              text: 'Sign Up',
+              style: DsTextStyle.bodyBoldSmall.copyWith(
+                color: DsColors.textLink,
+              ),
+              recognizer: _tapRecognizer
+                ..onTap = () => getBloc<SignInBloc>(context).onSignUpPressed(),
+            ),
+          ],
+        ),
+      ),
+      const Spacer(),
+      DsTextButton.primary(
+        data: 'Forgot Password?',
+        onTap: () => getBloc<SignInBloc>(context).onForgotPasswordPressed(),
+        underline: false,
+      ),
+    ],
+  );
 }

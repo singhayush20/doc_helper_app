@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive_flutter/adapters.dart';
 
 import 'core/router/router.dart';
+import 'design/theme/ds_theme.dart';
 import 'firebase_options.dart';
 
 Future<void> mainCommon(String env) async {
@@ -27,6 +28,7 @@ class MyApp extends StatelessWidget {
     minTextAdapt: true,
     splitScreenMode: true,
     builder: (context, child) => MaterialApp.router(
+      theme: appTheme,
       debugShowCheckedModeBanner: false,
       routerConfig: router,
     ),
