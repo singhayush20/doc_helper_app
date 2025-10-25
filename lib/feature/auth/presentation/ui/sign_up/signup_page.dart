@@ -8,6 +8,8 @@ import 'package:doc_helper_app/design/atoms/typography/ds_text.dart';
 import 'package:doc_helper_app/design/atoms/typography/ds_text_style.dart';
 import 'package:doc_helper_app/design/foundations/ds_colors.dart';
 import 'package:doc_helper_app/design/foundations/ds_spacing.dart';
+import 'package:doc_helper_app/design/widgets/ds_image.dart';
+import 'package:doc_helper_app/core/common/constants/media_constants/image_keys.dart';
 import 'package:doc_helper_app/design/molecules/app_bar/primary_app_bar.dart';
 import 'package:doc_helper_app/design/molecules/pin_field/ds_pin_field.dart';
 import 'package:doc_helper_app/design/molecules/text_form_field/ds_text_form_field.dart';
@@ -16,6 +18,7 @@ import 'package:doc_helper_app/feature/auth/presentation/bloc/signup/signup_bloc
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 

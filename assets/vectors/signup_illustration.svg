@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Background Elements -->
+    <circle cx="200" cy="150" r="120" fill="#F3E5F5" opacity="0.3"/>
+    <circle cx="200" cy="150" r="80" fill="#E1BEE7" opacity="0.4"/>
+    
+    <!-- Profile Card -->
+    <rect x="120" y="80" width="160" height="180" rx="15" fill="white" stroke="#9C27B0" stroke-width="2"/>
+    
+    <!-- Profile Picture Placeholder -->
+    <circle cx="200" cy="130" r="30" fill="#9C27B0"/>
+    <path d="M200 110 Q210 110 215 120 Q220 130 215 140 Q210 150 200 150 Q190 150 185 140 Q180 130 185 120 Q190 110 200 110" fill="#7B1FA2"/>
+    
+    <!-- Form Lines -->
+    <rect x="140" y="180" width="120" height="8" rx="4" fill="#E1BEE7"/>
+    <rect x="140" y="200" width="120" height="8" rx="4" fill="#E1BEE7"/>
+    <rect x="140" y="220" width="80" height="8" rx="4" fill="#E1BEE7"/>
+    
+    <!-- Success Check -->
+    <circle cx="320" cy="60" r="20" fill="#4CAF50" opacity="0.8"/>
+    <path d="M310 60 L318 68 L330 56" stroke="white" stroke-width="3" stroke-linecap="round"/>
+</svg>

@@ -163,8 +163,13 @@ class _EmailEntryForm extends StatelessWidget {
       children: [
         Column(
           spacing: DsSpacing.verticalSpace12,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            DsImage(
+              mediaUrl: ImageKeys.passwordResetIllustration,
+              height: 150.h,
+              fit: BoxFit.contain,
+            ),
             const DsText.titleLarge(data: 'Enter your Email'),
             const DsText.bodyLarge(
               data:

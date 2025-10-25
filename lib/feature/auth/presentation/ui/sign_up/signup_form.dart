@@ -29,6 +29,11 @@ class _EmailVerificationForm extends StatelessWidget {
       spacing: DsSpacing.verticalSpace12,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        DsImage(
+          mediaUrl: ImageKeys.emailVerificationIllustration,
+          height: 150.h,
+          fit: BoxFit.contain,
+        ),
         const DsText.titleLarge(data: 'Verify your email address'),
         const DsText.bodyLarge(
           data: 'You will receive an OTP on the email you entered',
@@ -88,7 +93,7 @@ class _UserDetailsForm extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       spacing: DsSpacing.radialSpace24,
       children: [
-        const DsText.bodyLarge(data: 'Create an account to get started'),
+        const DsText.titleSmall(data: 'Create an account to get started'),
         Column(
           spacing: DsSpacing.radialSpace20,
           mainAxisSize: MainAxisSize.min,

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Background Elements -->
+    <circle cx="200" cy="150" r="120" fill="#F3E5F5" opacity="0.3"/>
+    <circle cx="200" cy="150" r="80" fill="#E1BEE7" opacity="0.4"/>
+    
+    <!-- Email Envelope -->
+    <path d="M100 100 H300 V220 H100 V100 Z" fill="white" stroke="#9C27B0" stroke-width="4"/>
+    <path d="M100 100 L200 160 L300 100" stroke="#9C27B0" stroke-width="4" fill="none"/>
+    
+    <!-- OTP Numbers -->
+    <rect x="140" y="130" width="30" height="40" rx="5" fill="#E1BEE7"/>
+    <rect x="180" y="130" width="30" height="40" rx="5" fill="#E1BEE7"/>
+    <rect x="220" y="130" width="30" height="40" rx="5" fill="#E1BEE7"/>
+    <rect x="260" y="130" width="30" height="40" rx="5" fill="#E1BEE7"/>
+    
+    <!-- Verification Check -->
+    <circle cx="320" cy="60" r="20" fill="#4CAF50" opacity="0.8"/>
+    <path d="M310 60 L318 68 L330 56" stroke="white" stroke-width="3" stroke-linecap="round"/>
+    
+    <!-- Email Icons -->
+    <circle cx="80" cy="240" r="15" fill="#9C27B0" opacity="0.6"/>
+    <circle cx="320" cy="240" r="15" fill="#9C27B0" opacity="0.6"/>
+    
+    <!-- Shield for Security -->
+    <path d="M185 190 Q200 180 215 190 L215 220 Q200 230 185 220 Z" fill="#7B1FA2"/>
+    <path d="M195 200 L198 210 L205 195" stroke="white" stroke-width="2"/>
+</svg>
