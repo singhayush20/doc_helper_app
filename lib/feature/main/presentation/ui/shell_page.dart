@@ -3,20 +3,20 @@ import 'package:doc_helper_app/design/design.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class ShellPage extends StatefulWidget {
-  const ShellPage({required this.child, super.key});
+class LandingPage extends StatefulWidget {
+  const LandingPage({required this.child, super.key});
 
   final Widget child;
 
   @override
-  State<ShellPage> createState() => _ShellPageState();
+  State<LandingPage> createState() => _LandingPageState();
 }
 
-class _ShellPageState extends State<ShellPage> {
+class _LandingPageState extends State<LandingPage> {
   int _currentIndex = 0;
 
   static const List<(String label, String route, IconData icon)>
-  _navigationItems = [
+      _navigationItems = [
     ('Home', Routes.home, Icons.home_outlined),
     ('Docs', Routes.docs, Icons.article_outlined),
     ('Profile', Routes.profile, Icons.person_outline),
@@ -31,16 +31,18 @@ class _ShellPageState extends State<ShellPage> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    body: widget.child,
-    bottomNavigationBar: NavigationBar(
-      selectedIndex: _currentIndex,
-      onDestinationSelected: (index) => _onItemTapped(context, index),
-      destinations: _navigationItems
-          .map(
-            (item) =>
-                NavigationDestination(icon: Icon(item.$3), label: item.$1),
-          )
-          .toList(),
-    ),
-  );
+        body: widget.child,
+        bottomNavigationBar: NavigationBar(
+          selectedIndex: _currentIndex,
+          onDestinationSelected: (index) => _onItemTapped(context, index),
+          destinations: _navigationItems
+              .map(
+                (item) => NavigationDestination(
+                  icon: Icon(item.$3),
+                  label: item.$1,
+                ),
+              )
+              .toList(),
+        ),
+      );
 }

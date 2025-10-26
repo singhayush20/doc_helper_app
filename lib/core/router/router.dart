@@ -5,10 +5,9 @@ import 'package:doc_helper_app/feature/auth/presentation/ui/sign_in_page.dart';
 import 'package:doc_helper_app/feature/auth/presentation/ui/sign_up/signup_page.dart';
 import 'package:doc_helper_app/feature/docs/presentation/ui/docs_page.dart';
 import 'package:doc_helper_app/feature/home/presentation/ui/home_page.dart';
-import 'package:doc_helper_app/feature/main/presentation/ui/shell_page.dart';
+import 'package:doc_helper_app/feature/main/presentation/ui/landing_page.dart';
 import 'package:doc_helper_app/feature/profile/presentation/ui/profile_page.dart';
 import 'package:doc_helper_app/feature/splash_screen/presentation/ui/splash_page.dart';
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'auth_notifier.dart';
@@ -61,7 +60,7 @@ GoRouter buildRouter(AuthNotifier authNotifier) => GoRouter(
       builder: (context, state) => const PasswordResetPage(),
     ),
     ShellRoute(
-      builder: (context, state, child) => ShellPage(child: child),
+      builder: (context, state, child) => LandingPage(child: child),
       routes: [
         GoRoute(
           name: Routes.home,
