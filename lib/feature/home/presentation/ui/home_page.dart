@@ -1,4 +1,3 @@
-import 'package:doc_helper_app/core/common/base_bloc/base_bloc.dart';
 import 'package:doc_helper_app/design/design.dart';
 import 'package:doc_helper_app/di/injection.dart';
 import 'package:doc_helper_app/feature/home/presentation/bloc/home_bloc.dart';
@@ -17,18 +16,9 @@ class HomePage extends StatelessWidget {
     child: LoaderOverlay(
       child: BlocConsumer<HomeBloc, HomeState>(
         listener: (context, state) {},
-        builder: (context, state) => Scaffold(
-          appBar: PrimaryAppBar(
-            titleText: 'Home',
-            backButtonRequired: false,
-            actions: [
-              IconButton(
-                onPressed: () => getBloc<HomeBloc>(context).onLogoutPressed(),
-                icon: Icon(Icons.logout, size: DsSizing.size24),
-              ),
-            ],
-          ),
-          body: const _HomeForm(),
+        builder: (context, state) => const Scaffold(
+          appBar: PrimaryAppBar(titleText: 'Home', backButtonRequired: false),
+          body: _HomeForm(),
         ),
       ),
     ),

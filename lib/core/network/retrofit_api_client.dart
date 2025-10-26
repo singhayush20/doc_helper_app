@@ -65,4 +65,7 @@ abstract class RetrofitApiClient {
     @Query('documentId') int documentId,
     @Query('page') int page,
   );
+
+  @GET('/api/v1/user/user-info')
+  Future<HttpResponse> getUserInfo();
 }

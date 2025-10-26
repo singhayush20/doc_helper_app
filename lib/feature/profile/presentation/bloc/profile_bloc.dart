@@ -5,23 +5,56 @@ import 'package:doc_helper_app/core/common/base_bloc/base_bloc.dart';
 import 'package:doc_helper_app/core/common/base_bloc/base_event.dart';
 import 'package:doc_helper_app/core/common/base_bloc/base_state.dart';
 import 'package:doc_helper_app/core/common/utils/app_utils.dart';
+import 'package:doc_helper_app/feature/auth/domain/interfaces/i_auth_facade.dart';
+import 'package:doc_helper_app/feature/user/domain/entity/user.dart';
+import 'package:doc_helper_app/feature/user/domain/interface/i_user_facade.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
 part 'profile_bloc.freezed.dart';
+
 part 'profile_event.dart';
+
 part 'profile_state.dart';
 
 @injectable
 class ProfileBloc extends BaseBloc<ProfileEvent, ProfileState> {
-  ProfileBloc() : super(const ProfileState.initial(store: ProfileStateStore()));
+  ProfileBloc(this._userFacade, this._authFacade)
+    : super(const ProfileState.initial(store: ProfileStateStore()));
+
+  final IUserFacade _userFacade;
+  final IAuthFacade _authFacade;
 
   @override
   void handleEvents() {
     on<_Started>(_onStarted);
+    on<_OnLogoutPressed>(_onLogoutPressed);
   }
 
   Future<void> _onStarted(_, Emitter<ProfileState> emit) async {
+    invalidateLoader(emit, loading: false);
+
+    final userInfoOrFailure = await _userFacade.getUserInfo();
+
+    userInfoOrFailure.fold(
+      (exception) => handleException(emit, exception),
+      (userInfo) => emit(
+        ProfileState.onUserInfoFetch(
+          store: state.store.copyWith(userInfo: userInfo, loading: false),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _onLogoutPressed(_, Emitter<ProfileState> emit) async {
+    invalidateLoader(emit, loading: true);
+    final signOutResponseOrFailure = await _authFacade.signOut();
+    signOutResponseOrFailure.fold(
+      (exception) => handleException(emit, exception),
+      (_) => emit(
+        ProfileState.onLogout(store: state.store.copyWith(loading: false)),
+      ),
+    );
   }
 
   @override
@@ -29,5 +62,7 @@ class ProfileBloc extends BaseBloc<ProfileEvent, ProfileState> {
     add(const ProfileEvent.started());
   }
 
-  void onLogoutPressed() {}
+  void onLogoutPressed() {
+    add(const ProfileEvent.onLogoutPressed());
+  }
 }

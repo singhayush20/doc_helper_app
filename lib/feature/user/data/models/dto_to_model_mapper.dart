@@ -7,6 +7,13 @@ extension AppUserDtoX on AppUserDto {
     firstName: (firstName?.isNotEmpty ?? false) ? Name(firstName ?? '') : null,
     lastName: (lastName?.isNotEmpty ?? false) ? Name(lastName ?? '') : null,
     email: (email?.isNotEmpty ?? false) ? EmailAddress(email ?? '') : null,
-    userId: userId,
+  );
+}
+
+extension UserAccountInfoDtoX on UserAccountInfoDto {
+  UserAccountInfo toDomain() => UserAccountInfo(
+    firstName: (firstName?.isNotEmpty ?? false) ? Name(firstName ?? '') : null,
+    lastName: (lastName?.isNotEmpty ?? false) ? Name(lastName ?? '') : null,
+    email: (email?.isNotEmpty ?? false) ? EmailAddress(email ?? '') : null,
   );
 }

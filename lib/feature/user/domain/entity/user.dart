@@ -13,3 +13,12 @@ abstract class AppUser with _$AppUser {
     final String? userId,
   }) = _AppUser;
 }
+
+@liteFreezed
+abstract class UserAccountInfo with _$UserAccountInfo {
+  const factory UserAccountInfo({
+    final Name? firstName,
+    final Name? lastName,
+    final EmailAddress? email,
+  }) = _UserAccountInfo;
+}

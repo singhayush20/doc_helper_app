@@ -1,7 +1,8 @@
 import 'package:doc_helper_app/core/common/base_bloc/base_bloc.dart';
 import 'package:doc_helper_app/core/common/base_widget/base_widget_utils.dart';
 import 'package:doc_helper_app/core/router/route_mapper.dart';
-import 'package:doc_helper_app/design/design.dart' show DsText,DsButton, DsColors, DsSpacing, DsBorderRadius;
+import 'package:doc_helper_app/design/design.dart'
+    show DsText, DsButton, DsColors, DsSpacing, DsBorderRadius;
 import 'package:doc_helper_app/design/molecules/list_tile/ds_list_tile.dart';
 import 'package:doc_helper_app/design/molecules/list_tile/list_tile_title.dart';
 import 'package:doc_helper_app/di/injection.dart';

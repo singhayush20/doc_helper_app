@@ -7,6 +7,10 @@ sealed class ProfileState extends BaseState with _$ProfileState {
   const factory ProfileState.initial({required ProfileStateStore store}) =
       _Initial;
 
+  const factory ProfileState.onUserInfoFetch({
+    required ProfileStateStore store,
+  }) = _OnUserInfoFetch;
+
   const factory ProfileState.onLogout({required ProfileStateStore store}) =
       OnLogout;
 
@@ -32,6 +36,8 @@ sealed class ProfileState extends BaseState with _$ProfileState {
 
 @liteFreezed
 sealed class ProfileStateStore with _$ProfileStateStore {
-  const factory ProfileStateStore({@Default(false) bool loading}) =
-      _ProfileStateStore;
+  const factory ProfileStateStore({
+    UserAccountInfo? userInfo,
+    @Default(false) bool loading,
+  }) = _ProfileStateStore;
 }

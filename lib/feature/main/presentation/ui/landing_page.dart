@@ -16,7 +16,7 @@ class _LandingPageState extends State<LandingPage> {
   int _currentIndex = 0;
 
   static const List<(String label, String route, IconData icon)>
-      _navigationItems = [
+  _navigationItems = [
     ('Home', Routes.home, Icons.home_outlined),
     ('Docs', Routes.docs, Icons.article_outlined),
     ('Profile', Routes.profile, Icons.person_outline),
@@ -31,30 +31,30 @@ class _LandingPageState extends State<LandingPage> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        body: widget.child,
-        bottomNavigationBar: Container(
-          decoration: BoxDecoration(
-            boxShadow: [
-              BoxShadow(
-                color: DsColors.overlay,
-                blurRadius: DsSizing.size8,
-                offset: Offset(0, -DsSizing.size2),
+    body: widget.child,
+    bottomNavigationBar: Container(
+      decoration: BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            color: DsColors.overlay,
+            blurRadius: DsSizing.size8,
+            offset: Offset(0, -DsSizing.size2),
+          ),
+        ],
+      ),
+      child: NavigationBar(
+        selectedIndex: _currentIndex,
+        onDestinationSelected: (index) => _onItemTapped(context, index),
+        destinations: _navigationItems
+            .map(
+              (item) => NavigationDestination(
+                icon: Icon(item.$3),
+                selectedIcon: Icon(item.$3),
+                label: item.$1,
               ),
-            ],
-          ),
-          child: NavigationBar(
-            selectedIndex: _currentIndex,
-            onDestinationSelected: (index) => _onItemTapped(context, index),
-            destinations: _navigationItems
-                .map(
-                  (item) => NavigationDestination(
-                    icon: Icon(item.$3),
-                    selectedIcon: Icon(item.$3),
-                    label: item.$1,
-                  ),
-                )
-                .toList(),
-          ),
-        ),
-      );
+            )
+            .toList(),
+      ),
+    ),
+  );
 }

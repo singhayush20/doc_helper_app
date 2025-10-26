@@ -7,9 +7,6 @@ sealed class HomeState extends BaseState with _$HomeState {
   const factory HomeState.initial({required HomeStateStore store}) =
       _HomeStateInitial;
 
-  const factory HomeState.onLogoutSuccess({required HomeStateStore store}) =
-      OnLogoutSuccess;
-
   const factory HomeState.invalidateLoader({required HomeStateStore store}) =
       InvalidateLoader;
 

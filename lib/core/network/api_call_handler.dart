@@ -8,9 +8,9 @@ import 'package:retrofit/dio.dart';
 @singleton
 class ApiCallHandler {
   Future<Either<ServerException, HttpResponse>> handleApi(
-    Function func,
-    List<dynamic> args,
-  ) async {
+    Function func, [
+    List<dynamic> args = const [],
+  ]) async {
     try {
       final response = await Function.apply(func, args) as HttpResponse;
       return right(response);

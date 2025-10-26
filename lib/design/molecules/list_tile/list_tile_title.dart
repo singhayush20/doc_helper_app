@@ -31,4 +31,3 @@ class ListTileTitleMedium extends ListTileTitle {
   Widget build(BuildContext context) =>
       DsText.titleMedium(data: data ?? '', color: color);
 }
-
