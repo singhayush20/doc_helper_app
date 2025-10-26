@@ -220,7 +220,7 @@ class AuthFacadeImpl implements IAuthFacade {
     final passwordResetRequestDto = PasswordResetRequestDto(
       email: email?.input,
       otp: otp?.input,
-      password: password?.input,
+      newPassword: password?.input,
     );
     final responseOrError = await _apiCallHandler.handleApi(
       _retrofitApiClient.resetPassword,

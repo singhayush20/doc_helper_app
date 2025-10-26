@@ -31,13 +31,13 @@ abstract class DsColors {
   static const Color backgroundSubtle = _BaseColors.purple100;
 
   /// Success state background (light green tint)
-  static const Color backgroundSuccess = _BaseColors.green100;
+  static const Color backgroundSuccess = _BaseColors.green600;
 
   /// Warning state background (light orange tint)
-  static const Color backgroundWarning = _BaseColors.orange100;
+  static const Color backgroundWarning = _BaseColors.orange700;
 
   /// Error/failure state background (light red tint)
-  static const Color backgroundError = _BaseColors.red100;
+  static const Color backgroundError = _BaseColors.red700;
 
   /// Info state background (light purple tint)
   static const Color backgroundInfo = _BaseColors.purple100;

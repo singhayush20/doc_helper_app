@@ -17,7 +17,7 @@ class EmailVerificationDto {
 
 @JsonSerializable()
 class PasswordResetRequestDto {
-  const PasswordResetRequestDto({this.otp, this.password, this.email});
+  const PasswordResetRequestDto({this.otp, this.newPassword, this.email});
 
   factory PasswordResetRequestDto.fromJson(Map<String, dynamic> json) =>
       _$PasswordResetRequestDtoFromJson(json);
@@ -25,7 +25,7 @@ class PasswordResetRequestDto {
   Map<String, dynamic> toJson() => _$PasswordResetRequestDtoToJson(this);
 
   final String? otp;
-  final String? password;
+  final String? newPassword;
   final String? email;
 }
 

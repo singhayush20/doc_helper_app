@@ -26,7 +26,7 @@ class _EmailVerificationForm extends StatelessWidget {
   Widget build(BuildContext context) => BlocBuilder<SignUpBloc, SignUpState>(
     builder: (context, state) => Column(
       mainAxisSize: MainAxisSize.min,
-      spacing: DsSpacing.verticalSpace12,
+      spacing: DsSpacing.verticalSpace16,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         DsImage(
@@ -34,45 +34,46 @@ class _EmailVerificationForm extends StatelessWidget {
           height: 150.h,
           fit: BoxFit.contain,
         ),
-        const DsText.titleLarge(data: 'Verify your email address'),
-        const DsText.bodyLarge(
-          data: 'You will receive an OTP on the email you entered',
-        ),
         Column(
           mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          spacing: DsSpacing.verticalSpace4,
           children: [
-            DsPinField(
-              otp: state.store.otp,
-              onChanged: (newValue) => getBloc<SignUpBloc>(
-                context,
-              ).onOtpChanged(otpString: newValue),
+            const DsText.titleLarge(data: 'Verify your email address'),
+            const DsText.bodyLarge(
+              data: 'You will receive an OTP on the email you entered',
             ),
-            if ((state.store.timerValue ?? 0) == 0) ...[
-              DsTextButton.primary(
-                data: 'Resent OTP',
-                underline: true,
-                onTap: () => getBloc<SignUpBloc>(context).onResendOTPPressed(),
-              ),
-            ] else ...[
-              RichText(
-                text: TextSpan(
-                  text: 'Resend otp in',
-                  style: DsTextStyle.bodySmall,
-                  children: [
-                    const TextSpan(text: ' '),
-                    TextSpan(
-                      text: formatDuration(state.store.timerValue ?? 0),
-                      style: DsTextStyle.bodyBoldSmall.copyWith(
-                        color: DsColors.textLink,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
           ],
         ),
+        DsPinField(
+          otp: state.store.otp,
+          onChanged: (newValue) =>
+              getBloc<SignUpBloc>(context).onOtpChanged(otpString: newValue),
+        ),
+        if ((state.store.timerValue ?? 0) == 0) ...[
+          DsTextButton.primary(
+            data: 'Resent OTP',
+            underline: true,
+            onTap: () => getBloc<SignUpBloc>(context).onResendOTPPressed(),
+          ),
+        ] else ...[
+          RichText(
+            textAlign: TextAlign.center,
+            text: TextSpan(
+              text: 'Resend otp in',
+              style: DsTextStyle.bodySmall,
+              children: [
+                const TextSpan(text: ' '),
+                TextSpan(
+                  text: formatDuration(state.store.timerValue ?? 0),
+                  style: DsTextStyle.bodyBoldSmall.copyWith(
+                    color: DsColors.textLink,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
         DsButton.primary(
           data: 'Verify account',
           onTap: (state.store.otp?.isValid() ?? false)

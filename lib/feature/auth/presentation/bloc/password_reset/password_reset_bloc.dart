@@ -161,7 +161,7 @@ class PasswordResetBloc
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       final newTime = countDownFrom - timer.tick;
       if (newTime >= 0) {
-        onTimerTicked(timerValue: countDownFrom);
+        onTimerTicked(timerValue: newTime);
       } else {
         timer.cancel();
       }

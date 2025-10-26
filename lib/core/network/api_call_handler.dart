@@ -49,7 +49,10 @@ class ApiCallHandler {
         return left(
           ServerException(
             exceptionType: ServerExceptionType.badRequest,
-            metaData: ExceptionMetaData(errorCode: errorCode, message: message),
+            metaData: ExceptionMetaData(
+              errorCode: errorCode,
+              message: message ?? ErrorMessages.defaultErrorMessage,
+            ),
           ),
         );
       }

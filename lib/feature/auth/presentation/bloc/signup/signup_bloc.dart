@@ -146,6 +146,7 @@ class SignUpBloc extends BaseBloc<SignUpEvent, SignUpState> {
   }
 
   void _onTimerStarted(_, Emitter<SignUpState> emit) {
+    print('## on Timer started...');
     _timer?.cancel();
     const countDownFrom = 60;
 
@@ -154,7 +155,7 @@ class SignUpBloc extends BaseBloc<SignUpEvent, SignUpState> {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       final newTime = countDownFrom - timer.tick;
       if (newTime >= 0) {
-        onTimerTicked(timerValue: countDownFrom);
+        onTimerTicked(timerValue: newTime);
       } else {
         timer.cancel();
       }
@@ -162,12 +163,25 @@ class SignUpBloc extends BaseBloc<SignUpEvent, SignUpState> {
   }
 
   void _onTimerTicked(_OnTimerTicked event, Emitter<SignUpState> emit) {
+    print('## on Timer ticked: ${event.timerValue}...');
+
     emit(
-      state.copyWith(store: state.store.copyWith(timerValue: event.timerValue)),
+      SignUpState.onTimerUpdate(
+        store: state.store.copyWith(timerValue: event.timerValue),
+      ),
     );
   }
 
-  Future<void> _onResendOTPPressed(_, Emitter<SignUpState> emit) async {}
+  Future<void> _onResendOTPPressed(_, Emitter<SignUpState> emit) async {
+    invalidateLoader(emit, loading: true);
+    final sendOtpOrFailure = await _authFacade.sendEmailVerificationOtp(
+      email: state.store.email,
+    );
+
+    sendOtpOrFailure.fold((exception) => handleException(emit, exception), (_) {
+      onTimerStarted();
+    });
+  }
 
   Future<void> _onVerifyOTPPressed(_, Emitter<SignUpState> emit) async {
     invalidateLoader(emit, loading: true);

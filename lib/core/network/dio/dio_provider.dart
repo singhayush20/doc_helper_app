@@ -30,7 +30,7 @@ class DioProvider implements IDioProvider {
     final dio = Dio(
       BaseOptions(
         baseUrl: baseUrl,
-        connectTimeout: const Duration(seconds: 5),
+        connectTimeout: const Duration(seconds: 20),
         receiveTimeout: const Duration(seconds: 20),
         validateStatus: (status) =>
             status != null && status >= 200 && status < 300,
