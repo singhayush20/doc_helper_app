@@ -38,7 +38,7 @@ class DsTextStyle {
 
   static final TextStyle bodyLarge = TextStyle(
     fontFamily: _fontFamily,
-    fontWeight: FontWeight.w400,
+    fontWeight: FontWeight.w600,
     fontSize: 18.spMin,
     color: DsColors.textPrimary,
   );

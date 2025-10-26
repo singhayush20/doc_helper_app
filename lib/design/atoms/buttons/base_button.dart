@@ -7,10 +7,6 @@ base class BaseButton extends StatelessWidget {
     required this.buttonStyleType,
     this.onTap,
     this.leadingIcon,
-    this.backgroundColor = DsColors.buttonPrimary,
-    this.disabledColor = DsColors.buttonPrimaryDisabled,
-    this.foregroundColor = DsColors.buttonPrimaryText,
-    this.disabledForegroundColor = DsColors.buttonPrimaryTextDisabled,
     this.borderColor,
     this.disabledBorderColor,
   });
@@ -18,10 +14,6 @@ base class BaseButton extends StatelessWidget {
   final String data;
   final VoidCallback? onTap;
   final IconData? leadingIcon;
-  final Color backgroundColor;
-  final Color disabledColor;
-  final Color foregroundColor;
-  final Color disabledForegroundColor;
   final Color? borderColor;
   final Color? disabledBorderColor;
   final DsButtonStyleType buttonStyleType;
@@ -47,52 +39,7 @@ base class BaseButton extends StatelessWidget {
   }
 
   ButtonStyle get _getButtonStyle => switch (buttonStyleType) {
-    DsButtonStyleType.primary => DsButtonStyle.primaryButtonStyle.copyWith(
-      backgroundColor: WidgetStateProperty.resolveWith<Color>((
-        Set<WidgetState> states,
-      ) {
-        if (states.contains(WidgetState.disabled)) {
-          return disabledColor;
-        }
-        return backgroundColor;
-      }),
-      foregroundColor: WidgetStateProperty.resolveWith<Color>((
-        Set<WidgetState> states,
-      ) {
-        if (states.contains(WidgetState.disabled)) {
-          return disabledForegroundColor;
-        }
-        return foregroundColor;
-      }),
-    ),
-    DsButtonStyleType.secondary => DsButtonStyle.secondaryButtonStyle.copyWith(
-      foregroundColor: WidgetStateProperty.resolveWith<Color>((
-        Set<WidgetState> states,
-      ) {
-        if (states.contains(WidgetState.disabled)) {
-          return disabledForegroundColor;
-        }
-        return foregroundColor;
-      }),
-      shape: WidgetStateProperty.resolveWith<OutlinedBorder>((
-        Set<WidgetState> states,
-      ) {
-        if (states.contains(WidgetState.disabled)) {
-          return RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(DsBorderRadius.borderRadius8),
-            side: BorderSide(
-              color:
-                  disabledBorderColor ?? DsColors.buttonSecondaryBorderDisabled,
-            ),
-          );
-        }
-        return RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(DsBorderRadius.borderRadius2),
-          side: BorderSide(
-            color: borderColor ?? DsColors.buttonSecondaryBorder,
-          ),
-        );
-      }),
-    ),
+    DsButtonStyleType.primary => DsButtonStyle.primaryButtonStyle,
+    DsButtonStyleType.secondary => DsButtonStyle.secondaryButtonStyle,
   };
 }

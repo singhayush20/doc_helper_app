@@ -1,7 +1,7 @@
+import 'package:doc_helper_app/design/atoms/typography/ds_text_style.dart';
 import 'package:doc_helper_app/design/foundations/ds_sizing.dart';
 import 'package:doc_helper_app/design/molecules/pin_field/ds_pin_theme_extension.dart';
 import 'package:doc_helper_app/design/molecules/text_form_field/text_form_field_style.dart';
-import 'package:doc_helper_app/design/atoms/typography/ds_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -52,7 +52,6 @@ final appTheme = ThemeData(
     }),
     elevation: 8,
     shadowColor: DsColors.overlay,
-    height: 80.h,
   ),
   inputDecorationTheme: DsTextFormFieldStyle.primary,
   extensions: <ThemeExtension<dynamic>>[

@@ -146,7 +146,6 @@ class SignUpBloc extends BaseBloc<SignUpEvent, SignUpState> {
   }
 
   void _onTimerStarted(_, Emitter<SignUpState> emit) {
-    print('## on Timer started...');
     _timer?.cancel();
     const countDownFrom = 60;
 
@@ -163,8 +162,6 @@ class SignUpBloc extends BaseBloc<SignUpEvent, SignUpState> {
   }
 
   void _onTimerTicked(_OnTimerTicked event, Emitter<SignUpState> emit) {
-    print('## on Timer ticked: ${event.timerValue}...');
-
     emit(
       SignUpState.onTimerUpdate(
         store: state.store.copyWith(timerValue: event.timerValue),
