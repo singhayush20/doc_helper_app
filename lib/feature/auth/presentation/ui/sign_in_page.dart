@@ -51,7 +51,7 @@ class SignInPage extends StatelessWidget {
                 OnForgotPasswordPressed _ => GoRouter.of(
                   context,
                 ).pushNamed(Routes.passwordReset),
-                OnLogin _ => GoRouter.of(context).pushNamed(Routes.home),
+                OnLogin _ => context.goNamed(Routes.home),
                 OnException(:final exception) => handleException(
                   exception,
                   context,
