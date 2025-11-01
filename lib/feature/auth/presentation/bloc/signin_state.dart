@@ -53,6 +53,7 @@ sealed class SignInStateStore with _$SignInStateStore {
   const factory SignInStateStore({
     EmailAddress? email,
     Password? password,
+    AppUser? userInfo,
     @Default(false) bool isPasswordVisible,
     @Default(false) bool loading,
   }) = _SignInStateStore;

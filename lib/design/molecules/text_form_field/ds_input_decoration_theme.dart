@@ -45,11 +45,11 @@ class DsInputDecorationTheme extends InputDecorationTheme {
 
   static final _defaultContentPadding = EdgeInsets.all(DsSpacing.radialSpace12);
 
-  static final _defaultLabelTextStyle = DsTextStyle.bodyBoldSmall.copyWith(
+  static final _defaultLabelTextStyle = DsTextStyle.bodyLarge.copyWith(
     color: DsColors.textFieldLabel,
   );
 
-  static final _defaultHelperTextStyle = DsTextStyle.caption.copyWith(
+  static final _defaultHelperTextStyle = DsTextStyle.bodyLarge.copyWith(
     color: DsColors.textFieldHelper,
   );
 
@@ -57,11 +57,11 @@ class DsInputDecorationTheme extends InputDecorationTheme {
     Set<WidgetState> states,
   ) {
     if (states.contains(WidgetState.disabled)) {
-      return DsTextStyle.caption.copyWith(
+      return DsTextStyle.bodyMedium.copyWith(
         color: DsColors.textFieldTextDisabled,
       );
     }
-    return DsTextStyle.caption.copyWith(color: DsColors.textFieldErrorText);
+    return DsTextStyle.bodyMedium.copyWith(color: DsColors.textFieldErrorText);
   });
 
   static final _defaultBorder = OutlineInputBorder(

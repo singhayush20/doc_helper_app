@@ -37,7 +37,7 @@ sealed class ProfileState extends BaseState with _$ProfileState {
 @liteFreezed
 sealed class ProfileStateStore with _$ProfileStateStore {
   const factory ProfileStateStore({
-    UserAccountInfo? userInfo,
+    AppUser? userInfo,
     @Default(false) bool loading,
   }) = _ProfileStateStore;
 }

@@ -28,12 +28,12 @@ final appTheme = ThemeData(
     indicatorColor: DsColors.backgroundSubtle,
     labelTextStyle: WidgetStateProperty.resolveWith((states) {
       if (states.contains(WidgetState.selected)) {
-        return DsTextStyle.caption.copyWith(
+        return DsTextStyle.bodyMedium.copyWith(
           color: DsColors.primary,
           fontWeight: FontWeight.w600,
         );
       }
-      return DsTextStyle.caption.copyWith(
+      return DsTextStyle.bodyMedium.copyWith(
         color: DsColors.textSecondary,
         fontWeight: FontWeight.w400,
       );

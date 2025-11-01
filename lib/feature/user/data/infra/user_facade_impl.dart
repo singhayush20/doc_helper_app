@@ -17,13 +17,13 @@ class UserFacadeImpl implements IUserFacade {
   final RetrofitApiClient _retrofitApiClient;
 
   @override
-  Future<Either<ServerException, UserAccountInfo?>> getUserInfo() async {
+  Future<Either<ServerException, AppUser?>> getUserInfo() async {
     final responseOrError = await _apiCallHandler.handleApi(
       _retrofitApiClient.getUserInfo,
     );
 
     return responseOrError.fold((exception) => left(exception), (response) {
-      final dto = UserAccountInfoDto.fromJson(response.data);
+      final dto = AppUserDto.fromJson(response.data);
       return right(dto.toDomain());
     });
   }

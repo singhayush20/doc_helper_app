@@ -133,7 +133,7 @@ class _OtpVerificationForm extends StatelessWidget {
                     getBloc<PasswordResetBloc>(context).onSavePasswordPressed()
               : null,
         ),
-        _FooterWidget(),
+        const _FooterWidget(),
       ],
     ),
   );
@@ -198,9 +198,14 @@ class _EmailEntryForm extends StatelessWidget {
   );
 }
 
-class _FooterWidget extends StatelessWidget {
-  _FooterWidget();
+class _FooterWidget extends StatefulWidget {
+  const _FooterWidget();
 
+  @override
+  State<_FooterWidget> createState() => _FooterWidgetState();
+}
+
+class _FooterWidgetState extends State<_FooterWidget> {
   final _tapGestureRecognizer = TapGestureRecognizer();
 
   @override
@@ -208,12 +213,12 @@ class _FooterWidget extends StatelessWidget {
     textAlign: TextAlign.center,
     text: TextSpan(
       text: 'Entered wrong email?',
-      style: DsTextStyle.bodySmall.copyWith(color: DsColors.textPrimary),
+      style: DsTextStyle.titleMedium.copyWith(color: DsColors.textPrimary),
       children: [
         const TextSpan(text: ' '),
         TextSpan(
           text: 'Change',
-          style: DsTextStyle.bodyBoldSmall.copyWith(
+          style: DsTextStyle.titleMedium.copyWith(
             color: DsColors.textLink,
             decoration: TextDecoration.underline,
           ),
@@ -224,4 +229,10 @@ class _FooterWidget extends StatelessWidget {
       ],
     ),
   );
+
+  @override
+  void dispose() {
+    _tapGestureRecognizer.dispose();
+    super.dispose();
+  }
 }

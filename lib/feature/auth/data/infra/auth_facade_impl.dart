@@ -10,6 +10,7 @@ import 'package:doc_helper_app/feature/auth/data/models/auth_dto.dart';
 import 'package:doc_helper_app/feature/auth/data/models/dto_to_model_mapper.dart';
 import 'package:doc_helper_app/feature/auth/domain/entities/auth_entity.dart';
 import 'package:doc_helper_app/feature/auth/domain/interfaces/i_auth_facade.dart';
+import 'package:doc_helper_app/feature/user/data/models/dto_to_model_mapper.dart';
 import 'package:doc_helper_app/feature/user/data/models/user_dto.dart';
 import 'package:doc_helper_app/feature/user/domain/entity/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -53,7 +54,7 @@ class AuthFacadeImpl implements IAuthFacade {
       });
 
   @override
-  Future<Either<ServerException, Unit>> signInWithEmailAndPassword({
+  Future<Either<ServerException, AppUser>> signInWithEmailAndPassword({
     required EmailAddress? email,
     required Password? password,
   }) async {
@@ -96,7 +97,13 @@ class AuthFacadeImpl implements IAuthFacade {
         (() => _localStorageFacade.saveLoggedIn(isLoggedIn: true))(),
       ]);
 
-      return right(unit);
+      final appUserDto = AppUserDto(
+        email: user.email,
+        userId: user.uid,
+        emailVerified: user.emailVerified,
+      );
+
+      return right(appUserDto.toDomain());
     } on FirebaseAuthException catch (e) {
       final errorMessage = _getFirebaseAuthErrorMessage(e.code);
       return left(
@@ -223,6 +230,31 @@ class AuthFacadeImpl implements IAuthFacade {
       (error) => left(error),
       (response) => right(unit),
     );
+  }
+
+  @override
+  Future<Either<ServerException, Unit>> forceRefreshToken() async {
+    final user = FirebaseAuth.instance.currentUser;
+    String? token;
+
+    if (user != null) {
+      token = await user.getIdToken(true);
+    }
+
+    if(token == null) {
+      return left(
+        const ServerException(
+          exceptionType: ServerExceptionType.unknown,
+          metaData: ExceptionMetaData(
+            errorCode: ErrorCodes.unknownError,
+            message: ErrorMessages.unknownErrorMessage,
+          ),
+        ),
+      );
+    }
+    else {
+     return right(unit);
+    }
   }
 
   String _getFirebaseAuthErrorMessage(String code) {

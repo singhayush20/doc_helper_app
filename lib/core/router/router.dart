@@ -1,5 +1,6 @@
 import 'package:doc_helper_app/core/router/route_mapper.dart';
 import 'package:doc_helper_app/di/injection.dart';
+import 'package:doc_helper_app/feature/auth/presentation/ui/email_verification/email_verification_page.dart';
 import 'package:doc_helper_app/feature/auth/presentation/ui/password_reset/password_reset_page.dart';
 import 'package:doc_helper_app/feature/auth/presentation/ui/sign_in_page.dart';
 import 'package:doc_helper_app/feature/auth/presentation/ui/sign_up/signup_page.dart';
@@ -17,23 +18,18 @@ GoRouter buildRouter(AuthNotifier authNotifier) => GoRouter(
   refreshListenable: authNotifier,
   redirect: (context, state) {
     final authed = authNotifier.isAuthenticated;
-    final loc = state.uri.toString();
+    final currentRoute = state.uri.toString();
 
     // Always allow splash to handle its own logic
-    if (loc == '/splash') return null;
+    if (currentRoute == '/splash') return null;
 
     // Define public routes (routes accessible without authentication)
     final publicRoutes = ['/signIn', '/signUp', '/passwordReset'];
-    final isPublicRoute = publicRoutes.contains(loc);
+    final isPublicRoute = publicRoutes.contains(currentRoute);
 
     // If trying to access shell routes or other protected routes without auth
     if (!authed && !isPublicRoute) {
       return '/signIn';
-    }
-
-    // If authenticated and trying to access auth pages, redirect to home
-    if (authed && (isPublicRoute || loc == '/')) {
-      return '/home';
     }
 
     return null;
@@ -58,6 +54,11 @@ GoRouter buildRouter(AuthNotifier authNotifier) => GoRouter(
       name: Routes.passwordReset,
       path: '/passwordReset',
       builder: (context, state) => const PasswordResetPage(),
+    ),
+    GoRoute(
+      name: Routes.emailVerification,
+      path: '/emailVerification',
+      builder: (context, state) => const EmailVerificationPage(),
     ),
     ShellRoute(
       builder: (context, state, child) => LandingPage(child: child),

@@ -12,6 +12,7 @@ class _SignInForm extends StatelessWidget {
           vertical: DsSpacing.radialSpace24,
         ),
         child: Column(
+          spacing: DsSpacing.verticalSpace8,
           children: [
             Container(
               decoration: BoxDecoration(
@@ -22,13 +23,13 @@ class _SignInForm extends StatelessWidget {
               clipBehavior: Clip.antiAlias,
               child: DsImage(mediaUrl: ImageKeys.docHelperLogo, height: 200.h),
             ),
-            const DsText.titleLarge(data: 'DocuHelper'),
+            const DsText.headlineLarge(data: 'DocuHelper'),
             DsSpacing.verticalSpaceSizedBox24,
             Column(
               spacing: DsSpacing.verticalSpace16,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const DsText.titleSmall(data: 'Login to your account'),
+                const DsText.headlineSmall(data: 'Login to your account'),
                 Column(
                   spacing: DsSpacing.verticalSpace16,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -77,7 +78,7 @@ class _SignInForm extends StatelessWidget {
                 ),
               ],
             ),
-            _FooterButtons(),
+            const _FooterButtons(),
           ],
         ),
       ),
@@ -91,9 +92,14 @@ class _SignInForm extends StatelessWidget {
       (password?.isValid() ?? false);
 }
 
-class _FooterButtons extends StatelessWidget {
-  _FooterButtons();
+class _FooterButtons extends StatefulWidget {
+  const _FooterButtons();
 
+  @override
+  State<_FooterButtons> createState() => _FooterButtonsState();
+}
+
+class _FooterButtonsState extends State<_FooterButtons> {
   final _tapRecognizer = TapGestureRecognizer();
 
   @override
@@ -102,14 +108,12 @@ class _FooterButtons extends StatelessWidget {
       RichText(
         text: TextSpan(
           text: 'New User?',
-          style: DsTextStyle.bodySmall,
+          style: DsTextStyle.titleMedium,
           children: [
             const TextSpan(text: ' '),
             TextSpan(
               text: 'Sign Up',
-              style: DsTextStyle.bodyBoldSmall.copyWith(
-                color: DsColors.textLink,
-              ),
+              style: DsTextStyle.titleMedium.copyWith(color: DsColors.textLink),
               recognizer: _tapRecognizer
                 ..onTap = () => getBloc<SignInBloc>(context).onSignUpPressed(),
             ),
@@ -117,11 +121,19 @@ class _FooterButtons extends StatelessWidget {
         ),
       ),
       const Spacer(),
-      DsTextButton.primary(
-        data: 'Forgot Password?',
+      InkWell(
         onTap: () => getBloc<SignInBloc>(context).onForgotPasswordPressed(),
-        underline: false,
+        child: const DsText.titleMedium(
+          data: 'Forgot Password?',
+          color: DsColors.textLink,
+        ),
       ),
     ],
   );
+
+  @override
+  void dispose() {
+    _tapRecognizer.dispose();
+    super.dispose();
+  }
 }

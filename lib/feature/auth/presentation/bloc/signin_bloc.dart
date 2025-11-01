@@ -5,6 +5,7 @@ import 'package:doc_helper_app/core/common/base_bloc/base_state.dart';
 import 'package:doc_helper_app/core/common/utils/app_utils.dart';
 import 'package:doc_helper_app/core/value_objects/value_objects.dart';
 import 'package:doc_helper_app/feature/auth/domain/interfaces/i_auth_facade.dart';
+import 'package:doc_helper_app/feature/user/domain/entity/user.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
@@ -73,8 +74,10 @@ class SignInBloc extends BaseBloc<SignInEvent, SignInState> {
 
     loginResponseOrFailure.fold(
       (exception) => handleException(emit, exception),
-      (loginResponse) => emit(
-        SignInState.onLogin(store: state.store.copyWith(loading: false)),
+      (userInfo) => emit(
+        SignInState.onLogin(
+          store: state.store.copyWith(loading: false, userInfo: userInfo),
+        ),
       ),
     );
   }

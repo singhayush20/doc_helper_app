@@ -3,6 +3,7 @@ abstract class Routes {
   static const String signIn = 'signIn';
   static const String signUp = 'signUp';
   static const String passwordReset = 'passwordReset';
+  static const String emailVerification = 'emailVerification';
 
   // Shell routes
   static const String shell = 'shell';

@@ -61,12 +61,12 @@ class _EmailVerificationForm extends StatelessWidget {
             textAlign: TextAlign.center,
             text: TextSpan(
               text: 'Resend otp in',
-              style: DsTextStyle.bodySmall,
+              style: DsTextStyle.titleMedium,
               children: [
                 const TextSpan(text: ' '),
                 TextSpan(
                   text: formatDuration(state.store.timerValue ?? 0),
-                  style: DsTextStyle.bodyBoldSmall.copyWith(
+                  style: DsTextStyle.titleMedium.copyWith(
                     color: DsColors.textLink,
                   ),
                 ),
@@ -94,7 +94,7 @@ class _UserDetailsForm extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       spacing: DsSpacing.radialSpace24,
       children: [
-        const DsText.titleSmall(data: 'Create an account to get started'),
+        const DsText.headlineSmall(data: 'Create an account to get started'),
         Column(
           spacing: DsSpacing.radialSpace20,
           mainAxisSize: MainAxisSize.min,
@@ -188,7 +188,7 @@ class _UserDetailsForm extends StatelessWidget {
               : null,
         ),
 
-        _FooterWidget(),
+        const _FooterWidget(),
       ],
     ),
   );
@@ -206,9 +206,14 @@ class _UserDetailsForm extends StatelessWidget {
       (state.store.confirmPassword?.isValid() ?? false);
 }
 
-class _FooterWidget extends StatelessWidget {
-  _FooterWidget();
+class _FooterWidget extends StatefulWidget {
+  const _FooterWidget();
 
+  @override
+  State<_FooterWidget> createState() => _FooterWidgetState();
+}
+
+class _FooterWidgetState extends State<_FooterWidget> {
   final _tapGestureRecognizer = TapGestureRecognizer();
 
   @override
@@ -216,12 +221,12 @@ class _FooterWidget extends StatelessWidget {
     textAlign: TextAlign.center,
     text: TextSpan(
       text: 'Already have an account?',
-      style: DsTextStyle.bodySmall.copyWith(color: DsColors.textPrimary),
+      style: DsTextStyle.titleMedium.copyWith(color: DsColors.textPrimary),
       children: [
         const TextSpan(text: ' '),
         TextSpan(
           text: 'Sign In',
-          style: DsTextStyle.bodyBoldSmall.copyWith(
+          style: DsTextStyle.titleMedium.copyWith(
             color: DsColors.textLink,
             decoration: TextDecoration.underline,
           ),
@@ -231,4 +236,10 @@ class _FooterWidget extends StatelessWidget {
       ],
     ),
   );
+
+  @override
+  void dispose() {
+    _tapGestureRecognizer.dispose();
+    super.dispose();
+  }
 }

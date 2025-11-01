@@ -13,7 +13,6 @@ import 'package:doc_helper_app/design/design.dart'
         EmailTextFormField,
         PasswordTextFormField,
         DsButton,
-        DsTextButton,
         DsImage;
 import 'package:doc_helper_app/di/injection.dart';
 import 'package:doc_helper_app/feature/auth/presentation/bloc/signin_bloc.dart';
@@ -51,7 +50,10 @@ class SignInPage extends StatelessWidget {
                 OnForgotPasswordPressed _ => GoRouter.of(
                   context,
                 ).pushNamed(Routes.passwordReset),
-                OnLogin _ => context.goNamed(Routes.home),
+                OnLogin(:final store) =>
+                  (store.userInfo?.emailVerified ?? false)
+                      ? context.goNamed(Routes.home)
+                      : context.goNamed(Routes.emailVerification),
                 OnException(:final exception) => handleException(
                   exception,
                   context,

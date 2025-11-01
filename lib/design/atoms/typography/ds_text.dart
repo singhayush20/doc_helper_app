@@ -6,6 +6,36 @@ import 'ds_text_style.dart';
 part 'base_text.dart';
 
 final class DsText extends BaseText {
+  const DsText.headlineLarge({
+    super.key,
+    required super.data,
+    super.textAlign,
+    super.maxLines,
+    super.overflow,
+    super.color,
+    super.underline,
+  }) : super(dsTextStyleType: DsTextStyleType.headlineLarge);
+
+  const DsText.headlineMedium({
+    super.key,
+    required super.data,
+    super.textAlign,
+    super.maxLines,
+    super.overflow,
+    super.color,
+    super.underline,
+  }) : super(dsTextStyleType: DsTextStyleType.headlineMedium);
+
+  const DsText.headlineSmall({
+    super.key,
+    required super.data,
+    super.textAlign,
+    super.maxLines,
+    super.overflow,
+    super.color,
+    super.underline,
+  }) : super(dsTextStyleType: DsTextStyleType.headlineSmall);
+
   const DsText.titleLarge({
     super.key,
     required super.data,
@@ -23,6 +53,7 @@ final class DsText extends BaseText {
     super.maxLines,
     super.overflow,
     super.color,
+    super.underline,
   }) : super(dsTextStyleType: DsTextStyleType.titleMedium);
 
   const DsText.titleSmall({
@@ -45,7 +76,7 @@ final class DsText extends BaseText {
     super.underline,
   }) : super(dsTextStyleType: DsTextStyleType.bodyLarge);
 
-  const DsText.bodyBoldSmall({
+  const DsText.bodyMedium({
     super.key,
     required super.data,
     super.textAlign,
@@ -53,7 +84,7 @@ final class DsText extends BaseText {
     super.overflow,
     super.color,
     super.underline,
-  }) : super(dsTextStyleType: DsTextStyleType.bodyBoldSmall);
+  }) : super(dsTextStyleType: DsTextStyleType.bodyMedium);
 
   const DsText.bodySmall({
     super.key,
@@ -65,7 +96,7 @@ final class DsText extends BaseText {
     super.underline,
   }) : super(dsTextStyleType: DsTextStyleType.bodySmall);
 
-  const DsText.caption({
+  const DsText.labelLarge({
     super.key,
     required super.data,
     super.textAlign,
@@ -73,5 +104,25 @@ final class DsText extends BaseText {
     super.overflow,
     super.color,
     super.underline,
-  }) : super(dsTextStyleType: DsTextStyleType.caption);
+  }) : super(dsTextStyleType: DsTextStyleType.labelLarge);
+
+  const DsText.labelMedium({
+    super.key,
+    required super.data,
+    super.textAlign,
+    super.maxLines,
+    super.overflow,
+    super.color,
+    super.underline,
+  }) : super(dsTextStyleType: DsTextStyleType.labelMedium);
+
+  const DsText.labelSmall({
+    super.key,
+    required super.data,
+    super.textAlign,
+    super.maxLines,
+    super.overflow,
+    super.color,
+    super.underline,
+  }) : super(dsTextStyleType: DsTextStyleType.labelSmall);
 }

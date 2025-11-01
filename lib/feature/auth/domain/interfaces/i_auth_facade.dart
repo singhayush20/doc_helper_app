@@ -9,7 +9,7 @@ abstract class IAuthFacade {
 
   Stream<Either<ServerException, AppUser?>> authStateChanges();
 
-  Future<Either<ServerException, Unit>> signInWithEmailAndPassword({
+  Future<Either<ServerException, AppUser>> signInWithEmailAndPassword({
     required EmailAddress? email,
     required Password? password,
   });
@@ -39,4 +39,6 @@ abstract class IAuthFacade {
     required Otp? otp,
     required Password? password,
   });
+
+  Future<Either<ServerException, Unit>> forceRefreshToken();
 }

@@ -10,6 +10,7 @@ class AppUserDto {
     this.password,
     this.email,
     this.userId,
+    this.emailVerified,
   });
 
   factory AppUserDto.fromJson(Map<String, dynamic> json) =>
@@ -22,16 +23,5 @@ class AppUserDto {
   final String? password;
   final String? email;
   final String? userId;
-}
-
-@JsonSerializable()
-class UserAccountInfoDto {
-  const UserAccountInfoDto({this.firstName, this.lastName, this.email});
-
-  factory UserAccountInfoDto.fromJson(Map<String, dynamic> json) =>
-      _$UserAccountInfoDtoFromJson(json);
-
-  final String? firstName;
-  final String? lastName;
-  final String? email;
+  final bool? emailVerified;
 }

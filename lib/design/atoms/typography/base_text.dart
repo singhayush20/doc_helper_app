@@ -40,6 +40,12 @@ base class BaseText extends StatelessWidget {
 
   TextStyle _mapTextStyle(DsTextStyleType textStyle) {
     switch (textStyle) {
+      case DsTextStyleType.headlineLarge:
+        return DsTextStyle.headlineLarge;
+      case DsTextStyleType.headlineMedium:
+        return DsTextStyle.headlineMedium;
+      case DsTextStyleType.headlineSmall:
+        return DsTextStyle.headlineSmall;
       case DsTextStyleType.titleLarge:
         return DsTextStyle.titleLarge;
       case DsTextStyleType.titleMedium:
@@ -48,12 +54,16 @@ base class BaseText extends StatelessWidget {
         return DsTextStyle.titleSmall;
       case DsTextStyleType.bodyLarge:
         return DsTextStyle.bodyLarge;
-      case DsTextStyleType.bodyBoldSmall:
-        return DsTextStyle.bodyBoldSmall;
+      case DsTextStyleType.bodyMedium:
+        return DsTextStyle.bodyMedium;
       case DsTextStyleType.bodySmall:
         return DsTextStyle.bodySmall;
-      case DsTextStyleType.caption:
-        return DsTextStyle.caption;
+      case DsTextStyleType.labelLarge:
+        return DsTextStyle.labelLarge;
+      case DsTextStyleType.labelMedium:
+        return DsTextStyle.labelMedium;
+      case DsTextStyleType.labelSmall:
+        return DsTextStyle.labelSmall;
     }
   }
 }

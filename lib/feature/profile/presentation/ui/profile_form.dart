@@ -74,7 +74,7 @@ class _SubscriptionSection extends StatelessWidget {
           child: Row(
             children: [
               const Expanded(
-                child: DsText.bodyBoldSmall(
+                child: DsText.bodyMedium(
                   data:
                       '''Unlock unlimited document uploads and advanced features.''',
                 ),

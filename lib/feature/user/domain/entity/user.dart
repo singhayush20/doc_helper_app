@@ -11,14 +11,6 @@ abstract class AppUser with _$AppUser {
     final Name? lastName,
     final EmailAddress? email,
     final String? userId,
+    final bool? emailVerified,
   }) = _AppUser;
-}
-
-@liteFreezed
-abstract class UserAccountInfo with _$UserAccountInfo {
-  const factory UserAccountInfo({
-    final Name? firstName,
-    final Name? lastName,
-    final EmailAddress? email,
-  }) = _UserAccountInfo;
 }

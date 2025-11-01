@@ -170,7 +170,7 @@ class SignUpBloc extends BaseBloc<SignUpEvent, SignUpState> {
   }
 
   Future<void> _onResendOTPPressed(_, Emitter<SignUpState> emit) async {
-    invalidateLoader(emit, loading: true);
+    invalidateLoader(emit, loading: false);
     final sendOtpOrFailure = await _authFacade.sendEmailVerificationOtp(
       email: state.store.email,
     );
