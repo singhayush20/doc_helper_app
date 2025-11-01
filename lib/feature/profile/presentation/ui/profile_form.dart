@@ -12,15 +12,12 @@ class _ProfileForm extends StatelessWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
+        spacing: DsSpacing.verticalSpace24,
         children: [
           const DsText.titleLarge(data: 'My Account'),
-          DsSpacing.verticalSpaceSizedBox24,
           _UserInfoSection(),
-          DsSpacing.verticalSpaceSizedBox24,
           _SubscriptionSection(),
-          DsSpacing.verticalSpaceSizedBox24,
           _SettingsSection(),
-          DsSpacing.verticalSpaceSizedBox24,
           DsButton.secondary(
             data: 'Log Out',
             onTap: () => getBloc<ProfileBloc>(context).onLogoutPressed(),

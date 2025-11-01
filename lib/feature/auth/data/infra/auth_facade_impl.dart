@@ -93,7 +93,6 @@ class AuthFacadeImpl implements IAuthFacade {
         (() => _localStorageFacade.saveUserEmail(
           emailAddress: user.email ?? '',
         ))(),
-        (() => _localStorageFacade.saveAuthToken(token: idToken ?? ''))(),
         (() => _localStorageFacade.saveLoggedIn(isLoggedIn: true))(),
       ]);
 
@@ -145,17 +144,10 @@ class AuthFacadeImpl implements IAuthFacade {
       [userDto],
     );
 
-    return await responseOrError.fold((error) async => left(error), (
-      response,
-    ) async {
-      final refreshedUserToken = await _firebaseAuth.currentUser?.getIdToken(
-        true,
-      );
-      if (refreshedUserToken != null) {
-        _localStorageFacade.saveAuthToken(token: refreshedUserToken);
-      }
-      return right(unit);
-    });
+    return await responseOrError.fold(
+      (error) async => left(error),
+      (response) => right(unit),
+    );
   }
 
   @override

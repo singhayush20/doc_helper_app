@@ -10,10 +10,6 @@ class LocalStorageFacade implements ILocalStorageFacade {
   final HiveDataStorageHandler _hiveDataStorageHandler;
 
   @override
-  Future<void> saveAuthToken({required String token}) async =>
-      await _hiveDataStorageHandler.saveToken(token);
-
-  @override
   Future<void> saveLoggedIn({required bool isLoggedIn}) async {
     await _hiveDataStorageHandler.saveLoggedIn(true);
   }
@@ -34,10 +30,6 @@ class LocalStorageFacade implements ILocalStorageFacade {
 
   @override
   Future<String?> getUid() async => _hiveDataStorageHandler.getUid();
-
-  @override
-  Future<String?> getAuthToken() async =>
-      _hiveDataStorageHandler.getAuthToken();
 
   @override
   Future<bool?> getLoggedIn() async => _hiveDataStorageHandler.getLoggedIn();

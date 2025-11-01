@@ -32,7 +32,7 @@ class ProfileBloc extends BaseBloc<ProfileEvent, ProfileState> {
   }
 
   Future<void> _onStarted(_, Emitter<ProfileState> emit) async {
-    invalidateLoader(emit, loading: false);
+    invalidateLoader(emit, loading: true);
 
     final userInfoOrFailure = await _userFacade.getUserInfo();
 
