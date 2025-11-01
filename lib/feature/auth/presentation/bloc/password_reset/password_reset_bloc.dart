@@ -3,7 +3,10 @@ import 'dart:async';
 import 'package:doc_helper_app/core/common/base_bloc/base_bloc.dart';
 import 'package:doc_helper_app/core/common/base_bloc/base_event.dart';
 import 'package:doc_helper_app/core/common/base_bloc/base_state.dart';
+import 'package:doc_helper_app/core/common/constants/app_constants.dart';
 import 'package:doc_helper_app/core/common/utils/app_utils.dart';
+import 'package:doc_helper_app/core/local_storage/i_local_storage_facade.dart';
+import 'package:doc_helper_app/core/router/route_mapper.dart';
 import 'package:doc_helper_app/core/value_objects/value_objects.dart';
 import 'package:doc_helper_app/feature/auth/domain/interfaces/i_auth_facade.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -19,10 +22,11 @@ part 'password_reset_state.dart';
 @injectable
 class PasswordResetBloc
     extends BaseBloc<PasswordResetEvent, PasswordResetState> {
-  PasswordResetBloc(this._authFacade)
+  PasswordResetBloc(this._authFacade, this._localStorageFacade)
     : super(const PasswordResetState.initial(store: PasswordResetStateStore()));
 
   final IAuthFacade _authFacade;
+  final ILocalStorageFacade _localStorageFacade;
   Timer? _timer;
 
   @override
@@ -40,8 +44,21 @@ class PasswordResetBloc
     on<_OnTimerTicked>(_onTimerTicked);
   }
 
-  void _onStarted(_Started event, Emitter<PasswordResetState> emit) {
-    emit(PasswordResetState.initial(store: state.store));
+  Future<void> _onStarted(
+    _Started event,
+    Emitter<PasswordResetState> emit,
+  ) async {
+    EmailAddress? emailAddress;
+    if (event.parentRoute == Routes.profile) {
+      invalidateLoader(emit, loading: true);
+      final email = await _localStorageFacade.getUserEmail();
+      emailAddress = EmailAddress(email ?? '');
+    }
+    emit(
+      PasswordResetState.initial(
+        store: state.store.copyWith(email: emailAddress, loading: false),
+      ),
+    );
   }
 
   void _onEmailChanged(
@@ -176,7 +193,9 @@ class PasswordResetBloc
 
   @override
   void started({Map<String, dynamic>? args}) {
-    add(const PasswordResetEvent.started());
+    final parentRoute = args?[AppConstants.parentRoute] as String?;
+
+    add(PasswordResetEvent.started(parentRoute: parentRoute));
   }
 
   @override

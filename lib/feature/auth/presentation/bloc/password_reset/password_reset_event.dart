@@ -4,7 +4,7 @@ part of 'password_reset_bloc.dart';
 sealed class PasswordResetEvent extends BaseEvent with _$PasswordResetEvent {
   const PasswordResetEvent._() : super();
 
-  const factory PasswordResetEvent.started() = _Started;
+  const factory PasswordResetEvent.started({required String? parentRoute}) = _Started;
 
   const factory PasswordResetEvent.onEmailChanged({
     required String emailString,

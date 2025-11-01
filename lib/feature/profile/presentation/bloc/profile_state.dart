@@ -14,6 +14,10 @@ sealed class ProfileState extends BaseState with _$ProfileState {
   const factory ProfileState.onLogout({required ProfileStateStore store}) =
       OnLogout;
 
+  const factory ProfileState.onResetPasswordPress({
+    required ProfileStateStore store,
+  }) = OnResetPasswordPress;
+
   const factory ProfileState.invalidateLoader({
     required ProfileStateStore store,
   }) = InvalidateLoader;

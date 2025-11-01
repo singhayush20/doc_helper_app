@@ -1,7 +1,9 @@
 import 'package:doc_helper_app/core/common/base_bloc/base_bloc.dart';
 import 'package:doc_helper_app/core/common/base_widget/base_widget_utils.dart';
+import 'package:doc_helper_app/core/common/constants/app_constants.dart';
 import 'package:doc_helper_app/core/common/constants/media_constants/image_keys.dart';
 import 'package:doc_helper_app/core/common/utils/date_time_utils.dart';
+import 'package:doc_helper_app/core/router/route_mapper.dart';
 import 'package:doc_helper_app/core/value_objects/value_objects.dart';
 import 'package:doc_helper_app/design/atoms/typography/ds_text_style.dart';
 import 'package:doc_helper_app/design/design.dart'
@@ -33,7 +35,13 @@ class PasswordResetPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => BlocProvider<PasswordResetBloc>(
-    create: (_) => getIt<PasswordResetBloc>()..started(),
+    create: (_) {
+      final parentRoute = GoRouterState.of(
+        context,
+      ).uri.queryParameters[AppConstants.parentRoute];
+      return getIt<PasswordResetBloc>()
+        ..started(args: {AppConstants.parentRoute: parentRoute});
+    },
     child: LoaderOverlay(
       child: Scaffold(
         appBar: const PrimaryAppBar(titleText: 'Reset Password'),

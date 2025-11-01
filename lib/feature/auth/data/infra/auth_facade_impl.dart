@@ -40,7 +40,7 @@ class AuthFacadeImpl implements IAuthFacade {
     return user == null
         ? right(null)
         : right(
-            AppUser(userId: user.uid, email: EmailAddress(user.email ?? '')),
+            AppUser(userId: user.uid, email: EmailAddress(user.email ?? ''),emailVerified: user.emailVerified,),
           );
   }
 

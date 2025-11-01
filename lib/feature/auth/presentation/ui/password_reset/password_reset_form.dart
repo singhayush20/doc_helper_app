@@ -177,16 +177,7 @@ class _EmailEntryForm extends StatelessWidget {
             ),
           ],
         ),
-        EmailTextFormField(
-          value: state.store.email,
-          prefixIcon: Icons.email,
-          labelText: 'Email Address',
-          hintText: 'Enter your email address',
-          errorText: 'Enter a valid email id!',
-          onChanged: (value) => getBloc<PasswordResetBloc>(
-            context,
-          ).onEmailChanged(emailString: value),
-        ),
+        const _EmailAddressField(),
         DsButton.primary(
           data: 'Send OTP',
           onTap: (state.store.email?.isValid() ?? false)
@@ -196,6 +187,46 @@ class _EmailEntryForm extends StatelessWidget {
       ],
     ),
   );
+}
+
+class _EmailAddressField extends StatefulWidget {
+  const _EmailAddressField();
+
+  @override
+  State<_EmailAddressField> createState() => _EmailAddressFieldState();
+}
+
+class _EmailAddressFieldState extends State<_EmailAddressField> {
+  final TextEditingController _controller = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) =>
+      BlocBuilder<PasswordResetBloc, PasswordResetState>(
+        builder: (context, state) {
+          _controller.text = state.store.email?.input ?? '';
+
+          return EmailTextFormField(
+            value: state.store.email,
+            controller: _controller,
+            prefixIcon: Icons.email,
+            labelText: 'Email Address',
+            hintText: 'Enter your email address',
+            errorText: 'Enter a valid email id!',
+            readOnly: (state.store.parentRoute != Routes.profile),
+            onChanged: (state.store.parentRoute != Routes.profile)
+                ? (value) => getBloc<PasswordResetBloc>(
+                    context,
+                  ).onEmailChanged(emailString: value)
+                : null,
+          );
+        },
+      );
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 }
 
 class _FooterWidget extends StatefulWidget {

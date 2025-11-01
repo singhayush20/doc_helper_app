@@ -7,4 +7,6 @@ class ProfileEvent extends BaseEvent with _$ProfileEvent {
   const factory ProfileEvent.started() = _Started;
 
   const factory ProfileEvent.onLogoutPressed() = _OnLogoutPressed;
+
+  const factory ProfileEvent.onResetPasswordPressed() = _OnResetPasswordPressed;
 }

@@ -1,8 +1,9 @@
 import 'package:doc_helper_app/core/common/base_bloc/base_bloc.dart';
 import 'package:doc_helper_app/core/common/base_widget/base_widget_utils.dart';
+import 'package:doc_helper_app/core/common/constants/app_constants.dart';
 import 'package:doc_helper_app/core/router/route_mapper.dart';
 import 'package:doc_helper_app/design/design.dart'
-    show DsText, DsButton, DsColors, DsSpacing, DsBorderRadius;
+    show DsText, DsButton, DsColors, DsSpacing, DsBorderRadius, DsSizing;
 import 'package:doc_helper_app/design/molecules/list_tile/ds_list_tile.dart';
 import 'package:doc_helper_app/design/molecules/list_tile/list_tile_title.dart';
 import 'package:doc_helper_app/di/injection.dart';
@@ -34,6 +35,10 @@ class ProfilePage extends StatelessWidget {
               }
               return switch (state) {
                 OnLogout _ => GoRouter.of(context).goNamed(Routes.signIn),
+                OnResetPasswordPress _ => GoRouter.of(context).pushNamed(
+                  Routes.passwordReset,
+                  queryParameters: {AppConstants.parentRoute: Routes.profile},
+                ),
                 OnException(:final exception) => handleException(
                   exception,
                   context,
@@ -41,7 +46,9 @@ class ProfilePage extends StatelessWidget {
                 _ => null,
               };
             },
-            builder: (context, state) => const _ProfileForm(),
+            builder: (context, state) => (!state.store.loading)
+                ? const _ProfileForm()
+                : const SizedBox(),
           ),
         ),
       ),

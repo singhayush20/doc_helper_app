@@ -83,6 +83,7 @@ sealed class PasswordResetStateStore with _$PasswordResetStateStore {
     Password? confirmPassword,
     Otp? otp,
     int? timerValue,
+    String? parentRoute,
     @Default(false) bool otpSent,
     @Default(false) bool isPasswordVisible,
     @Default(false) bool loading,

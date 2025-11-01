@@ -29,6 +29,7 @@ class ProfileBloc extends BaseBloc<ProfileEvent, ProfileState> {
   void handleEvents() {
     on<_Started>(_onStarted);
     on<_OnLogoutPressed>(_onLogoutPressed);
+    on<_OnResetPasswordPressed>(_onResetPasswordPressed);
   }
 
   Future<void> _onStarted(_, Emitter<ProfileState> emit) async {
@@ -57,6 +58,11 @@ class ProfileBloc extends BaseBloc<ProfileEvent, ProfileState> {
     );
   }
 
+  void _onResetPasswordPressed(_, Emitter<ProfileState> emit) {
+    invalidateLoader(emit,loading: false);
+    emit(ProfileState.onResetPasswordPress(store: state.store));
+  }
+
   @override
   void started({Map<String, dynamic>? args}) {
     add(const ProfileEvent.started());
@@ -65,4 +71,7 @@ class ProfileBloc extends BaseBloc<ProfileEvent, ProfileState> {
   void onLogoutPressed() {
     add(const ProfileEvent.onLogoutPressed());
   }
+
+  void onPasswordResetPressed() =>
+      add(const ProfileEvent.onResetPasswordPressed());
 }

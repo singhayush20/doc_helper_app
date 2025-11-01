@@ -31,11 +31,11 @@ class SplashPage extends StatelessWidget {
         {context.goNamed(Routes.signIn)}
       else if (user.emailVerified ?? false)
         {
-          {context.goNamed(Routes.home)},
+          context.goNamed(Routes.home),
         }
       else
         {
-          {context.goNamed(Routes.emailVerification)},
+          context.goNamed(Routes.emailVerification),
         },
     },
     _ => {},

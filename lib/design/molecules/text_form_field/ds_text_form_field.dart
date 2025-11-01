@@ -82,6 +82,7 @@ class EmailTextFormField extends PrimaryTextFormField {
     super.focusNode,
     super.onTapOutside,
     super.prefixIcon,
+    super.readOnly,
   }) : super(
          textInputAction: TextInputAction.done,
          textInputType: TextInputType.emailAddress,
