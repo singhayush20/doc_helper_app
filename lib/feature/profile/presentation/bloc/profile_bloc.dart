@@ -59,7 +59,7 @@ class ProfileBloc extends BaseBloc<ProfileEvent, ProfileState> {
   }
 
   void _onResetPasswordPressed(_, Emitter<ProfileState> emit) {
-    invalidateLoader(emit,loading: false);
+    invalidateLoader(emit, loading: false);
     emit(ProfileState.onResetPasswordPress(store: state.store));
   }
 

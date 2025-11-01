@@ -4,11 +4,11 @@ import 'package:doc_helper_app/feature/auth/presentation/ui/email_verification/e
 import 'package:doc_helper_app/feature/auth/presentation/ui/password_reset/password_reset_page.dart';
 import 'package:doc_helper_app/feature/auth/presentation/ui/sign_in_page.dart';
 import 'package:doc_helper_app/feature/auth/presentation/ui/sign_up/signup_page.dart';
-import 'package:doc_helper_app/feature/docs/presentation/ui/docs_page.dart';
 import 'package:doc_helper_app/feature/home/presentation/ui/home_page.dart';
 import 'package:doc_helper_app/feature/main/presentation/ui/landing_page.dart';
 import 'package:doc_helper_app/feature/profile/presentation/ui/profile_page.dart';
 import 'package:doc_helper_app/feature/splash_screen/presentation/ui/splash_page.dart';
+import 'package:doc_helper_app/feature/user_docs/presentation/ui/docs_page.dart';
 import 'package:go_router/go_router.dart';
 
 import 'auth_notifier.dart';
@@ -71,7 +71,7 @@ GoRouter buildRouter(AuthNotifier authNotifier) => GoRouter(
         GoRoute(
           name: Routes.docs,
           path: '/docs',
-          builder: (context, state) => const DocsPage(),
+          builder: (context, state) => const UserDocsPage(),
         ),
         GoRoute(
           name: Routes.profile,

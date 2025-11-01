@@ -40,7 +40,11 @@ class AuthFacadeImpl implements IAuthFacade {
     return user == null
         ? right(null)
         : right(
-            AppUser(userId: user.uid, email: EmailAddress(user.email ?? ''),emailVerified: user.emailVerified,),
+            AppUser(
+              userId: user.uid,
+              email: EmailAddress(user.email ?? ''),
+              emailVerified: user.emailVerified,
+            ),
           );
   }
 
@@ -241,7 +245,7 @@ class AuthFacadeImpl implements IAuthFacade {
       token = await user.getIdToken(true);
     }
 
-    if(token == null) {
+    if (token == null) {
       return left(
         const ServerException(
           exceptionType: ServerExceptionType.unknown,
@@ -251,9 +255,8 @@ class AuthFacadeImpl implements IAuthFacade {
           ),
         ),
       );
-    }
-    else {
-     return right(unit);
+    } else {
+      return right(unit);
     }
   }
 

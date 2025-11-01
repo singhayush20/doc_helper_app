@@ -9,13 +9,12 @@ import 'package:injectable/injectable.dart';
 class DioProvider implements IDioProvider {
   @factoryMethod
   factory DioProvider(
-      @Named('baseUrl') String baseUrl,
-      ILocalStorageFacade localStorageFacade,
-      ) =>
-      DioProvider._internal(
-        baseUrl: baseUrl,
-        localStorageFacade: localStorageFacade,
-      );
+    @Named('baseUrl') String baseUrl,
+    ILocalStorageFacade localStorageFacade,
+  ) => DioProvider._internal(
+    baseUrl: baseUrl,
+    localStorageFacade: localStorageFacade,
+  );
 
   DioProvider._internal({
     required this.baseUrl,
@@ -35,7 +34,7 @@ class DioProvider implements IDioProvider {
         connectTimeout: const Duration(seconds: 20),
         receiveTimeout: const Duration(seconds: 20),
         validateStatus: (status) =>
-        status != null && status >= 200 && status < 300,
+            status != null && status >= 200 && status < 300,
       ),
     );
 
