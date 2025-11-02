@@ -8,7 +8,7 @@ import 'package:doc_helper_app/feature/home/presentation/ui/home_page.dart';
 import 'package:doc_helper_app/feature/main/presentation/ui/landing_page.dart';
 import 'package:doc_helper_app/feature/profile/presentation/ui/profile_page.dart';
 import 'package:doc_helper_app/feature/splash_screen/presentation/ui/splash_page.dart';
-import 'package:doc_helper_app/feature/user_docs/presentation/ui/docs_page.dart';
+import 'package:doc_helper_app/feature/user_docs/presentation/ui/user_docs_page.dart';
 import 'package:go_router/go_router.dart';
 
 import 'auth_notifier.dart';

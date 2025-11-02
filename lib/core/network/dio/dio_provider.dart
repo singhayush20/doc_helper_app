@@ -42,19 +42,27 @@ class DioProvider implements IDioProvider {
       InterceptorsWrapper(
         onRequest: (options, handler) async {
           final user = FirebaseAuth.instance.currentUser;
-          String? token;
 
           if (user != null) {
-            token = await user.getIdToken();
-          }
-          if (token != null && token.isNotEmpty) {
-            options.headers['Authorization'] = 'Bearer $token';
+            try {
+              final token = await user.getIdToken();
+              if (token?.isNotEmpty ?? false) {
+                options.headers['Authorization'] = 'Bearer $token';
+              }
+            } on FirebaseAuthException catch (e) {
+              if (e.code == 'user-token-expired' ||
+                  e.code == 'user-disabled' ||
+                  e.code == 'user-not-found' ||
+                  e.code == 'unknown') {
+                await FirebaseAuth.instance.signOut();
+                await localStorageFacade.clear();
+              }
+            }
           }
 
           handler.next(options);
         },
         onError: (DioException e, handler) async {
-          // Handle expired token
           if (e.response?.statusCode == 401) {
             final user = FirebaseAuth.instance.currentUser;
             if (user != null) {
