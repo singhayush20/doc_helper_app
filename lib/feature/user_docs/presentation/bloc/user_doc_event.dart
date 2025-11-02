@@ -5,4 +5,6 @@ sealed class UserDocEvent extends BaseEvent with _$UserDocEvent {
   const UserDocEvent._() : super();
 
   const factory UserDocEvent.started() = _Started;
+  
+  const factory UserDocEvent.onFetchNextPage() = _OnFetchNextPage;
 }

@@ -1,7 +1,8 @@
-import 'package:doc_helper_app/core/common/base_widget/base_widget_utils.dart';
+import 'package:doc_helper_app/core/common/base_bloc/base_bloc.dart';
 import 'package:doc_helper_app/design/design.dart'
-    show DsColors, DsSpacing, PrimaryAppBar;
-import 'package:doc_helper_app/design/molecules/list_tile/ds_list_tile.dart';
+    show DsColors, DsSpacing, PrimaryAppBar, DsListTile;
+import 'package:doc_helper_app/design/molecules/list_tile/list_tile_subtitle.dart';
+import 'package:doc_helper_app/design/molecules/list_tile/list_tile_title.dart';
 import 'package:doc_helper_app/di/injection.dart';
 import 'package:doc_helper_app/feature/user_docs/domain/entities/user_doc_entity.dart';
 import 'package:doc_helper_app/feature/user_docs/presentation/bloc/user_doc_bloc.dart';
