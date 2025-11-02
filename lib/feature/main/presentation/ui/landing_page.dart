@@ -1,55 +1,46 @@
-import 'package:doc_helper_app/core/router/route_mapper.dart';
 import 'package:doc_helper_app/design/design.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class LandingPage extends StatefulWidget {
-  const LandingPage({required this.child, super.key});
+class LandingPage extends StatelessWidget {
+  const LandingPage({required this.navigationShell, super.key});
 
-  final Widget child;
+  final StatefulNavigationShell navigationShell;
 
-  @override
-  State<LandingPage> createState() => _LandingPageState();
-}
-
-class _LandingPageState extends State<LandingPage> {
-  int _currentIndex = 0;
-
-  static const List<(String label, String route, IconData icon)>
-  _navigationItems = [
-    ('Home', Routes.home, Icons.home_outlined),
-    ('Docs', Routes.docs, Icons.article_outlined),
-    ('Profile', Routes.profile, Icons.person_outline),
+  static const List<(String label, IconData icon)> _navigationItems = [
+    ('Home', Icons.home_outlined),
+    ('Docs', Icons.article_outlined),
+    ('Profile', Icons.person_outline),
   ];
 
-  void _onItemTapped(BuildContext context, int index) {
-    setState(() {
-      _currentIndex = index;
-    });
-    context.goNamed(_navigationItems[index].$2);
+  void _onItemTapped(int index) {
+    navigationShell.goBranch(
+      index,
+      initialLocation: index == navigationShell.currentIndex,
+    );
   }
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    body: widget.child,
+    body: navigationShell,
     bottomNavigationBar: Container(
       decoration: BoxDecoration(
         boxShadow: [
           BoxShadow(
-            color: DsColors.overlay,
+            color: DsColors.navigationBarShadow,
             blurRadius: DsSizing.size8,
             offset: Offset(0, -DsSizing.size2),
           ),
         ],
       ),
       child: NavigationBar(
-        selectedIndex: _currentIndex,
-        onDestinationSelected: (index) => _onItemTapped(context, index),
+        selectedIndex: navigationShell.currentIndex,
+        onDestinationSelected: _onItemTapped,
         destinations: _navigationItems
             .map(
               (item) => NavigationDestination(
-                icon: Icon(item.$3),
-                selectedIcon: Icon(item.$3),
+                icon: Icon(item.$2),
+                selectedIcon: Icon(item.$2),
                 label: item.$1,
               ),
             )

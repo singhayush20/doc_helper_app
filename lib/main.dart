@@ -4,8 +4,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 
 import 'core/router/router.dart';
+import 'design/foundations/ds_colors.dart' show DsColors;
 import 'design/theme/ds_theme.dart';
 import 'firebase_options.dart';
 
@@ -31,6 +33,15 @@ class MyApp extends StatelessWidget {
       theme: appTheme,
       debugShowCheckedModeBanner: false,
       routerConfig: router,
+      builder: (context, child) => GlobalLoaderOverlay(
+          overlayColor: DsColors.overlayColor,
+          overlayWidgetBuilder: (progress) => const Center(
+            child: CircularProgressIndicator(
+              color: DsColors.loadingIndicatorColorPrimary,
+            ),
+          ),
+          child: child!,
+        ),
     ),
   );
 }

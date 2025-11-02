@@ -20,6 +20,25 @@ final appTheme = ThemeData(
       statusBarIconBrightness: Brightness.dark,
     ),
   ),
+  dividerTheme: DividerThemeData(
+    thickness: DsBorderWidth.borderWidth1,
+    color: DsColors.divider,
+    space: DsBorderWidth.borderWidth1,
+  ),
+  listTileTheme: ListTileThemeData(
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(DsBorderRadius.borderRadius4),
+    ),
+    tileColor: DsColors.backgroundPrimary,
+    iconColor: DsColors.iconPrimary,
+    textColor: DsColors.textPrimary,
+    contentPadding: EdgeInsets.symmetric(
+      horizontal: DsSpacing.radialSpace8,
+      vertical: DsSpacing.radialSpace4,
+    ),
+    selectedTileColor: DsColors.backgroundSubtle,
+    dense: false,
+  ),
   navigationBarTheme: NavigationBarThemeData(
     backgroundColor: DsColors.surface,
     surfaceTintColor: DsColors.transparent,
@@ -49,7 +68,7 @@ final appTheme = ThemeData(
       );
     }),
     elevation: 8,
-    shadowColor: DsColors.overlay,
+    shadowColor: DsColors.navigationBarShadow,
   ),
   inputDecorationTheme: DsTextFormFieldStyle.primary,
   extensions: <ThemeExtension<dynamic>>[

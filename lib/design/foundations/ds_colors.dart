@@ -88,7 +88,7 @@ abstract class DsColors {
   // ==========================================
   // 5. BORDER COLORS
   // ==========================================
-  static const Color borderDefault = _BaseColors.neutral800;
+  static const Color borderDefault = _BaseColors.neutral300;
 
   static const Color borderSubtle = _BaseColors.neutral200;
 
@@ -218,7 +218,8 @@ abstract class DsColors {
   // UTILITY COLORS
   // ==========================================
   static const Color divider = _BaseColors.neutral200;
-  static const Color overlay = Color(0x52000000); // 32% black
+  static const Color navigationBarShadow = Color(0x52000000);
+  static const Color overlayColor = Color(0x95FFFFFF);
   static const Color transparent = Colors.transparent;
   static const Color white = _BaseColors.white;
   static const Color black = _BaseColors.black;
@@ -226,4 +227,6 @@ abstract class DsColors {
   // Purple gradient colors (for special effects)
   static const Color gradientStart = _BaseColors.purple600;
   static const Color gradientEnd = _BaseColors.purple800;
+
+  static const Color loadingIndicatorColorPrimary = primary;
 }

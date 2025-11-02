@@ -18,8 +18,8 @@ extension UserDocListDtoX on UserDocListDto {
     userDocs: userDocs?.map((e) => e.toDomain()).toList(),
     currentPageNumber: currentPageNumber,
     currentPageSize: currentPageSize,
-    isFirst: isFirst,
-    isLast: isLast,
+    first: first,
+    last: last,
   );
 }
 

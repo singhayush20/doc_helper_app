@@ -25,22 +25,32 @@ class _BaseListTile extends StatelessWidget {
   final Color? backgroundColor;
 
   @override
-  Widget build(BuildContext context) => ListTile(
-    leading: leading,
-    trailing: trailing,
-    onTap: onTap,
-    title: title,
-    subtitle: subtitle,
-    tileColor: backgroundColor ?? DsColors.backgroundPrimary,
-    shape: RoundedRectangleBorder(
-      borderRadius:
-          borderRadius ?? BorderRadius.circular(DsBorderRadius.borderRadius4),
-      side: (borderColor == null)
-          ? BorderSide.none
-          : BorderSide(
-              color: borderColor ?? DsColors.borderPrimary,
-              width: borderWidth ?? DsBorderWidth.borderWidth1,
-            ),
-    ),
-  );
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context).listTileTheme;
+
+    return Card(
+      margin: EdgeInsets.zero,
+      elevation: 0,
+      clipBehavior: Clip.antiAlias,
+      color: backgroundColor ?? theme.tileColor ?? DsColors.backgroundPrimary,
+      shape: RoundedRectangleBorder(
+        borderRadius: borderRadius ??
+            (theme.shape as RoundedRectangleBorder?)?.borderRadius ??
+            BorderRadius.circular(DsBorderRadius.borderRadius4),
+        side: (borderColor == null)
+            ? BorderSide.none
+            : BorderSide(
+          color: borderColor ?? DsColors.borderPrimary,
+          width: borderWidth ?? DsBorderWidth.borderWidth1,
+        ),
+      ),
+      child: ListTile(
+        leading: leading,
+        trailing: trailing,
+        onTap: onTap,
+        title: title,
+        subtitle: subtitle,
+      ),
+    );
+  }
 }

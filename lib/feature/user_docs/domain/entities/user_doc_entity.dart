@@ -20,8 +20,8 @@ abstract class UserDocList with _$UserDocList {
     List<UserDoc>? userDocs,
     int? currentPageNumber,
     int? currentPageSize,
-    bool? isFirst,
-    bool? isLast,
+    bool? first,
+    bool? last,
   }) = _UserDocList;
 }
 

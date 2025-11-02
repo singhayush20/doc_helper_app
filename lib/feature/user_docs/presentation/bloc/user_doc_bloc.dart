@@ -12,7 +12,9 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:injectable/injectable.dart';
 
 part 'user_doc_bloc.freezed.dart';
+
 part 'user_doc_event.dart';
+
 part 'user_doc_state.dart';
 
 @injectable
@@ -39,19 +41,26 @@ class UserDocBloc extends BaseBloc<UserDocEvent, UserDocState> {
   }
 
   Future<void> _onFetchNextPage(_, Emitter<UserDocState> emit) async {
+    if (state.store.userDocsPagingState.isLoading) return;
+
     emit(
       UserDocState.onNextPageFetchStart(
-        store: state.store..userDocsPagingState.copyWith(isLoading: true),
+        store: state.store.copyWith(
+          userDocsPagingState: state.store.userDocsPagingState.copyWith(
+            isLoading: true,
+            error: null,
+          ),
+        ),
       ),
     );
 
-    final currentPage = state.store.userDocList?.currentPageNumber;
-    final pageSize = state.store.userDocList?.currentPageSize ?? 10;
+    final nextPageKey = state.store.userDocsPagingState.keys?.length ?? 0;
+    final pageSize = 10;
     final sortDirection = 'desc';
     final sortField = 'CREATED_AT';
 
     final userDocResponseOrFailure = await _userDocFacade.getAllDocs(
-      page: currentPage != null ? currentPage + 1 : 0,
+      page: nextPageKey,
       size: pageSize,
       sortField: sortField,
       direction: sortDirection,
@@ -71,17 +80,15 @@ class UserDocBloc extends BaseBloc<UserDocEvent, UserDocState> {
         ),
       ),
       (userDocList) {
-        final isLast = userDocList.isLast ?? true;
+        final isLast = userDocList.last ?? true;
         final newItems = userDocList.userDocs ?? [];
         final currentPageState = state.store.userDocsPagingState;
+
         final updatedPagingState = currentPageState.copyWith(
           isLoading: false,
           hasNextPage: !isLast,
           pages: [...currentPageState.pages ?? [], newItems],
-          keys: [
-            ...?currentPageState.keys,
-            (userDocList.currentPageNumber ?? 0),
-          ],
+          keys: [...?currentPageState.keys, nextPageKey],
         );
 
         emit(

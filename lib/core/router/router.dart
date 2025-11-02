@@ -9,9 +9,21 @@ import 'package:doc_helper_app/feature/main/presentation/ui/landing_page.dart';
 import 'package:doc_helper_app/feature/profile/presentation/ui/profile_page.dart';
 import 'package:doc_helper_app/feature/splash_screen/presentation/ui/splash_page.dart';
 import 'package:doc_helper_app/feature/user_docs/presentation/ui/user_docs_page.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'auth_notifier.dart';
+
+// Create GlobalKeys for each navigation branch
+final _shellNavigatorHomeKey = GlobalKey<NavigatorState>(
+  debugLabel: 'shellHome',
+);
+final _shellNavigatorDocsKey = GlobalKey<NavigatorState>(
+  debugLabel: 'shellDocs',
+);
+final _shellNavigatorProfileKey = GlobalKey<NavigatorState>(
+  debugLabel: 'shellProfile',
+);
 
 GoRouter buildRouter(AuthNotifier authNotifier) => GoRouter(
   initialLocation: '/splash',
@@ -60,23 +72,43 @@ GoRouter buildRouter(AuthNotifier authNotifier) => GoRouter(
       path: '/emailVerification',
       builder: (context, state) => const EmailVerificationPage(),
     ),
-    ShellRoute(
-      builder: (context, state, child) => LandingPage(child: child),
-      routes: [
-        GoRoute(
-          name: Routes.home,
-          path: '/home',
-          builder: (context, state) => const HomePage(),
+    StatefulShellRoute.indexedStack(
+      builder: (context, state, navigationShell) {
+        return LandingPage(navigationShell: navigationShell);
+      },
+      branches: [
+        StatefulShellBranch(
+          navigatorKey: _shellNavigatorHomeKey,
+          routes: [
+            GoRoute(
+              name: Routes.home,
+              path: '/home',
+              pageBuilder: (context, state) =>
+                  const NoTransitionPage(child: HomePage()),
+            ),
+          ],
         ),
-        GoRoute(
-          name: Routes.docs,
-          path: '/docs',
-          builder: (context, state) => const UserDocsPage(),
+        StatefulShellBranch(
+          navigatorKey: _shellNavigatorDocsKey,
+          routes: [
+            GoRoute(
+              name: Routes.docs,
+              path: '/docs',
+              pageBuilder: (context, state) =>
+                  const NoTransitionPage(child: UserDocsPage()),
+            ),
+          ],
         ),
-        GoRoute(
-          name: Routes.profile,
-          path: '/profile',
-          builder: (context, state) => const ProfilePage(),
+        StatefulShellBranch(
+          navigatorKey: _shellNavigatorProfileKey,
+          routes: [
+            GoRoute(
+              name: Routes.profile,
+              path: '/profile',
+              pageBuilder: (context, state) =>
+                  const NoTransitionPage(child: ProfilePage()),
+            ),
+          ],
         ),
       ],
     ),

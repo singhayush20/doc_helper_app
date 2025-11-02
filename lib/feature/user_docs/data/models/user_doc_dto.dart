@@ -28,8 +28,8 @@ class UserDocListDto {
     this.userDocs,
     this.currentPageNumber,
     this.currentPageSize,
-    this.isFirst,
-    this.isLast,
+    this.first,
+    this.last,
   });
 
   factory UserDocListDto.fromJson(Map<String, dynamic> json) =>
@@ -40,8 +40,8 @@ class UserDocListDto {
   final List<UserDocDto>? userDocs;
   final int? currentPageNumber;
   final int? currentPageSize;
-  final bool? isFirst;
-  final bool? isLast;
+  final bool? first;
+  final bool? last;
 }
 
 @JsonSerializable()
