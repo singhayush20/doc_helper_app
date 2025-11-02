@@ -2,10 +2,14 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'user_doc_dto.g.dart';
 
-// TODO: Need to be verified and fixed
 @JsonSerializable()
 class UserDocDto {
-  const UserDocDto({this.id, this.fileName, this.status});
+  const UserDocDto({
+    this.id,
+    this.fileName,
+    this.originalFilename,
+    this.status,
+  });
 
   factory UserDocDto.fromJson(Map<String, dynamic> json) =>
       _$UserDocDtoFromJson(json);
@@ -14,25 +18,30 @@ class UserDocDto {
 
   final int? id;
   final String? fileName;
+  final String? originalFilename;
   final String? status;
 }
 
 @JsonSerializable()
 class UserDocListDto {
-  const UserDocListDto({this.docs, this.total, this.page, this.size});
+  const UserDocListDto({
+    this.userDocs,
+    this.currentPageNumber,
+    this.currentPageSize,
+    this.isFirst,
+    this.isLast,
+  });
 
   factory UserDocListDto.fromJson(Map<String, dynamic> json) =>
       _$UserDocListDtoFromJson(json);
 
   Map<String, dynamic> toJson() => _$UserDocListDtoToJson(this);
 
-  @JsonKey(name: 'content')
-  final List<UserDocDto>? docs;
-  @JsonKey(name: 'totalElements')
-  final int? total;
-  @JsonKey(name: 'number')
-  final int? page;
-  final int? size;
+  final List<UserDocDto>? userDocs;
+  final int? currentPageNumber;
+  final int? currentPageSize;
+  final bool? isFirst;
+  final bool? isLast;
 }
 
 @JsonSerializable()
