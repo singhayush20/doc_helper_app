@@ -14,6 +14,7 @@ final appTheme = ThemeData(
       size: DsSizing.size24,
     ),
     backgroundColor: DsColors.backgroundPrimary,
+    surfaceTintColor: DsColors.backgroundPrimary,
     scrolledUnderElevation: 4,
     systemOverlayStyle: const SystemUiOverlayStyle(
       statusBarBrightness: Brightness.light,
