@@ -24,5 +24,4 @@ abstract class IUserDocFacade {
     required int page,
     required int size,
   });
-
 }

@@ -1,5 +1,6 @@
 import 'package:doc_helper_app/core/common/base_bloc/base_bloc.dart';
 import 'package:doc_helper_app/core/common/constants/media_constants/image_keys.dart';
+import 'package:doc_helper_app/core/router/route_mapper.dart';
 import 'package:doc_helper_app/core/value_objects/value_objects.dart';
 import 'package:doc_helper_app/design/atoms/typography/ds_text.dart';
 import 'package:doc_helper_app/design/design.dart'
@@ -14,6 +15,7 @@ import 'package:doc_helper_app/feature/user_docs/presentation/bloc/user_doc_bloc
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 
@@ -24,14 +26,19 @@ class UserDocsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => BlocProvider<UserDocBloc>(
-        create: (_) => getIt<UserDocBloc>()..started(),
-        child: const Scaffold(
-          resizeToAvoidBottomInset: true,
-          appBar: PrimaryAppBar(
-            titleText: 'Documents',
-            backButtonRequired: false,
-          ),
-          body: SafeArea(child: _UserDocsForm()),
-        ),
-      );
+    create: (_) => getIt<UserDocBloc>()..started(),
+    child: Scaffold(
+      resizeToAvoidBottomInset: true,
+      appBar: const PrimaryAppBar(
+        titleText: 'Documents',
+        backButtonRequired: false,
+      ),
+      body: const SafeArea(child: _UserDocsForm()),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: DsColors.buttonPrimary,
+        onPressed: () => context.pushNamed(Routes.docUpload),
+        child: const Icon(Icons.upload_file, color: DsColors.buttonPrimaryText),
+      ),
+    ),
+  );
 }
