@@ -43,6 +43,7 @@ class UserDocBloc extends BaseBloc<UserDocEvent, UserDocState> {
     on<_SearchRequested>(_onSearchRequested);
     on<_FetchNextSearchPage>(_onFetchNextSearchPage);
     on<_SearchCleared>(_onSearchCleared);
+    on<_OnPageRefreshed>(_onPageRefreshed);
   }
 
   Future<void> _onStarted(_Started event, Emitter<UserDocState> emit) async {
@@ -319,6 +320,37 @@ class UserDocBloc extends BaseBloc<UserDocEvent, UserDocState> {
     }
   }
 
+  Future<void> _onPageRefreshed(
+    _OnPageRefreshed event,
+    Emitter<UserDocState> emit,
+  ) async {
+    _searchDebounce?.cancel();
+
+    final store = state.store;
+
+    if (store.isSearchMode && store.searchQuery.length >= 3) {
+      emit(
+        UserDocState.onNextPageFetchStart(
+          store: store.copyWith(searchPagingState: PagingState<int, UserDoc>()),
+        ),
+      );
+
+      searchRequested(store.searchQuery);
+      return;
+    }
+
+    emit(
+      UserDocState.onNextPageFetchStart(
+        store: store.copyWith(
+          userDocsPagingState: PagingState<int, UserDoc>(),
+          userDocList: null,
+        ),
+      ),
+    );
+
+   fetchNextPage();
+  }
+
   @override
   void started({Map<String, dynamic>? args}) {
     add(const UserDocEvent.started());
@@ -339,4 +371,6 @@ class UserDocBloc extends BaseBloc<UserDocEvent, UserDocState> {
   void fetchNextSearchPage() => add(const UserDocEvent.fetchNextSearchPage());
 
   void searchCleared() => add(const UserDocEvent.searchCleared());
+
+  void onPageRefreshed() => add(const UserDocEvent.onPageRefreshed());
 }

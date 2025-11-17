@@ -11,29 +11,33 @@ class _UserDocsForm extends StatelessWidget {
         children: [
           const UserDocsSearchBar(),
           Expanded(
-            child: PagedListView<int, UserDoc>.separated(
-              state: (state.store.searchQuery.isNotEmpty)
-                  ? state.store.searchPagingState
-                  : state.store.userDocsPagingState,
-              shrinkWrap: true,
-              fetchNextPage: () =>
-                  getBloc<UserDocBloc>(context).fetchNextPage(),
-              separatorBuilder: (context, index) => const Divider(),
-              builderDelegate: PagedChildBuilderDelegate<UserDoc>(
-                itemBuilder: (context, item, index) =>
-                    _DocumentItem(userDoc: item),
-                firstPageErrorIndicatorBuilder: (_) =>
-                    const _FirstPageErrorWidget(),
-                noItemsFoundIndicatorBuilder: (_) =>
-                    const _NoItemFoundBuilder(),
-                firstPageProgressIndicatorBuilder: (_) =>
-                    const _FirstPageShimmer(),
-                newPageErrorIndicatorBuilder: (_) =>
-                    const _NewPageErrorIndicator(),
-                newPageProgressIndicatorBuilder: (_) =>
-                    const _NewPageProgressIndicator(),
-                noMoreItemsIndicatorBuilder: (_) =>
-                    const _NoMoreItemsIndicator(),
+            child: RefreshIndicator(
+              onRefresh: () async =>
+                  getBloc<UserDocBloc>(context).onPageRefreshed(),
+              child: PagedListView<int, UserDoc>.separated(
+                state: (state.store.isSearchMode)
+                    ? state.store.searchPagingState
+                    : state.store.userDocsPagingState,
+                shrinkWrap: true,
+                fetchNextPage: () =>
+                    getBloc<UserDocBloc>(context).fetchNextPage(),
+                separatorBuilder: (context, index) => const Divider(),
+                builderDelegate: PagedChildBuilderDelegate<UserDoc>(
+                  itemBuilder: (context, item, index) =>
+                      _DocumentItem(userDoc: item),
+                  firstPageErrorIndicatorBuilder: (_) =>
+                      const _FirstPageErrorWidget(),
+                  noItemsFoundIndicatorBuilder: (_) =>
+                      const _NoItemFoundBuilder(),
+                  firstPageProgressIndicatorBuilder: (_) =>
+                      const _FirstPageShimmer(),
+                  newPageErrorIndicatorBuilder: (_) =>
+                      const _NewPageErrorIndicator(),
+                  newPageProgressIndicatorBuilder: (_) =>
+                      const _NewPageProgressIndicator(),
+                  noMoreItemsIndicatorBuilder: (_) =>
+                      const _NoMoreItemsIndicator(),
+                ),
               ),
             ),
           ),
