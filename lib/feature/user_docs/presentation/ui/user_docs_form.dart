@@ -1,39 +1,46 @@
 part of 'user_docs_page.dart';
 
-class _UserDocsForm extends StatefulWidget {
+class _UserDocsForm extends StatelessWidget {
   const _UserDocsForm();
 
   @override
-  State<_UserDocsForm> createState() => _UserDocsFormState();
-}
-
-class _UserDocsFormState extends State<_UserDocsForm> {
-  @override
-  Widget build(BuildContext context) {
-    final bloc = context.read<UserDocBloc>();
-
-    return BlocBuilder<UserDocBloc, UserDocState>(
-      builder: (context, state) => Padding(
-        padding: EdgeInsets.symmetric(horizontal: DsSpacing.radialSpace12),
-        child: PagedListView<int, UserDoc>.separated(
-          state: state.store.userDocsPagingState,
-          fetchNextPage: () => bloc.fetchNextPage(),
-          separatorBuilder: (context, index) => const Divider(),
-          builderDelegate: PagedChildBuilderDelegate<UserDoc>(
-            itemBuilder: (context, item, index) => _DocumentItem(userDoc: item),
-            firstPageErrorIndicatorBuilder: (_) =>
-                const _FirstPageErrorWidget(),
-            noItemsFoundIndicatorBuilder: (_) => const _NoItemFoundBuilder(),
-            firstPageProgressIndicatorBuilder: (_) => const _FirstPageShimmer(),
-            newPageErrorIndicatorBuilder: (_) => const _NewPageErrorIndicator(),
-            newPageProgressIndicatorBuilder: (_) =>
-                const _NewPageProgressIndicator(),
-            noMoreItemsIndicatorBuilder: (_) => const _NoMoreItemsIndicator(),
+  Widget build(BuildContext context) => BlocBuilder<UserDocBloc, UserDocState>(
+    builder: (context, state) => Padding(
+      padding: EdgeInsets.symmetric(horizontal: DsSpacing.radialSpace12),
+      child: Column(
+        children: [
+          const UserDocsSearchBar(),
+          Expanded(
+            child: PagedListView<int, UserDoc>.separated(
+              state: (state.store.searchQuery.isNotEmpty)
+                  ? state.store.searchPagingState
+                  : state.store.userDocsPagingState,
+              shrinkWrap: true,
+              fetchNextPage: () =>
+                  getBloc<UserDocBloc>(context).fetchNextPage(),
+              separatorBuilder: (context, index) => const Divider(),
+              builderDelegate: PagedChildBuilderDelegate<UserDoc>(
+                itemBuilder: (context, item, index) =>
+                    _DocumentItem(userDoc: item),
+                firstPageErrorIndicatorBuilder: (_) =>
+                    const _FirstPageErrorWidget(),
+                noItemsFoundIndicatorBuilder: (_) =>
+                    const _NoItemFoundBuilder(),
+                firstPageProgressIndicatorBuilder: (_) =>
+                    const _FirstPageShimmer(),
+                newPageErrorIndicatorBuilder: (_) =>
+                    const _NewPageErrorIndicator(),
+                newPageProgressIndicatorBuilder: (_) =>
+                    const _NewPageProgressIndicator(),
+                noMoreItemsIndicatorBuilder: (_) =>
+                    const _NoMoreItemsIndicator(),
+              ),
+            ),
           ),
-        ),
+        ],
       ),
-    );
-  }
+    ),
+  );
 }
 
 class _DocumentItem extends StatelessWidget {
@@ -319,6 +326,47 @@ class _NoMoreItemsIndicator extends StatelessWidget {
       child: DsText.bodySmall(
         data: "You've reached the end of the list.",
         color: DsColors.textTertiary,
+      ),
+    ),
+  );
+}
+
+class UserDocsSearchBar extends StatefulWidget {
+  const UserDocsSearchBar({super.key});
+
+  @override
+  State<UserDocsSearchBar> createState() => _UserDocsSearchBarState();
+}
+
+class _UserDocsSearchBarState extends State<UserDocsSearchBar> {
+  final TextEditingController _controller = TextEditingController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => BlocBuilder<UserDocBloc, UserDocState>(
+    builder: (context, state) => Padding(
+      padding: EdgeInsets.symmetric(vertical: DsSpacing.verticalSpace12),
+      child: SearchQueryTextFormField(
+        value: SearchQuery(state.store.searchQuery),
+        controller: _controller,
+        hintText: 'Search Documents...',
+        prefixIcon: Icons.search,
+        suffixIconWidget: state.store.searchQuery.isNotEmpty
+            ? IconButton(
+                icon: const Icon(Icons.clear),
+                onPressed: () {
+                  _controller.clear();
+                  getBloc<UserDocBloc>(context).searchQueryChanged('');
+                },
+              )
+            : null,
+        onChanged: (value) =>
+            getBloc<UserDocBloc>(context).searchQueryChanged(value),
       ),
     ),
   );

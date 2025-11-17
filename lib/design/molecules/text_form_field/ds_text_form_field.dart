@@ -120,3 +120,19 @@ class PasswordTextFormField extends PrimaryTextFormField {
          autoFillHints: const [AutofillHints.password],
        );
 }
+
+class SearchQueryTextFormField extends PrimaryTextFormField {
+  const SearchQueryTextFormField({
+    required super.value,
+    super.key,
+    super.onChanged,
+    super.onTap,
+    super.hintText,
+    super.controller,
+    super.prefixIcon,
+    super.suffixIconWidget,
+    super.readOnly,
+  }) : super(
+    textInputAction: TextInputAction.done,
+  );
+}
