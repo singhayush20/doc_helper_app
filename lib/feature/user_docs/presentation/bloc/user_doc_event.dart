@@ -16,4 +16,6 @@ sealed class UserDocEvent extends BaseEvent with _$UserDocEvent {
   const factory UserDocEvent.fetchNextSearchPage() = _FetchNextSearchPage;
 
   const factory UserDocEvent.searchCleared() = _SearchCleared;
+
+  const factory UserDocEvent.onPageRefreshed() = _OnPageRefreshed;
 }
