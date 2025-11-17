@@ -4,7 +4,6 @@ import 'package:doc_helper_app/design/atoms/typography/ds_text.dart';
 import 'package:doc_helper_app/design/design.dart'
     show DsColors, DsSpacing, PrimaryAppBar, DsListTile, DsImage;
 import 'package:doc_helper_app/design/foundations/ds_border_radius.dart';
-import 'package:doc_helper_app/design/molecules/list_tile/list_tile_subtitle.dart';
 import 'package:doc_helper_app/design/molecules/list_tile/list_tile_title.dart';
 import 'package:doc_helper_app/di/injection.dart';
 import 'package:doc_helper_app/feature/user_docs/domain/entities/user_doc_entity.dart';

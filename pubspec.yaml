@@ -37,6 +37,8 @@ dependencies:
   pinput: ^5.0.2
   infinite_scroll_pagination: ^5.1.1
   shimmer_animation: ^2.2.2
+  permission_handler: ^12.0.1
+  file_picker: ^10.3.3
 
 dev_dependencies:
   flutter_test:

@@ -73,9 +73,8 @@ GoRouter buildRouter(AuthNotifier authNotifier) => GoRouter(
       builder: (context, state) => const EmailVerificationPage(),
     ),
     StatefulShellRoute.indexedStack(
-      builder: (context, state, navigationShell) {
-        return LandingPage(navigationShell: navigationShell);
-      },
+      builder: (context, state, navigationShell) =>
+          LandingPage(navigationShell: navigationShell),
       branches: [
         StatefulShellBranch(
           navigatorKey: _shellNavigatorHomeKey,

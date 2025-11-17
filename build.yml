@@ -38,6 +38,7 @@ targets:
             - lib/di/injection_register_module.dart
             - lib/features/**/data/infra/**_facade.dart
             - lib/core/router/auth_notifier.dart
+            - lib/core/permission_handler/permission_handler_facade.dart
 
       injectable_generator:injectable_config_builder:
         enabled: true
