@@ -20,6 +20,14 @@ sealed class UserDocState extends BaseState with _$UserDocState {
     required UserDocStateStore store,
   }) = OnNextPageFetch;
 
+  const factory UserDocState.onSearchQueryChange({
+    required UserDocStateStore store,
+  }) = OnSearchQueryChange;
+
+  const factory UserDocState.onSearchCleared({
+    required UserDocStateStore store,
+  }) = OnSearchCleared;
+
   const factory UserDocState.invalidateLoader({
     required UserDocStateStore store,
   }) = InvalidateLoader;
@@ -45,6 +53,11 @@ sealed class UserDocStateStore with _$UserDocStateStore {
   const factory UserDocStateStore({
     required PagingState<int, UserDoc> userDocsPagingState,
     UserDocList? userDocList,
+    @Default(false) bool isSearchMode,
+    @Default('') String searchQuery,
+    @Default('') String lastSearchedQuery,
+    required PagingState<int, UserDoc> searchPagingState,
+    UserDocList? searchUserDocList,
     @Default(false) bool loading,
   }) = _UserDocStateStore;
 }

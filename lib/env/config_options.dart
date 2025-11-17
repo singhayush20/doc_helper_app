@@ -7,7 +7,7 @@ abstract class IConfigOptions {
 
 class DevConfigOptions implements IConfigOptions {
   @override
-  String get baseUrl => 'http://192.168.1.6:8086';
+  String get baseUrl => 'http://172.21.160.1:8086';
 
   @override
   String get env => Env.dev;

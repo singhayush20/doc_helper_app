@@ -43,3 +43,6 @@ Either<ValueFailure<String>, String> validateOtp(String input) {
   }
   return left(ValueFailure.invalidOtp(failedValue: input));
 }
+
+Either<ValueFailure<String>, String> validateSearchQuery(String input) =>
+    right(input);

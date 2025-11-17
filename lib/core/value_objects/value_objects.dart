@@ -48,3 +48,15 @@ class Otp extends IValueObject<String> {
   @override
   final Either<ValueFailure<String>, String> value;
 }
+
+@immutable
+class SearchQuery extends IValueObject<String> {
+  const SearchQuery._(this.value, {String? initialValue})
+    : super(initialValue, null);
+
+  factory SearchQuery(String input) =>
+      SearchQuery._(validateSearchQuery(input), initialValue: input);
+
+  @override
+  final Either<ValueFailure<String>, String> value;
+}

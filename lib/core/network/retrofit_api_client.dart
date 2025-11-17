@@ -68,4 +68,11 @@ abstract class RetrofitApiClient {
 
   @GET('/api/v1/user/user-info')
   Future<HttpResponse> getUserInfo();
+
+  @GET('/api/v1/user-docs/search')
+  Future<HttpResponse> getDocSearchResults(
+    @Query('query') String query,
+    @Query('page') int page,
+    @Query('size') int size,
+  );
 }

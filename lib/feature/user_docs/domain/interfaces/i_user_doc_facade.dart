@@ -18,4 +18,11 @@ abstract class IUserDocFacade {
   Future<Either<ServerException, FileDeletionResponse>> deleteDocument(
     int documentId,
   );
+
+  Future<Either<ServerException, UserDocList>> getDocSearchResults({
+    required String query,
+    required int page,
+    required int size,
+  });
+
 }

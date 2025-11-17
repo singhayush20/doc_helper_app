@@ -64,4 +64,21 @@ class UserDocFacadeImpl implements IUserDocFacade {
       return right(dto.toDomain());
     });
   }
+
+  @override
+  Future<Either<ServerException, UserDocList>> getDocSearchResults({
+    required String query,
+    required int page,
+    required int size,
+  }) async {
+    final responseOrError = await _apiCallHandler.handleApi(
+      _retrofitApiClient.getDocSearchResults,
+      [query,page,size],
+    );
+
+    return responseOrError.fold((error) => left(error), (response) {
+      final dto = UserDocListDto.fromJson(response.data);
+      return right(dto.toDomain());
+    });
+  }
 }
