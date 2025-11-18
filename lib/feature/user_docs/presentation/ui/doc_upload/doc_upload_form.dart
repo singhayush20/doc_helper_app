@@ -62,16 +62,18 @@ class _DocUploadForm extends StatelessWidget {
             ),
           ),
           if (state.store.isUploading ||
-              state.store.errorMessage != null ||
-              state.store.uploadResponse != null)
+              state.store.uploadError != null ||
+              state.store.uploadResponse != null ||
+              state is OnUploadSuccess)
             UploadDocCard(
               fileName: state.store.fileName.isEmpty
                   ? 'Selected document'
                   : state.store.fileName,
               progress: state.store.progress,
               isUploading: state.store.isUploading,
-              isError: state is OnException,
-              errorMessage: state.store.errorMessage,
+              isError:
+                  state is OnUploadFailure || state is OnUploadProgressError,
+              errorMessage: state.store.uploadError,
               onCancel: state.store.isUploading ? () {} : null,
             ),
         ],
@@ -112,7 +114,7 @@ class UploadDocCard extends StatelessWidget {
       ),
       padding: EdgeInsets.all(DsSpacing.radialSpace12),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
             height: 40.h,
@@ -130,7 +132,6 @@ class UploadDocCard extends StatelessWidget {
             ),
           ),
           SizedBox(width: DsSpacing.horizontalSpace12),
-
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -147,7 +148,6 @@ class UploadDocCard extends StatelessWidget {
                     color: DsColors.textError,
                   ),
                 ] else ...[
-                  // Progress bar
                   SizedBox(
                     height: 6.h,
                     child: ClipRRect(
@@ -175,21 +175,50 @@ class UploadDocCard extends StatelessWidget {
             ),
           ),
 
-          if (isUploading || onCancel != null)
-            IconButton(
-              icon: Icon(
-                isUploading ? Icons.close : Icons.check,
-                color: isError
-                    ? DsColors.error
-                    : (isUploading
-                          ? DsColors.textSecondary
-                          : DsColors.textSuccess),
-                size: 20.r,
-              ),
-              onPressed: isUploading ? onCancel : null,
-            ),
+          const UploadActionButton(),
         ],
       ),
     );
   }
+}
+
+class UploadActionButton extends StatelessWidget {
+  const UploadActionButton({super.key});
+
+  @override
+  Widget build(BuildContext context) =>
+      BlocBuilder<DocUploadBloc, DocUploadState>(
+        buildWhen: (prev, curr) =>
+            prev.store.isUploading != curr.store.isUploading ||
+            prev.store.uploadError != curr.store.uploadError ||
+            prev.store.progress != curr.store.progress,
+        builder: (context, state) {
+          final bloc = getBloc<DocUploadBloc>(context);
+          final store = state.store;
+
+          if (store.isUploading) {
+            return IconButton(
+              icon: Icon(Icons.close, size: DsSizing.size24),
+              onPressed: bloc.cancelUpload,
+            );
+          }
+
+          if (state is OnException) {
+            return DsTextButton.primary(
+              onTap: bloc.uploadRequested,
+              data: 'Retry',
+            );
+          }
+
+          if (state is OnUploadSuccess) {
+            return Icon(
+              Icons.check_circle,
+              color: DsColors.textSuccess,
+              size: DsSizing.size24,
+            );
+          }
+
+          return const SizedBox.shrink();
+        },
+      );
 }

@@ -14,95 +14,67 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
 part 'doc_upload_bloc.freezed.dart';
+
 part 'doc_upload_event.dart';
+
 part 'doc_upload_state.dart';
 
 @injectable
 class DocUploadBloc extends BaseBloc<DocUploadEvent, DocUploadState> {
   DocUploadBloc(this._userDocFacade)
-      : super(
-    const DocUploadState.initial(
-      store: DocUploadStateStore(
-        progress: 0,
-        isUploading: false,
-        fileName: '',
-      ),
-    ),
-  );
+    : super(
+        const DocUploadState.initial(
+          store: DocUploadStateStore(
+            progress: 0,
+            isUploading: false,
+            fileName: '',
+          ),
+        ),
+      );
 
   final IUserDocFacade _userDocFacade;
+
+  CancelToken? _cancelToken;
+  StreamSubscription<double>? _progressSubscription;
 
   @override
   void handleEvents() {
     on<_Started>(_onStarted);
     on<_UploadRequested>(_onUploadRequested);
     on<_FileSelected>(_onFileSelected);
+    on<_UploadCancelled>(_onUploadCancelled);
+    on<_UploadProgressUpdated>(_onUploadProgressUpdated);
+    on<_OnUploadProgressError>(_onUploadProgressError);
+    on<_UploadCompleted>(_onUploadCompleted);
   }
 
-  @override
-  void started({Map<String, dynamic>? args}) {
-    add(const DocUploadEvent.started());
-  }
-
-  Future<void> _onStarted(
-      _Started event,
-      Emitter<DocUploadState> emit,
-      ) async {
+  Future<void> _onStarted(_Started event, Emitter<DocUploadState> emit) async {
     emit(DocUploadState.initial(store: state.store));
   }
 
   Future<void> _onUploadRequested(
-      _UploadRequested event,
-      Emitter<DocUploadState> emit,
-      ) async {
+    _UploadRequested event,
+    Emitter<DocUploadState> emit,
+  ) async {
     final result = await FilePicker.platform.pickFiles(
       allowMultiple: false,
       type: FileType.custom,
-      allowedExtensions: ['pdf', 'doc', 'docx', 'txt'],
-      withData: false,
+      allowedExtensions: ['pdf', 'txt'],
     );
 
-    if (result == null || result.files.isEmpty) {
-      // user cancelled
-      return;
-    }
+    if (result == null || result.files.single.path == null) return;
 
-    final pickedFile = result.files.single;
-    final path = pickedFile.path;
-
-    if (path == null) {
-      emit(
-        DocUploadState.onException(
-          store: state.store.copyWith(
-            isUploading: false,
-            errorMessage: 'Unable to access selected file',
-          ),
-          exception: Exception('File path is null'),
-        ),
-      );
-      return;
-    }
-
-    add(DocUploadEvent.fileSelected(path));
+    add(DocUploadEvent.fileSelected(result.files.single.path!));
   }
 
-  Future<void> _onFileSelected(
-      _FileSelected event,
-      Emitter<DocUploadState> emit,
-      ) async {
-    final filePath = event.filePath;
+  Future<void> _startUpload(
+    String filePath,
+    Emitter<DocUploadState> emit,
+  ) async {
+    _cancelToken?.cancel();
+    _cancelToken = CancelToken();
+
     final file = File(filePath);
-
-    if (!await file.exists()) {
-      emit(
-        DocUploadState.onException(
-          store: state.store.copyWith(isUploading: false),
-          exception: Exception('File not found'),
-        ),
-      );
-      return;
-    }
-
     final fileName = file.uri.pathSegments.last;
 
     emit(
@@ -111,43 +83,107 @@ class DocUploadBloc extends BaseBloc<DocUploadEvent, DocUploadState> {
           isUploading: true,
           progress: 0,
           fileName: fileName,
-          errorMessage: null,
         ),
       ),
     );
 
-    try {
-      final multipart = await MultipartFile.fromFile(filePath);
+    final multipart = await MultipartFile.fromFile(filePath);
 
-      final responseOrFailure = await _userDocFacade.uploadDocument(multipart);
-
-      responseOrFailure.fold(
-            (exception) => handleException(emit, exception),
-            (uploadResponse) {
-          emit(
-            DocUploadState.onUploadSuccess(
-              store: state.store.copyWith(
-                isUploading: false,
-                progress: 1,
-                uploadResponse: uploadResponse,
-              ),
-            ),
-          );
-        },
-      );
-    } catch (e) {
-      emit(
-        DocUploadState.onException(
-          store: state.store.copyWith(
-            isUploading: false,
-            errorMessage: e.toString(),
-          ),
-          exception: Exception(e.toString()),
-        ),
-      );
-    }
+    _progressSubscription?.cancel();
+    _progressSubscription = _userDocFacade
+        .uploadDocument(file: multipart, cancelToken: _cancelToken!)
+        .listen(
+          (progress) => onUploadProgressUpdated(progress: progress),
+          onError: (error) => onUploadProgressError(),
+          onDone: () => onUploadCompleted(),
+          cancelOnError: true,
+        );
   }
 
-  void uploadRequested() =>
-      add(const DocUploadEvent.uploadRequested());
+  Future<void> _onFileSelected(
+    _FileSelected event,
+    Emitter<DocUploadState> emit,
+  ) async {
+    final file = File(event.filePath);
+    if (!await file.exists()) {
+      emit(
+        DocUploadState.onUploadFailure(
+          store: state.store.copyWith(
+            isUploading: false,
+            uploadError: 'File not found',
+          ),
+        ),
+      );
+      return;
+    }
+
+    await _startUpload(event.filePath, emit);
+  }
+
+  Future<void> _onUploadCancelled(
+    _UploadCancelled event,
+    Emitter<DocUploadState> emit,
+  ) async {
+    _cancelToken?.cancel('User cancelled upload');
+    await _progressSubscription?.cancel();
+
+    emit(
+      DocUploadState.onUploadCancel(
+        store: state.store.copyWith(isUploading: false, progress: 0),
+      ),
+    );
+  }
+
+  void _onUploadProgressUpdated(
+    _UploadProgressUpdated event,
+    Emitter<DocUploadState> emit,
+  ) => emit(
+    DocUploadState.uploadInProgress(
+      store: state.store.copyWith(progress: event.progress, isUploading: true),
+    ),
+  );
+
+  void _onUploadProgressError(
+    _OnUploadProgressError event,
+    Emitter<DocUploadState> emit,
+  ) => emit(
+    DocUploadState.onUploadProgressError(
+      store: state.store.copyWith(
+        isUploading: false,
+        uploadError: 'Error occurred when uploading file',
+      ),
+    ),
+  );
+
+  Future<void> _onUploadCompleted(_, Emitter<DocUploadState> emit) async {
+    emit(
+      DocUploadState.onUploadSuccess(
+        store: state.store.copyWith(isUploading: false, progress: 1),
+      ),
+    );
+  }
+
+  @override
+  void started({Map<String, dynamic>? args}) {
+    add(const DocUploadEvent.started());
+  }
+
+  @override
+  Future<void> close() {
+    _cancelToken?.cancel();
+    _progressSubscription?.cancel();
+    return super.close();
+  }
+
+  void uploadRequested() => add(const DocUploadEvent.uploadRequested());
+
+  void cancelUpload() => add(const DocUploadEvent.uploadCancelled());
+
+  void onUploadProgressUpdated({required double progress}) =>
+      add(DocUploadEvent.uploadProgressUpdated(progress: progress));
+
+  void onUploadProgressError() =>
+      add(const DocUploadEvent.onUploadProgressError());
+
+  void onUploadCompleted() => add(const DocUploadEvent.uploadCompleted());
 }

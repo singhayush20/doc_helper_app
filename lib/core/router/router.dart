@@ -77,7 +77,7 @@ GoRouter buildRouter(AuthNotifier authNotifier) => GoRouter(
       name: Routes.docUpload,
       path: '/docs/upload',
       pageBuilder: (context, state) =>
-      NoTransitionPage(child: DocUploadPage()),
+      const NoTransitionPage(child: DocUploadPage()),
     ),
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) =>

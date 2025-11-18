@@ -136,7 +136,7 @@ class LoggerInterceptor extends Interceptor {
         _blueColor,
       );
       _log(
-        '║ ${_blueColor}Follow Redirects:$_resetColor ${options.followRedirects}',
+        '''║ ${_blueColor}Follow Redirects:$_resetColor ${options.followRedirects}''',
         _blueColor,
       );
       _log(
@@ -244,7 +244,7 @@ class LoggerInterceptor extends Interceptor {
           _redColor,
         );
         _log(
-          '║ ${_redColor}Status Message:$_resetColor ${err.response?.statusMessage}',
+          '''║ ${_redColor}Status Message:$_resetColor ${err.response?.statusMessage}''',
           _redColor,
         );
 

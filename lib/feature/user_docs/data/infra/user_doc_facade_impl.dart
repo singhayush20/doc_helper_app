@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:doc_helper_app/core/exception_handling/server_exception.dart';
@@ -12,24 +14,50 @@ import 'package:injectable/injectable.dart';
 
 @Singleton(as: IUserDocFacade, env: injectionEnv)
 class UserDocFacadeImpl implements IUserDocFacade {
-  UserDocFacadeImpl(this._retrofitApiClient, this._apiCallHandler);
+  UserDocFacadeImpl(this._retrofitApiClient, this._apiCallHandler, this._dio);
 
   final RetrofitApiClient _retrofitApiClient;
   final ApiCallHandler _apiCallHandler;
+  final Dio _dio;
 
   @override
-  Future<Either<ServerException, FileUploadResponse>> uploadDocument(
-    MultipartFile file,
-  ) async {
-    final responseOrError = await _apiCallHandler.handleApi(
-      _retrofitApiClient.uploadDoc,
-      [file],
-    );
+  Stream<double> uploadDocument({
+    required MultipartFile file,
+    required CancelToken cancelToken,
+  }) {
+    final controller = StreamController<double>();
 
-    return responseOrError.fold((error) => left(error), (response) {
-      final dto = FileUploadResponseDto.fromJson(response.data);
-      return right(dto.toDomain());
-    });
+    Future<void> start() async {
+      try {
+        final formData = FormData.fromMap({'file': file});
+        await _dio.post(
+          '/api/v1/user-docs/upload',
+          data: formData,
+          cancelToken: cancelToken,
+          options: Options(contentType: 'multipart/form-data'),
+          onSendProgress: (sent, total) {
+            final progress = total == 0 ? 0.0 : sent / total;
+            if (!cancelToken.isCancelled) {
+              controller.add(progress);
+            }
+          },
+        );
+        controller.add(1.0);
+        await controller.close();
+      } on DioException catch (e) {
+        if (CancelToken.isCancel(e)) {
+          controller.addError(Exception('Upload cancelled'));
+        } else {
+          controller.addError(Exception('Upload failed'));
+        }
+        await controller.close();
+      } catch (e) {
+        controller.addError(e);
+        await controller.close();
+      }
+    }
+    start();
+    return controller.stream;
   }
 
   @override

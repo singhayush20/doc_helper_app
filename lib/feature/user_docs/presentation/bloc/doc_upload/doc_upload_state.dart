@@ -20,6 +20,14 @@ sealed class DocUploadState extends BaseState with _$DocUploadState {
     required DocUploadStateStore store,
   }) = OnUploadCancel;
 
+  const factory DocUploadState.onUploadProgressError({
+    required DocUploadStateStore store,
+}) = OnUploadProgressError;
+
+  const factory DocUploadState.onUploadFailure({
+    required DocUploadStateStore store,
+}) = OnUploadFailure;
+
   const factory DocUploadState.invalidateLoader({
     required DocUploadStateStore store,
   }) = InvalidateLoader;
@@ -48,8 +56,8 @@ sealed class DocUploadStateStore with _$DocUploadStateStore {
     required double progress,
     required bool isUploading,
     required String fileName,
+    String? uploadError,
     FileUploadResponse? uploadResponse,
-    String? errorMessage,
     @Default(false) bool loading,
   }) = _DocUploadStateStore;
 }
