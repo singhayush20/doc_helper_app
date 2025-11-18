@@ -41,7 +41,8 @@ abstract class RetrofitApiClient {
 
   @POST('/api/v1/user-docs/upload')
   @MultiPart()
-  Future<HttpResponse> uploadDoc(@Part() MultipartFile file);
+  Future<HttpResponse> uploadDoc(
+    @Part() MultipartFile file);
 
   @GET('/api/v1/user-docs/all')
   Future<HttpResponse> getAllDocs(
