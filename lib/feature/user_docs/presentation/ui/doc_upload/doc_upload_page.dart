@@ -1,7 +1,9 @@
+import 'package:doc_helper_app/core/common/base_bloc/base_bloc.dart';
 import 'package:doc_helper_app/design/atoms/typography/ds_text.dart';
 import 'package:doc_helper_app/design/design.dart'
     show DsColors, DsSpacing, PrimaryAppBar;
 import 'package:doc_helper_app/design/foundations/ds_border_radius.dart';
+import 'package:doc_helper_app/design/foundations/ds_sizing.dart';
 import 'package:doc_helper_app/di/injection.dart';
 import 'package:doc_helper_app/feature/user_docs/presentation/bloc/doc_upload/doc_upload_bloc.dart';
 import 'package:flutter/material.dart';

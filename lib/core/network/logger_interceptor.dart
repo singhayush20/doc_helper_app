@@ -11,8 +11,6 @@ const String _blueColor = '\x1B[34m';
 const String _cyanColor = '\x1B[36m';
 
 class LoggerInterceptor extends Interceptor {
-  // Option to log request as cURL command
-
   LoggerInterceptor({
     bool? showRequest,
     bool? showResponse,
@@ -34,6 +32,7 @@ class LoggerInterceptor extends Interceptor {
        _showErrorHeader = showErrorHeader ?? true,
        _showErrorBody = showErrorBody ?? true,
        _showCurl = showCurl ?? false;
+
   final bool _showRequest;
   final bool _showResponse;
   final bool _showError;
@@ -51,29 +50,74 @@ class LoggerInterceptor extends Interceptor {
     }
   }
 
-  String _formatJson(dynamic json) {
-    if (json == null) return 'null';
-    const encoder = JsonEncoder.withIndent('  ');
-    return encoder.convert(json);
+  String _formatJson(dynamic data) {
+    if (data == null) return 'null';
+
+    // Special case: multipart FormData
+    if (data is FormData) {
+      final fields = <String, String>{
+        for (final entry in data.fields) entry.key: entry.value,
+      };
+
+      final files = <String, dynamic>{
+        for (final entry in data.files)
+          entry.key: {
+            'filename': entry.value.filename,
+            'contentType': entry.value.contentType?.toString(),
+          },
+      };
+
+      return 'FormData('
+          'fields: ${jsonEncode(fields)}, '
+          'files: ${jsonEncode(files)}'
+          ')';
+    }
+
+    // Pretty print JSON-like structures
+    if (data is Map || data is List) {
+      try {
+        const encoder = JsonEncoder.withIndent('  ');
+        return encoder.convert(data);
+      } catch (_) {
+        // fall through to toString()
+      }
+    }
+
+    // Fallback for scalars / unknown types
+    return data.toString();
   }
 
   String _generateCurlCommand(RequestOptions options) {
     var command = 'curl';
     command += ' -X ${options.method}';
 
+    // Headers
     options.headers.forEach((key, value) {
       if (key.toLowerCase() != 'content-length') {
         command += ' -H \'$key: $value\'';
       }
     });
 
-    if (options.data != null) {
-      if (options.data is Map || options.data is List) {
-        command += ' -d \'${_formatJson(options.data)}\'';
+    final data = options.data;
+    if (data != null) {
+      if (data is FormData) {
+        // Multipart cURL representation
+        for (final field in data.fields) {
+          command += ' -F \'${field.key}=${field.value}\'';
+        }
+        for (final entry in data.files) {
+          final file = entry.value;
+          final contentType =
+              file.contentType?.mimeType ?? 'application/octet-stream';
+          command += ' -F \'${entry.key}=@${file.filename};type=$contentType\'';
+        }
+      } else if (data is Map || data is List) {
+        command += ' -d \'${_formatJson(data)}\'';
       } else {
-        command += ' -d \'${options.data.toString()}\'';
+        command += ' -d \'${data.toString()}\'';
       }
     }
+
     command += ' "${options.uri.toString()}"';
     return command;
   }
@@ -88,19 +132,19 @@ class LoggerInterceptor extends Interceptor {
       _log('║ ${_blueColor}URI:$_resetColor ${options.uri}', _blueColor);
       _log('║ ${_blueColor}Method:$_resetColor ${options.method}', _blueColor);
       _log(
-        '''║ ${_blueColor}Response Type:$_resetColor ${options.responseType.toString()}''',
+        '║ ${_blueColor}Response Type:$_resetColor ${options.responseType}',
         _blueColor,
       );
       _log(
-        '''║ ${_blueColor}Follow Redirects:$_resetColor ${options.followRedirects}''',
+        '║ ${_blueColor}Follow Redirects:$_resetColor ${options.followRedirects}',
         _blueColor,
       );
       _log(
-        '''║ ${_blueColor}Connect Timeout:$_resetColor ${options.connectTimeout}''',
+        '║ ${_blueColor}Connect Timeout:$_resetColor ${options.connectTimeout}',
         _blueColor,
       );
       _log(
-        '''║ ${_blueColor}Receive Timeout:$_resetColor ${options.receiveTimeout}''',
+        '║ ${_blueColor}Receive Timeout:$_resetColor ${options.receiveTimeout}',
         _blueColor,
       );
       _log(
@@ -112,19 +156,23 @@ class LoggerInterceptor extends Interceptor {
         _log('║ ${_blueColor}Headers:', _blueColor);
         options.headers.forEach((key, v) => _log('║   $key: $v', _blueColor));
       }
+
       if (_showRequestBody && options.data != null) {
         _log('║ ${_blueColor}Body:', _blueColor);
         _log('║   ${_formatJson(options.data)}', _blueColor);
       }
+
       if (_showCurl) {
         _log('║ ${_cyanColor}cURL Command:', _blueColor);
         _log('║   ${_generateCurlCommand(options)}', _blueColor);
       }
+
       _log(
         '╚════════════════════════════════════════════════════════════',
         _blueColor,
       );
     }
+
     super.onRequest(options, handler);
   }
 
@@ -158,15 +206,18 @@ class LoggerInterceptor extends Interceptor {
           (key, v) => _log('║   $key: ${v.join(', ')}', _greenColor),
         );
       }
+
       if (_showResponseBody && response.data != null) {
         _log('║ ${_greenColor}Body:', _greenColor);
         _log('║   ${_formatJson(response.data)}', _greenColor);
       }
+
       _log(
         '╚═══════════════════════════════════════════════════════════',
         _greenColor,
       );
     }
+
     super.onResponse(response, handler);
   }
 
@@ -193,15 +244,17 @@ class LoggerInterceptor extends Interceptor {
           _redColor,
         );
         _log(
-          '''║ ${_redColor}Status Message:$_resetColor ${err.response?.statusMessage}''',
+          '║ ${_redColor}Status Message:$_resetColor ${err.response?.statusMessage}',
           _redColor,
         );
+
         if (_showErrorHeader && err.response?.headers != null) {
           _log('║ ${_redColor}Response Headers:', _redColor);
           err.response!.headers.forEach(
             (key, v) => _log('║   $key: ${v.join(', ')}', _redColor),
           );
         }
+
         if (_showErrorBody && err.response?.data != null) {
           _log('║ ${_redColor}Response Body:', _redColor);
           _log('║   ${_formatJson(err.response!.data)}', _redColor);
@@ -212,15 +265,19 @@ class LoggerInterceptor extends Interceptor {
           _redColor,
         );
       }
+
       _log('║ ${_redColor}Stack Trace:', _redColor);
-      err.stackTrace.toString().split('\n').forEach((line) {
-        _log('║   $line', _redColor);
-      });
+      err.stackTrace
+          .toString()
+          .split('\n')
+          .forEach((line) => _log('║   $line', _redColor));
+
       _log(
         '╚═══════════════════════════════════════════════════════════',
         _redColor,
       );
     }
+
     super.onError(err, handler);
   }
 }

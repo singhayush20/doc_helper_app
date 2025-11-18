@@ -6,9 +6,9 @@ sealed class DocUploadEvent extends BaseEvent with _$DocUploadEvent {
 
   const factory DocUploadEvent.started() = _Started;
 
-  /// Triggered when user picks a file from device
   const factory DocUploadEvent.fileSelected(String filePath) = _FileSelected;
 
-  /// Triggered when user taps ❌
+  const factory DocUploadEvent.uploadRequested() = _UploadRequested;
+
   const factory DocUploadEvent.uploadCancelled() = _UploadCancelled;
 }

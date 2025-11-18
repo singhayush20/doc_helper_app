@@ -8,17 +8,17 @@ sealed class DocUploadState extends BaseState with _$DocUploadState {
     required DocUploadStateStore store,
   }) = Initial;
 
-  const factory DocUploadState.inProgress({
+  const factory DocUploadState.uploadInProgress({
     required DocUploadStateStore store,
-  }) = InProgress;
+  }) = UploadInProgress;
 
-  const factory DocUploadState.success({
+  const factory DocUploadState.onUploadSuccess({
     required DocUploadStateStore store,
-  }) = Success;
+  }) = OnUploadSuccess;
 
-  const factory DocUploadState.cancelled({
+  const factory DocUploadState.onUploadCancel({
     required DocUploadStateStore store,
-  }) = Cancelled;
+  }) = OnUploadCancel;
 
   const factory DocUploadState.invalidateLoader({
     required DocUploadStateStore store,
@@ -45,7 +45,7 @@ sealed class DocUploadState extends BaseState with _$DocUploadState {
 @liteFreezed
 sealed class DocUploadStateStore with _$DocUploadStateStore {
   const factory DocUploadStateStore({
-    required double progress, // 0.0 - 1.0, right now 0 -> 1
+    required double progress,
     required bool isUploading,
     required String fileName,
     FileUploadResponse? uploadResponse,
