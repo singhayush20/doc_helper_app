@@ -43,3 +43,13 @@ class ChatMessageDto {
   final String? role;
   final DateTime? timestamp;
 }
+
+@JsonSerializable()
+class QuestionAnswerResponseDto {
+  const QuestionAnswerResponseDto({required this.message});
+
+  factory QuestionAnswerResponseDto.fromJson(Map<String, dynamic> json) =>
+      _$QuestionAnswerResponseDtoFromJson(json);
+
+  final String? message;
+}

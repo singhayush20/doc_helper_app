@@ -14,9 +14,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
 part 'doc_upload_bloc.freezed.dart';
-
 part 'doc_upload_event.dart';
-
 part 'doc_upload_state.dart';
 
 @injectable

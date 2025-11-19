@@ -20,3 +20,12 @@ abstract class ChatMessage with _$ChatMessage {
     final DateTime? timestamp,
   }) = _ChatMessage;
 }
+
+@liteFreezed
+abstract class QuestionAnswerResponse with _$QuestionAnswerResponse {
+  const factory QuestionAnswerResponse({
+    final String? message,
+    final String? event,
+  }) = _QuestionAnswerResponse;
+}
+
