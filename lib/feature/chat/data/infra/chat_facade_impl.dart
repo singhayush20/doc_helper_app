@@ -16,11 +16,9 @@ import 'package:injectable/injectable.dart';
 
 @Singleton(as: IChatFacade, env: injectionEnv)
 class ChatFacadeImpl implements IChatFacade {
-  ChatFacadeImpl(
-    this._retrofitApiClient,
-    this._apiCallHandler,
-    this._sseHandler,
-  );
+  ChatFacadeImpl(this._retrofitApiClient,
+      this._apiCallHandler,
+      this._sseHandler,);
 
   final RetrofitApiClient _retrofitApiClient;
   final ApiCallHandler _apiCallHandler;
@@ -50,7 +48,6 @@ class ChatFacadeImpl implements IChatFacade {
     required String question,
     required bool webSearch,
   }) async* {
-    // Prepare request DTO
     final requestDto = ChatRequestDto(
       documentId: documentId,
       question: question,
@@ -86,10 +83,10 @@ class ChatFacadeImpl implements IChatFacade {
     }
 
     final controller =
-        StreamController<Either<ServerException, QuestionAnswerResponse>>();
+    StreamController<Either<ServerException, QuestionAnswerResponse>>();
 
     _internalSubscription = stream.listen(
-      (sseEvent) {
+          (sseEvent) {
         try {
           final rawResponse = sseEvent.data.trim();
 

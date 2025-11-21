@@ -36,6 +36,7 @@ abstract class BaseTextFormField extends StatelessWidget {
     FocusNode? focusNode,
     Iterable<String>? autoFillHints,
     int? maxLines = 3,
+    int? minLines = 1,
     bool isMultilineRequired = false,
   }) : _value = value,
        _controller = controller,
@@ -70,6 +71,7 @@ abstract class BaseTextFormField extends StatelessWidget {
        _focusNode = focusNode,
        _autoFillHints = autoFillHints,
        _maxLines = isMultilineRequired ? maxLines : 1,
+       _minLines = minLines,
        _isMultilineRequired = isMultilineRequired;
 
   final IValueObject? _value;
@@ -105,6 +107,7 @@ abstract class BaseTextFormField extends StatelessWidget {
   final FocusNode? _focusNode;
   final Iterable<String>? _autoFillHints;
   final int? _maxLines;
+  final int? _minLines;
   final bool? _isMultilineRequired;
 
   @override
@@ -153,6 +156,7 @@ abstract class BaseTextFormField extends StatelessWidget {
           cursorColor: DsColors.textFieldCursor,
           cursorErrorColor: DsColors.textFieldCursorError,
           maxLines: _maxLines,
+          minLines: _minLines,
         ),
       ],
     );
@@ -270,6 +274,7 @@ class _SuffixIcon extends StatelessWidget {
 
 class UpperCaseTextFormatter extends TextInputFormatter {
   const UpperCaseTextFormatter();
+
   @override
   TextEditingValue formatEditUpdate(
     TextEditingValue oldValue,

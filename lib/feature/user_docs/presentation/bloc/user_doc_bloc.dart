@@ -44,6 +44,7 @@ class UserDocBloc extends BaseBloc<UserDocEvent, UserDocState> {
     on<_FetchNextSearchPage>(_onFetchNextSearchPage);
     on<_SearchCleared>(_onSearchCleared);
     on<_OnPageRefreshed>(_onPageRefreshed);
+    on<_OnDocumentTapped>(_onDocumentTapped);
   }
 
   Future<void> _onStarted(_Started event, Emitter<UserDocState> emit) async {
@@ -348,7 +349,18 @@ class UserDocBloc extends BaseBloc<UserDocEvent, UserDocState> {
       ),
     );
 
-   fetchNextPage();
+    fetchNextPage();
+  }
+
+  void _onDocumentTapped(_OnDocumentTapped event, Emitter<UserDocState> emit) {
+    invalidateLoader(emit, loading: false);
+    emit(
+      UserDocState.onDocumentTap(
+        docId: event.docId,
+        documentName: event.documentName,
+        store: state.store,
+      ),
+    );
   }
 
   @override
@@ -373,4 +385,8 @@ class UserDocBloc extends BaseBloc<UserDocEvent, UserDocState> {
   void searchCleared() => add(const UserDocEvent.searchCleared());
 
   void onPageRefreshed() => add(const UserDocEvent.onPageRefreshed());
+
+  void onDocumentTapped({int? docId, String? documentName}) => add(
+    UserDocEvent.onDocumentTapped(docId: docId, documentName: documentName),
+  );
 }

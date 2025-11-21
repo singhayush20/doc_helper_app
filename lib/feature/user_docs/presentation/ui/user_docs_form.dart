@@ -58,6 +58,10 @@ class _DocumentItem extends StatelessWidget {
       return const SizedBox.shrink();
     }
     return DsListTile(
+      onTap: () => getBloc<UserDocBloc>(context).onDocumentTapped(
+        docId: userDoc?.id,
+        documentName: userDoc?.originalFilename,
+      ),
       leading: DecoratedBox(
         decoration: BoxDecoration(
           color: DsColors.backgroundSubtle,

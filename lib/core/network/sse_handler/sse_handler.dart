@@ -15,6 +15,7 @@ class SseClient implements ISseHandler {
   final Dio dio;
 
   BehaviorSubject<SseEvent>? _subject;
+  StreamSubscription<String>? _linesSubscription;
 
   CancelToken? _cancelToken;
   bool _isRunning = false;
@@ -26,7 +27,7 @@ class SseClient implements ISseHandler {
   Future<void> start({
     required String url,
     Map<String, dynamic>? queryParams,
-    Map<String,dynamic>? body,
+    Map<String, dynamic>? body,
   }) async {
     if (_isRunning) return;
     _isRunning = true;
@@ -34,56 +35,62 @@ class SseClient implements ISseHandler {
     _subject = BehaviorSubject<SseEvent>();
 
     try {
-      final resp = await dio.post<ResponseBody>(
+      final response = await dio.post<ResponseBody>(
         url,
         queryParameters: queryParams,
         data: body,
-        options: Options(responseType: ResponseType.stream),
+        options: Options(
+          responseType: ResponseType.stream,
+          receiveTimeout: null,
+        ),
         cancelToken: _cancelToken,
       );
 
-      final byteStream = resp.data!.stream;
-      final lineStream = byteStream
-          .transform(utf8.decoder as StreamTransformer<Uint8List, dynamic>)
-          .transform(const LineSplitter());
+      final stream = response.data!.stream;
+      final utf8Stream = stream.cast<List<int>>().transform(utf8.decoder);
+      final lines = utf8Stream.transform(const LineSplitter());
 
-      final buffer = <String>[];
+      String? event;
+      String? id;
+      final dataBuffer = StringBuffer();
 
-      await for (final rawLine in lineStream) {
-        if (_cancelToken?.isCancelled ?? false) break;
-
-        final line = rawLine;
-        if (line.trim().isEmpty) {
-          if (buffer.isNotEmpty) {
-            final combined = buffer.join('\n');
-            final dataLines = combined
-                .split('\n')
-                .where((l) => l.startsWith('data:'))
-                .map((l) => l.substring(5).trim())
-                .toList();
-            final data = dataLines.join('\n');
-            final eventLine = combined
-                .split('\n')
-                .firstWhere((l) => l.startsWith('event:'), orElse: () => '');
-            final idLine = combined
-                .split('\n')
-                .firstWhere((l) => l.startsWith('id:'), orElse: () => '');
-            final event = eventLine.isNotEmpty
-                ? eventLine.substring(6).trim()
-                : null;
-            final id = idLine.isNotEmpty ? idLine.substring(3).trim() : null;
-
-            final ev = SseEvent(id: id, event: event, data: data);
-            _subject?.add(ev);
+      _linesSubscription = lines.listen(
+        (line) {
+          line = line.trim();
+          if (line.isEmpty) {
+            if (dataBuffer.isNotEmpty) {
+              if (!(_subject?.isClosed ?? true)) {
+                _subject?.add(
+                  SseEvent(
+                    event: event ?? 'message',
+                    data: dataBuffer.toString().trim(),
+                    id: id,
+                  ),
+                );
+              }
+              event = null;
+              id = null;
+              dataBuffer.clear();
+            }
+          } else if (line.startsWith('event:')) {
+            event = line.substring(6).trim();
+          } else if (line.startsWith('data:')) {
+            dataBuffer.writeln(line.substring(5).trim());
+          } else if (line.startsWith('id:')) {
+            id = line.substring(3).trim();
           }
-          buffer.clear();
-        } else {
-          buffer.add(line);
-        }
-      }
+        },
+        onError: (error) {
+          _subject?.addError(error);
+          _subject?.close();
+        },
+        onDone: () async {
+          _isRunning = false;
+          await _subject?.close();
+        },
+      );
     } catch (e) {
       _subject?.addError(e);
-    } finally {
       _isRunning = false;
       await _subject?.close();
     }
@@ -94,6 +101,8 @@ class SseClient implements ISseHandler {
     _cancelToken?.cancel();
     _isRunning = false;
     _subject?.close();
+    await _linesSubscription?.cancel();
+    _linesSubscription = null;
   }
 
   Future<void> dispose() async {

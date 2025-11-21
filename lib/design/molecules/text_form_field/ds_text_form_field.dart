@@ -43,6 +43,7 @@ class PrimaryTextFormField extends BaseTextFormField {
     super.enableCopyPaste,
     super.isMultilineRequired,
     super.maxLines,
+    super.minLines,
     super.prefixWidget,
     super.suffixWidget,
   });
@@ -134,5 +135,19 @@ class SearchQueryTextFormField extends PrimaryTextFormField {
     super.readOnly,
   }) : super(
     textInputAction: TextInputAction.done,
+  );
+}
+
+class ChatTextFormField extends PrimaryTextFormField {
+  const ChatTextFormField({
+    required super.value,
+    super.key,
+    super.onChanged,
+    super.controller,
+    super.hintText,
+  }) : super(
+    textInputType: TextInputType.multiline,
+    maxLines: 3,
+    isMultilineRequired: true,
   );
 }

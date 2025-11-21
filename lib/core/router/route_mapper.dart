@@ -5,6 +5,7 @@ abstract class Routes {
   static const String passwordReset = 'passwordReset';
   static const String emailVerification = 'emailVerification';
   static const String docUpload = 'docUpload';
+  static const String chat = 'chat';
 
   // Shell routes
   static const String shell = 'shell';

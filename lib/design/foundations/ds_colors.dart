@@ -44,6 +44,9 @@ abstract class DsColors {
 
   /// Disabled state background
   static const Color backgroundDisabled = _BaseColors.neutral200;
+  
+  /// Chat page background
+  static const Color chatBackground = _BaseColors.blue100;
 
   // ==========================================
   // 3. SURFACE COLORS (Cards, Dialogs, Sheets)

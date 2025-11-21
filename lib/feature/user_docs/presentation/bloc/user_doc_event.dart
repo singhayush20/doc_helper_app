@@ -18,4 +18,9 @@ sealed class UserDocEvent extends BaseEvent with _$UserDocEvent {
   const factory UserDocEvent.searchCleared() = _SearchCleared;
 
   const factory UserDocEvent.onPageRefreshed() = _OnPageRefreshed;
+
+  const factory UserDocEvent.onDocumentTapped({
+    required int? docId,
+    required String? documentName,
+  }) = _OnDocumentTapped;
 }

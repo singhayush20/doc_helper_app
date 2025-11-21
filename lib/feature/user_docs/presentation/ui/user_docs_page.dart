@@ -1,4 +1,5 @@
 import 'package:doc_helper_app/core/common/base_bloc/base_bloc.dart';
+import 'package:doc_helper_app/core/common/constants/app_constants.dart';
 import 'package:doc_helper_app/core/common/constants/media_constants/image_keys.dart';
 import 'package:doc_helper_app/core/router/route_mapper.dart';
 import 'package:doc_helper_app/core/value_objects/value_objects.dart';
@@ -27,17 +28,32 @@ class UserDocsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => BlocProvider<UserDocBloc>(
     create: (_) => getIt<UserDocBloc>()..started(),
-    child: Scaffold(
-      resizeToAvoidBottomInset: true,
-      appBar: const PrimaryAppBar(
-        titleText: 'Documents',
-        backButtonRequired: false,
-      ),
-      body: const SafeArea(child: _UserDocsForm()),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: DsColors.buttonPrimary,
-        onPressed: () => context.pushNamed(Routes.docUpload),
-        child: const Icon(Icons.upload_file, color: DsColors.buttonPrimaryText),
+    child: BlocListener<UserDocBloc, UserDocState>(
+      listener: (context, state) => switch (state) {
+        OnDocumentTap(:final docId, :final documentName) => context.pushNamed(
+          Routes.chat,
+          queryParameters: {
+            AppConstants.documentId: docId.toString(),
+            AppConstants.documentName: documentName,
+          },
+        ),
+        _ => {},
+      },
+      child: Scaffold(
+        resizeToAvoidBottomInset: true,
+        appBar: const PrimaryAppBar(
+          titleText: 'Documents',
+          backButtonRequired: false,
+        ),
+        body: const SafeArea(child: _UserDocsForm()),
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: DsColors.buttonPrimary,
+          onPressed: () => context.pushNamed(Routes.docUpload),
+          child: const Icon(
+            Icons.upload_file,
+            color: DsColors.buttonPrimaryText,
+          ),
+        ),
       ),
     ),
   );

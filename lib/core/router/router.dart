@@ -4,6 +4,7 @@ import 'package:doc_helper_app/feature/auth/presentation/ui/email_verification/e
 import 'package:doc_helper_app/feature/auth/presentation/ui/password_reset/password_reset_page.dart';
 import 'package:doc_helper_app/feature/auth/presentation/ui/sign_in_page.dart';
 import 'package:doc_helper_app/feature/auth/presentation/ui/sign_up/signup_page.dart';
+import 'package:doc_helper_app/feature/chat/presentation/ui/chat_page.dart';
 import 'package:doc_helper_app/feature/home/presentation/ui/home_page.dart';
 import 'package:doc_helper_app/feature/main/presentation/ui/landing_page.dart';
 import 'package:doc_helper_app/feature/profile/presentation/ui/profile_page.dart';
@@ -78,6 +79,11 @@ GoRouter buildRouter(AuthNotifier authNotifier) => GoRouter(
       path: '/docs/upload',
       pageBuilder: (context, state) =>
       const NoTransitionPage(child: DocUploadPage()),
+    ),
+    GoRoute(
+      name: Routes.chat,
+      path: '/chat',
+      builder: (context, state) => const ChatPage(),
     ),
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) =>
