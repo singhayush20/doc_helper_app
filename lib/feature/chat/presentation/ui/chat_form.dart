@@ -31,7 +31,7 @@ class ChatListView extends StatelessWidget {
           fetchNextPage: () => getBloc<ChatBloc>(context)
               .add(const ChatEvent.fetchNextPage()),
           builderDelegate: PagedChildBuilderDelegate<ChatMessage>(
-            itemBuilder: (_, msg, __) {
+            itemBuilder: (_, msg, _) {
               final isAssistant =
                   (msg.role ?? '').toLowerCase() == 'assistant';
               final isEmpty = msg.content?.isEmpty ?? true;
@@ -99,7 +99,7 @@ class ChatMessageBubble extends StatelessWidget {
       );
     } else {
       decoration = BoxDecoration(
-        gradient: LinearGradient(
+        gradient: const LinearGradient(
           colors: [
             DsColors.backgroundSurface,
             DsColors.backgroundSubtle,
@@ -115,7 +115,7 @@ class ChatMessageBubble extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.03),
+            color: Colors.black.withAlpha(3),
             blurRadius: 4,
             offset: const Offset(0, 2),
           ),
@@ -291,7 +291,7 @@ class _TypingDotsState extends State<_TypingDots>
     height: 12.h,
     child: AnimatedBuilder(
       animation: _controller,
-      builder: (_, __) => Row(
+      builder: (_, _) => Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: List.generate(3, (index) {
           final t = (_controller.value + index * 0.2) % 1.0;
@@ -302,7 +302,7 @@ class _TypingDotsState extends State<_TypingDots>
             width: size.w,
             height: size.w,
             decoration: BoxDecoration(
-              color: DsColors.textSecondary.withOpacity(0.8),
+              color: DsColors.textSecondary.withAlpha(80),
               shape: BoxShape.circle,
             ),
           );
