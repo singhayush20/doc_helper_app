@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:dartz/dartz.dart';
 import 'package:doc_helper_app/core/common/constants/enums.dart';
@@ -16,9 +17,11 @@ import 'package:injectable/injectable.dart';
 
 @Singleton(as: IChatFacade, env: injectionEnv)
 class ChatFacadeImpl implements IChatFacade {
-  ChatFacadeImpl(this._retrofitApiClient,
-      this._apiCallHandler,
-      this._sseHandler,);
+  ChatFacadeImpl(
+    this._retrofitApiClient,
+    this._apiCallHandler,
+    this._sseHandler,
+  );
 
   final RetrofitApiClient _retrofitApiClient;
   final ApiCallHandler _apiCallHandler;
@@ -47,6 +50,7 @@ class ChatFacadeImpl implements IChatFacade {
     required int documentId,
     required String question,
     required bool webSearch,
+    required String generationId,
   }) async* {
     final requestDto = ChatRequestDto(
       documentId: documentId,
@@ -56,7 +60,7 @@ class ChatFacadeImpl implements IChatFacade {
     try {
       await _sseHandler.start(
         url: '/api/v1/chatbot/doc-question/stream',
-        queryParams: {'webSearch': webSearch},
+        queryParams: {'webSearch': webSearch, 'generationId': generationId},
         body: requestDto.toJson(),
       );
     } catch (e) {
@@ -83,10 +87,10 @@ class ChatFacadeImpl implements IChatFacade {
     }
 
     final controller =
-    StreamController<Either<ServerException, QuestionAnswerResponse>>();
+        StreamController<Either<ServerException, QuestionAnswerResponse>>();
 
     _internalSubscription = stream.listen(
-          (sseEvent) {
+      (sseEvent) {
         try {
           final rawResponse = sseEvent.data.trim();
 
@@ -125,7 +129,7 @@ class ChatFacadeImpl implements IChatFacade {
           controller.close();
         }
       },
-      onError: (err, st) {
+      onError: (err) {
         controller.add(
           left(
             ServerException(
@@ -149,12 +153,24 @@ class ChatFacadeImpl implements IChatFacade {
   }
 
   @override
-  Future<void> cancelCurrentStream() async {
-    try {
-      await _internalSubscription?.cancel();
-    } finally {
-      await _sseHandler.stop();
-      _internalSubscription = null;
+  Future<Either<ServerException, Unit>> cancelCurrentStream({
+    required String generationId,
+  }) async {
+    final responseOrError = await _apiCallHandler.handleApi(
+      _retrofitApiClient.cancelChatMessage,
+      [generationId],
+    );
+    if (responseOrError.isRight()) {
+      try {
+        await _internalSubscription?.cancel();
+      } finally {
+        await _sseHandler.stop();
+        _internalSubscription = null;
+      }
     }
+    return responseOrError.fold(
+      (exception) => left(exception),
+      (_) => right(unit),
+    );
   }
 }

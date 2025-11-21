@@ -14,6 +14,7 @@ import 'package:doc_helper_app/feature/chat/domain/interface/i_chat_facade.dart'
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:injectable/injectable.dart';
+import 'package:uuid/uuid.dart';
 
 part 'chat_event.dart';
 
@@ -36,6 +37,8 @@ class ChatBloc extends BaseBloc<ChatEvent, ChatState> {
 
   bool _isFetching = false;
   static const int _pageSize = 10;
+
+  final _uuid = const Uuid();
 
   @override
   void handleEvents() {
@@ -172,7 +175,6 @@ class ChatBloc extends BaseBloc<ChatEvent, ChatState> {
 
     final store = state.store;
 
-    // 1) Add user message
     final userMessage = ChatMessage(
       id: null,
       role: MessageActor.user,
@@ -190,53 +192,55 @@ class ChatBloc extends BaseBloc<ChatEvent, ChatState> {
       ],
     );
 
-    final storeAfterUser = store.copyWith(
-      chatHistory: ChatHistory(
-        threadId: store.chatHistory?.threadId,
-        messages: newUserHistory,
+    emit(
+      ChatState.onMessageSent(
+        store: state.store.copyWith(
+          chatHistory: ChatHistory(
+            threadId: store.chatHistory?.threadId,
+            messages: newUserHistory,
+          ),
+          chatPagingState: updatedPagingAfterUser,
+          searchQuery: SearchQuery(''),
+        ),
       ),
-      chatPagingState: updatedPagingAfterUser,
-      // clear query in store
-      searchQuery: SearchQuery(''),
     );
 
-    // 2) Emit message-sent and query-update so UI clears the field
-    emit(ChatState.onMessageSent(store: storeAfterUser));
-    emit(ChatState.onQueryUpdate(store: storeAfterUser));
-
-    // 3) Add placeholder AI message
     final aiMessage = const ChatMessage(
-      id: null,
       role: MessageActor.assistant,
       content: '',
     );
 
     final newAiHistory = [aiMessage, ...newUserHistory];
 
-    final updatedPagingWithAi = storeAfterUser.chatPagingState.copyWith(
+    final updatedPagingWithAiMessage = state.store.chatPagingState.copyWith(
       pages: [
         [aiMessage, ...?updatedPagingAfterUser.pages?.first],
         ...?updatedPagingAfterUser.pages?.skip(1),
       ],
     );
 
-    final storeWithAi = storeAfterUser.copyWith(
-      chatHistory: ChatHistory(
-        threadId: store.chatHistory?.threadId,
-        messages: newAiHistory,
+    final generationId = createGenerationId();
+
+    emit(
+      ChatState.onChatHistoryFetch(
+        store: state.store.copyWith(
+          chatHistory: ChatHistory(
+            threadId: store.chatHistory?.threadId,
+            messages: newAiHistory,
+          ),
+          chatPagingState: updatedPagingWithAiMessage,
+          generationId: generationId,
+        ),
       ),
-      chatPagingState: updatedPagingWithAi,
     );
 
-    emit(ChatState.onChatHistoryFetch(store: storeWithAi));
-
-    // 4) Start streaming
     add(const ChatEvent.aiStreamStarted());
 
     final stream = _chatFacade.getAnswerStreamForQuestion(
       documentId: store.documentId ?? 0,
       question: query,
       webSearch: store.webSearchEnabled,
+      generationId: generationId,
     );
 
     await for (final either in stream) {
@@ -258,6 +262,8 @@ class ChatBloc extends BaseBloc<ChatEvent, ChatState> {
 
     add(const ChatEvent.aiStreamCompleted());
   }
+
+  String createGenerationId() => _uuid.v4();
 
   void _onAiStreamStarted(_AiStreamStarted event, Emitter<ChatState> emit) {
     emit(
@@ -330,12 +336,60 @@ class ChatBloc extends BaseBloc<ChatEvent, ChatState> {
     _StopGeneration event,
     Emitter<ChatState> emit,
   ) async {
-    await _chatFacade.cancelCurrentStream();
+    final cancelResponseOrFailure = await _chatFacade.cancelCurrentStream(
+      generationId: state.store.generationId ?? '',
+    );
 
-    emit(
-      ChatState.onChatHistoryFetch(
-        store: state.store.copyWith(isStreaming: false),
-      ),
+    cancelResponseOrFailure.fold(
+      (exception) {
+        // TODO: Handle gracefully
+      },
+      (_) {
+        final cleanedStore = _removeEmptyAssistantBubble(state.store);
+
+        emit(
+          ChatState.onChatHistoryFetch(
+            store: cleanedStore.copyWith(
+              isStreaming: false,
+              generationId: null,
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  ChatStateStore _removeEmptyAssistantBubble(ChatStateStore store) {
+    final historyMessages = [...?store.chatHistory?.messages];
+    if (historyMessages.isNotEmpty) {
+      // First assistant with empty/null content
+      final idx = historyMessages.indexWhere(
+        (msg) =>
+            msg.role == MessageActor.assistant &&
+            (msg.content == null || (msg.content?.isEmpty ?? true)),
+      );
+      if (idx != -1) {
+        historyMessages.removeAt(idx);
+      }
+    }
+
+    // Fix paging first page
+    final pages = [...?store.chatPagingState.pages];
+    if (pages.isNotEmpty) {
+      final firstPage = [...pages.first];
+      if (firstPage.isNotEmpty) {
+        final firstMsg = firstPage.first;
+        if (firstMsg.role == MessageActor.assistant &&
+            (firstMsg.content == null || (firstMsg.content?.isEmpty ?? true))) {
+          firstPage.removeAt(0);
+          pages[0] = firstPage;
+        }
+      }
+    }
+
+    return store.copyWith(
+      chatHistory: store.chatHistory?.copyWith(messages: historyMessages),
+      chatPagingState: store.chatPagingState.copyWith(pages: pages),
     );
   }
 

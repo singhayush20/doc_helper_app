@@ -41,8 +41,7 @@ abstract class RetrofitApiClient {
 
   @POST('/api/v1/user-docs/upload')
   @MultiPart()
-  Future<HttpResponse> uploadDoc(
-    @Part() MultipartFile file);
+  Future<HttpResponse> uploadDoc(@Part() MultipartFile file);
 
   @GET('/api/v1/user-docs/all')
   Future<HttpResponse> getAllDocs(
@@ -75,5 +74,10 @@ abstract class RetrofitApiClient {
     @Query('query') String query,
     @Query('page') int page,
     @Query('size') int size,
+  );
+
+  @POST('/api/v1/chatbot/doc-question/stream/cancel')
+  Future<HttpResponse> cancelChatMessage(
+    @Query('generationId') String generationId,
   );
 }

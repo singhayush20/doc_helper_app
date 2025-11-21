@@ -392,7 +392,7 @@ class _ChatInputBarState extends State<ChatInputBar> {
   );
 
   void _handleState(BuildContext context, ChatState state) => switch (state) {
-    OnQueryUpdate(:final store) =>
+    OnQueryUpdate(:final store)  || OnMessageSent(:final store) =>
       _controller.text = store.searchQuery?.input ?? '',
     _ => {},
   };

@@ -6,11 +6,23 @@ sealed class ChatState extends BaseState with _$ChatState {
 
   const factory ChatState.initial({
     required ChatStateStore store,
-  }) = _Initial;
+  }) = Initial;
 
   const factory ChatState.onChatHistoryFetch({
     required ChatStateStore store,
-  }) = _OnChatHistoryFetch;
+  }) = OnChatHistoryFetch;
+
+  const factory ChatState.onWebSearchToggle({
+    required ChatStateStore store,
+  }) = OnWebSearchToggle;
+
+  const factory ChatState.onQueryUpdate({
+    required ChatStateStore store,
+  }) = OnQueryUpdate;
+
+  const factory ChatState.onMessageSent({
+    required ChatStateStore store,
+  }) = OnMessageSent;
 
   const factory ChatState.invalidateLoader({
     required ChatStateStore store,
@@ -20,21 +32,6 @@ sealed class ChatState extends BaseState with _$ChatState {
     required ChatStateStore store,
     required Exception exception,
   }) = OnException;
-
-  /// User toggled web search
-  const factory ChatState.onWebSearchToggle({
-    required ChatStateStore store,
-  }) = _OnWebSearchToggle;
-
-  /// Input query updated (single source of truth for text field)
-  const factory ChatState.onQueryUpdate({
-    required ChatStateStore store,
-  }) = OnQueryUpdate;
-
-  /// User message has been appended to history
-  const factory ChatState.onMessageSent({
-    required ChatStateStore store,
-  }) = _OnMessageSent;
 
   @override
   BaseState getExceptionState(Exception exception) =>
@@ -68,5 +65,6 @@ sealed class ChatStateStore with _$ChatStateStore {
     // Streaming state
     @Default(false) bool isStreaming,
     String? streamingError,
+    String? generationId,
   }) = _ChatStateStore;
 }

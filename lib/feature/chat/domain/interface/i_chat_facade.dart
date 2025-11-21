@@ -13,7 +13,10 @@ abstract class IChatFacade {
     required int documentId,
     required String question,
     required bool webSearch,
+    required String generationId,
   });
 
-  Future<void> cancelCurrentStream();
+  Future<Either<ServerException, Unit>> cancelCurrentStream({
+    required String generationId,
+  });
 }
