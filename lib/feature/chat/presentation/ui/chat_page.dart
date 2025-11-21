@@ -5,6 +5,7 @@ import 'package:doc_helper_app/di/injection.dart';
 import 'package:doc_helper_app/feature/chat/domain/entities/chat_entities.dart';
 import 'package:doc_helper_app/feature/chat/presentation/bloc/chat_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
