@@ -3,6 +3,7 @@ import 'package:doc_helper_app/core/common/constants/app_constants.dart';
 import 'package:doc_helper_app/design/design.dart';
 import 'package:doc_helper_app/di/injection.dart';
 import 'package:doc_helper_app/feature/chat/domain/entities/chat_entities.dart';
+import 'package:doc_helper_app/feature/chat/domain/enums/chat_enums.dart';
 import 'package:doc_helper_app/feature/chat/presentation/bloc/chat_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

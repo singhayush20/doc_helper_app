@@ -1,4 +1,5 @@
 import 'package:doc_helper_app/core/common/utils/app_utils.dart';
+import 'package:doc_helper_app/feature/chat/domain/enums/chat_enums.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'chat_entities.freezed.dart';
@@ -16,7 +17,7 @@ abstract class ChatMessage with _$ChatMessage {
   const factory ChatMessage({
     final String? id,
     final String? content,
-    final String? role,
+    final MessageActor? role,
     final DateTime? timestamp,
   }) = _ChatMessage;
 }

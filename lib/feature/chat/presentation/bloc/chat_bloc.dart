@@ -9,25 +9,28 @@ import 'package:doc_helper_app/core/common/utils/app_utils.dart';
 import 'package:doc_helper_app/core/exception_handling/server_exception.dart';
 import 'package:doc_helper_app/core/value_objects/value_objects.dart';
 import 'package:doc_helper_app/feature/chat/domain/entities/chat_entities.dart';
+import 'package:doc_helper_app/feature/chat/domain/enums/chat_enums.dart';
 import 'package:doc_helper_app/feature/chat/domain/interface/i_chat_facade.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:injectable/injectable.dart';
 
 part 'chat_event.dart';
+
 part 'chat_state.dart';
+
 part 'chat_bloc.freezed.dart';
 
 @injectable
 class ChatBloc extends BaseBloc<ChatEvent, ChatState> {
   ChatBloc(this._chatFacade)
-      : super(
-    ChatState.initial(
-      store: ChatStateStore(
-        chatPagingState: PagingState<int, ChatMessage>(),
-      ),
-    ),
-  );
+    : super(
+        ChatState.initial(
+          store: ChatStateStore(
+            chatPagingState: PagingState<int, ChatMessage>(),
+          ),
+        ),
+      );
 
   final IChatFacade _chatFacade;
 
@@ -49,10 +52,7 @@ class ChatBloc extends BaseBloc<ChatEvent, ChatState> {
     on<_StopGeneration>(_onStopGeneration);
   }
 
-  Future<void> _onStarted(
-      _Started event,
-      Emitter<ChatState> emit,
-      ) async {
+  Future<void> _onStarted(_Started event, Emitter<ChatState> emit) async {
     emit(
       ChatState.initial(
         store: state.store.copyWith(
@@ -68,9 +68,9 @@ class ChatBloc extends BaseBloc<ChatEvent, ChatState> {
   }
 
   Future<void> _onFetchNextPage(
-      _FetchNextPage event,
-      Emitter<ChatState> emit,
-      ) async {
+    _FetchNextPage event,
+    Emitter<ChatState> emit,
+  ) async {
     if (_isFetching) return;
     if (!state.store.hasMore) return;
 
@@ -86,16 +86,18 @@ class ChatBloc extends BaseBloc<ChatEvent, ChatState> {
     _isFetching = true;
 
     final docId = state.store.documentId ?? 0;
-    final result =
-    await _chatFacade.getChatHistory(documentId: docId, page: page);
+    final result = await _chatFacade.getChatHistory(
+      documentId: docId,
+      page: page,
+    );
 
     _isFetching = false;
 
     result.fold(
-          (ServerException exception) {
-       // TODO: Handle error
+      (ServerException exception) {
+        // TODO: Handle error
       },
-          (ChatHistory history) {
+      (ChatHistory history) {
         final messages = history.messages ?? [];
         final isLastPage = messages.isEmpty || messages.length < _pageSize;
 
@@ -109,9 +111,9 @@ class ChatBloc extends BaseBloc<ChatEvent, ChatState> {
   }
 
   Future<void> _onHistoryLoaded(
-      _HistoryLoaded event,
-      Emitter<ChatState> emit,
-      ) async {
+    _HistoryLoaded event,
+    Emitter<ChatState> emit,
+  ) async {
     final store = state.store;
 
     final historyMessages = event.chatHistory.messages ?? [];
@@ -148,10 +150,7 @@ class ChatBloc extends BaseBloc<ChatEvent, ChatState> {
     emit(ChatState.onChatHistoryFetch(store: newStore));
   }
 
-  void _onWebSearchToggled(
-      _OnWebSearchToggled event,
-      Emitter<ChatState> emit,
-      ) {
+  void _onWebSearchToggled(_OnWebSearchToggled event, Emitter<ChatState> emit) {
     final newStore = state.store.copyWith(
       webSearchEnabled: !state.store.webSearchEnabled,
     );
@@ -159,10 +158,7 @@ class ChatBloc extends BaseBloc<ChatEvent, ChatState> {
     emit(ChatState.onWebSearchToggle(store: newStore));
   }
 
-  void _onQueryChanged(
-      _QueryChanged event,
-      Emitter<ChatState> emit,
-      ) {
+  void _onQueryChanged(_QueryChanged event, Emitter<ChatState> emit) {
     final newStore = state.store.copyWith(
       searchQuery: SearchQuery(event.query),
     );
@@ -170,10 +166,7 @@ class ChatBloc extends BaseBloc<ChatEvent, ChatState> {
     emit(ChatState.onQueryUpdate(store: newStore));
   }
 
-  Future<void> _sendMessage(
-      _SendMessage event,
-      Emitter<ChatState> emit,
-      ) async {
+  Future<void> _sendMessage(_SendMessage event, Emitter<ChatState> emit) async {
     final query = state.store.searchQuery?.input.trim() ?? '';
     if (query.isEmpty) return;
 
@@ -182,7 +175,7 @@ class ChatBloc extends BaseBloc<ChatEvent, ChatState> {
     // 1) Add user message
     final userMessage = ChatMessage(
       id: null,
-      role: 'user',
+      role: MessageActor.user,
       content: query,
     );
 
@@ -214,7 +207,7 @@ class ChatBloc extends BaseBloc<ChatEvent, ChatState> {
     // 3) Add placeholder AI message
     final aiMessage = const ChatMessage(
       id: null,
-      role: 'assistant',
+      role: MessageActor.assistant,
       content: '',
     );
 
@@ -248,20 +241,16 @@ class ChatBloc extends BaseBloc<ChatEvent, ChatState> {
 
     await for (final either in stream) {
       await either.fold(
-            (ServerException exception) async {
+        (ServerException exception) async {
           add(
             ChatEvent.aiStreamError(
               errorMessage: exception.metaData?.message ?? 'Unknown error',
             ),
           );
         },
-            (QuestionAnswerResponse res) async {
+        (QuestionAnswerResponse res) async {
           if (res.message?.isNotEmpty ?? false) {
-            add(
-              ChatEvent.aiStreamChunkReceived(
-                chunk: res.message ?? '',
-              ),
-            );
+            add(ChatEvent.aiStreamChunkReceived(chunk: res.message ?? ''));
           }
         },
       );
@@ -270,49 +259,40 @@ class ChatBloc extends BaseBloc<ChatEvent, ChatState> {
     add(const ChatEvent.aiStreamCompleted());
   }
 
-  void _onAiStreamStarted(
-      _AiStreamStarted event,
-      Emitter<ChatState> emit,
-      ) {
+  void _onAiStreamStarted(_AiStreamStarted event, Emitter<ChatState> emit) {
     emit(
       ChatState.onChatHistoryFetch(
-        store: state.store.copyWith(
-          isStreaming: true,
-          streamingError: null,
-        ),
+        store: state.store.copyWith(isStreaming: true, streamingError: null),
       ),
     );
   }
 
   void _onAiStreamChunkReceived(
-      _AiStreamChunkReceived event,
-      Emitter<ChatState> emit,
-      ) {
+    _AiStreamChunkReceived event,
+    Emitter<ChatState> emit,
+  ) {
     final store = state.store;
-    final msgs = [...?store.chatHistory?.messages];
+    final message = [...?store.chatHistory?.messages];
 
-    if (msgs.isEmpty) return;
+    if (message.isEmpty) return;
 
     // AI message is always the first message in the list
-    final aiIndex = msgs.indexWhere(
-          (m) => (m.role ?? '').toLowerCase() == 'assistant',
+    final aiIndex = message.indexWhere(
+      (msg) => (msg.role == MessageActor.assistant),
     );
     if (aiIndex == -1) return;
 
-    final aiMsg = msgs[aiIndex];
+    final aiMsg = message[aiIndex];
 
     final updatedMsg = aiMsg.copyWith(
       content: (aiMsg.content ?? '') + event.chunk,
     );
 
-    msgs[aiIndex] = updatedMsg;
+    message[aiIndex] = updatedMsg;
 
     final updatedPaging = store.chatPagingState.copyWith(
       pages: [
-        [
-          updatedMsg,
-          ...?store.chatPagingState.pages?.first.skip(1),
-        ],
+        [updatedMsg, ...?store.chatPagingState.pages?.first.skip(1)],
         ...?store.chatPagingState.pages?.skip(1),
       ],
     );
@@ -320,17 +300,14 @@ class ChatBloc extends BaseBloc<ChatEvent, ChatState> {
     emit(
       ChatState.onChatHistoryFetch(
         store: store.copyWith(
-          chatHistory: store.chatHistory?.copyWith(messages: msgs),
+          chatHistory: store.chatHistory?.copyWith(messages: message),
           chatPagingState: updatedPaging,
         ),
       ),
     );
   }
 
-  void _onAiStreamCompleted(
-      _AiStreamCompleted event,
-      Emitter<ChatState> emit,
-      ) {
+  void _onAiStreamCompleted(_AiStreamCompleted event, Emitter<ChatState> emit) {
     emit(
       ChatState.onChatHistoryFetch(
         store: state.store.copyWith(isStreaming: false),
@@ -338,10 +315,7 @@ class ChatBloc extends BaseBloc<ChatEvent, ChatState> {
     );
   }
 
-  void _onAiStreamError(
-      _AiStreamError event,
-      Emitter<ChatState> emit,
-      ) {
+  void _onAiStreamError(_AiStreamError event, Emitter<ChatState> emit) {
     emit(
       ChatState.onChatHistoryFetch(
         store: state.store.copyWith(
@@ -353,9 +327,9 @@ class ChatBloc extends BaseBloc<ChatEvent, ChatState> {
   }
 
   Future<void> _onStopGeneration(
-      _StopGeneration event,
-      Emitter<ChatState> emit,
-      ) async {
+    _StopGeneration event,
+    Emitter<ChatState> emit,
+  ) async {
     await _chatFacade.cancelCurrentStream();
 
     emit(
@@ -382,17 +356,15 @@ class ChatBloc extends BaseBloc<ChatEvent, ChatState> {
     required bool isLastPage,
     required int page,
     required ChatHistory chatHistory,
-  }) =>
-      add(
-        ChatEvent.historyLoaded(
-          chatHistory: chatHistory,
-          page: page,
-          isLastPage: isLastPage,
-        ),
-      );
+  }) => add(
+    ChatEvent.historyLoaded(
+      chatHistory: chatHistory,
+      page: page,
+      isLastPage: isLastPage,
+    ),
+  );
 
-  void onWebSearchToggled() =>
-      add(const ChatEvent.onWebSearchToggled());
+  void onWebSearchToggled() => add(const ChatEvent.onWebSearchToggled());
 
   void onQueryChanged({required String query}) =>
       add(ChatEvent.queryChanged(query: query));
