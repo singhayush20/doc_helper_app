@@ -11,6 +11,7 @@
 - ~Implement the stop generation mechanism~
 - Check web search properly
 - ~Check how streaming is handled~
+- Check how concurrent messaages on same user account and document are handled.
 - Design Home Page
 
 ## Features

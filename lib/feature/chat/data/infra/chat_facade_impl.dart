@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:dartz/dartz.dart';
 import 'package:doc_helper_app/core/common/constants/enums.dart';
