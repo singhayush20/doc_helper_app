@@ -8,9 +8,9 @@
 
 ## Fixes (High Priority)
 - Fix error handling in the chat page  
-- Implement the stop generation mechanism  
+- ~Implement the stop generation mechanism~
 - Check web search properly
-- Check how streaming is handled
+- ~Check how streaming is handled~
 - Design Home Page
 
 ## Features

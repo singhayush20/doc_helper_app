@@ -17,45 +17,35 @@ class _ChatForm extends StatelessWidget {
   );
 }
 
-
 class ChatListView extends StatelessWidget {
   const ChatListView({super.key});
 
   @override
-  Widget build(BuildContext context) =>
-      BlocBuilder<ChatBloc, ChatState>(
-        builder: (context, state) => PagedListView<int, ChatMessage>(
-          reverse: true,
-          padding: EdgeInsets.all(DsSpacing.radialSpace12),
-          state: state.store.chatPagingState,
-          fetchNextPage: () => getBloc<ChatBloc>(context)
-              .add(const ChatEvent.fetchNextPage()),
-          builderDelegate: PagedChildBuilderDelegate<ChatMessage>(
-            itemBuilder: (_, msg, _) {
-              final isAssistant =
-                  (msg.role ?? '').toLowerCase() == 'assistant';
-              final isEmpty = msg.content?.isEmpty ?? true;
-              final showTyping =
-                  state.store.isStreaming && isAssistant && isEmpty;
-
-              return ChatMessageBubble(
-                message: msg,
-                showTyping: showTyping,
-              );
-            },
-            firstPageProgressIndicatorBuilder: (_) =>
-            const Center(child: CircularProgressIndicator()),
-            newPageProgressIndicatorBuilder: (_) =>
-            const Center(child: CircularProgressIndicator()),
-            noItemsFoundIndicatorBuilder: (_) =>
-            const Center(
-              child: DsText.bodyLarge(data: 'No messages yet'),
-            ),
-            noMoreItemsIndicatorBuilder: (_) =>
-            const SizedBox.shrink(),
-          ),
+  Widget build(BuildContext context) => BlocBuilder<ChatBloc, ChatState>(
+    builder: (context, state) => PagedListView<int, ChatMessage>(
+      reverse: true,
+      padding: EdgeInsets.all(DsSpacing.radialSpace12),
+      state: state.store.chatPagingState,
+      fetchNextPage: () =>
+          getBloc<ChatBloc>(context).add(const ChatEvent.fetchNextPage()),
+      builderDelegate: PagedChildBuilderDelegate<ChatMessage>(
+        itemBuilder: (_, msg, _) => ChatMessageBubble(
+          message: msg,
+          showTyping:
+              state.store.isStreaming &&
+              msg.role == MessageActor.assistant &&
+              (msg.content?.isEmpty ?? true),
         ),
-      );
+        firstPageProgressIndicatorBuilder: (_) =>
+            const Center(child: CircularProgressIndicator()),
+        newPageProgressIndicatorBuilder: (_) =>
+            const Center(child: CircularProgressIndicator()),
+        noItemsFoundIndicatorBuilder: (_) =>
+            const Center(child: DsText.bodyLarge(data: 'No messages yet')),
+        noMoreItemsIndicatorBuilder: (_) => const SizedBox.shrink(),
+      ),
+    ),
+  );
 }
 
 class ChatMessageBubble extends StatelessWidget {
@@ -70,16 +60,13 @@ class ChatMessageBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isUser = (message.role ?? '').toLowerCase() == 'user';
+    final isUser = message.role == MessageActor.user;
     final content = message.content ?? '';
     final canCopy = content.trim().isNotEmpty;
 
     final Widget bubbleChild;
     if (isUser) {
-      bubbleChild = DsText.bodyMedium(
-        data: content,
-        color: DsColors.onPrimary,
-      );
+      bubbleChild = DsText.bodyMedium(data: content, color: DsColors.onPrimary);
     } else if (showTyping) {
       bubbleChild = const _TypingDots();
     } else {
@@ -100,10 +87,7 @@ class ChatMessageBubble extends StatelessWidget {
     } else {
       decoration = BoxDecoration(
         gradient: const LinearGradient(
-          colors: [
-            DsColors.backgroundSurface,
-            DsColors.backgroundSubtle,
-          ],
+          colors: [DsColors.backgroundSurface, DsColors.backgroundSubtle],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -136,12 +120,11 @@ class ChatMessageBubble extends StatelessWidget {
     );
 
     return Container(
-      margin: EdgeInsets.symmetric(
-        vertical: DsSpacing.verticalSpace8,
-      ),
+      margin: EdgeInsets.symmetric(vertical: DsSpacing.verticalSpace8),
       child: Row(
-        mainAxisAlignment:
-        isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
+        mainAxisAlignment: isUser
+            ? MainAxisAlignment.end
+            : MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (!isUser) ...[
@@ -158,8 +141,9 @@ class ChatMessageBubble extends StatelessWidget {
           ],
           Flexible(
             child: Column(
-              crossAxisAlignment:
-              isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+              crossAxisAlignment: isUser
+                  ? CrossAxisAlignment.end
+                  : CrossAxisAlignment.start,
               spacing: DsSpacing.verticalSpace4,
               children: [
                 DsText.labelSmall(
@@ -168,10 +152,7 @@ class ChatMessageBubble extends StatelessWidget {
                 ),
                 messageBubble,
                 if (canCopy)
-                  _MessageMetaBar(
-                    isUser: isUser,
-                    textToCopy: content,
-                  ),
+                  _MessageMetaBar(isUser: isUser, textToCopy: content),
               ],
             ),
           ),
@@ -194,10 +175,7 @@ class ChatMessageBubble extends StatelessWidget {
 }
 
 class _MessageMetaBar extends StatelessWidget {
-  const _MessageMetaBar({
-    required this.isUser,
-    required this.textToCopy,
-  });
+  const _MessageMetaBar({required this.isUser, required this.textToCopy});
 
   final bool isUser;
   final String textToCopy;
@@ -225,13 +203,13 @@ class _MessageMetaBar extends StatelessWidget {
       right: isUser ? DsSpacing.horizontalSpace4 : 0,
     ),
     child: Row(
-      mainAxisAlignment:
-      isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
+      mainAxisAlignment: isUser
+          ? MainAxisAlignment.end
+          : MainAxisAlignment.start,
       children: [
         InkWell(
           onTap: () => _copy(context),
-          borderRadius:
-          BorderRadius.circular(DsBorderRadius.borderRadius8),
+          borderRadius: BorderRadius.circular(DsBorderRadius.borderRadius8),
           child: Padding(
             padding: EdgeInsets.symmetric(
               horizontal: DsSpacing.horizontalSpace4,
@@ -329,102 +307,93 @@ class _ChatInputBarState extends State<ChatInputBar> {
   }
 
   @override
-  Widget build(BuildContext context) =>
-      BlocConsumer<ChatBloc, ChatState>(
-        listener: _handleState,
-        builder: (context, state) {
-          final hasText =
-              state.store.searchQuery?.input.trim().isNotEmpty ?? false;
-          final isStreaming = state.store.isStreaming;
+  Widget build(BuildContext context) => BlocConsumer<ChatBloc, ChatState>(
+    listener: _handleState,
+    builder: (context, state) {
+      final hasText = state.store.searchQuery?.input.trim().isNotEmpty ?? false;
+      final isStreaming = state.store.isStreaming;
 
-          return Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: DsSpacing.horizontalSpace16,
-              vertical: DsSpacing.verticalSpace8,
-            ),
-            decoration:
-            const BoxDecoration(color: DsColors.backgroundPrimary),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              spacing: DsSpacing.horizontalSpace8,
-              children: [
-                Expanded(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: DsColors.backgroundSurface,
-                      borderRadius: BorderRadius.circular(
-                        DsBorderRadius.borderRadius22,
-                      ),
-                      border: Border.all(color: DsColors.borderSubtle),
-                    ),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      spacing: DsSpacing.horizontalSpace2,
-                      children: [
-                        Expanded(
-                          child: ChatTextFormField(
-                            value: state.store.searchQuery,
-                            controller: _controller,
-                            hintText: 'Ask a question...',
-                            onChanged: (queryString) =>
-                                getBloc<ChatBloc>(context)
-                                    .onQueryChanged(query: queryString),
-                          ),
-                        ),
-                        IconButton(
-                          icon: Icon(
-                            Icons.public_rounded,
-                            color: state.store.webSearchEnabled
-                                ? DsColors.primary
-                                : DsColors.iconSecondary,
-                          ),
-                          onPressed: () =>
-                              getBloc<ChatBloc>(context)
-                                  .onWebSearchToggled(),
-                        ),
-                      ],
-                    ),
+      return Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: DsSpacing.horizontalSpace16,
+          vertical: DsSpacing.verticalSpace8,
+        ),
+        decoration: const BoxDecoration(color: DsColors.backgroundPrimary),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          spacing: DsSpacing.horizontalSpace8,
+          children: [
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: DsColors.backgroundSurface,
+                  borderRadius: BorderRadius.circular(
+                    DsBorderRadius.borderRadius22,
                   ),
+                  border: Border.all(color: DsColors.borderSubtle),
                 ),
-                IconButton(
-                  style: IconButton.styleFrom(
-                    backgroundColor: DsColors.primary,
-                    disabledBackgroundColor:
-                    DsColors.primary.withAlpha(30),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                        DsBorderRadius.borderRadius12,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  spacing: DsSpacing.horizontalSpace2,
+                  children: [
+                    Expanded(
+                      child: ChatTextFormField(
+                        value: state.store.searchQuery,
+                        controller: _controller,
+                        hintText: 'Ask a question...',
+                        onChanged: (queryString) => getBloc<ChatBloc>(
+                          context,
+                        ).onQueryChanged(query: queryString),
                       ),
                     ),
-                  ),
-                  iconSize: DsSizing.size24,
-                  icon: Icon(
-                    isStreaming
-                        ? Icons.stop_rounded
-                        : Icons.send_rounded,
-                  ),
-                  color: DsColors.onPrimary,
-                  onPressed: isStreaming
-                      ? () {
-                    getBloc<ChatBloc>(context).stopGeneration();
-                    FocusScope.of(context).unfocus();
-                  }
-                      : (hasText
-                      ? () {
-                    getBloc<ChatBloc>(context).sendMessage();
-                    FocusScope.of(context).unfocus();
-                  }
-                      : null),
+                    IconButton(
+                      icon: Icon(
+                        Icons.public_rounded,
+                        color: state.store.webSearchEnabled
+                            ? DsColors.primary
+                            : DsColors.iconSecondary,
+                      ),
+                      onPressed: () =>
+                          getBloc<ChatBloc>(context).onWebSearchToggled(),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          );
-        },
+            IconButton(
+              style: IconButton.styleFrom(
+                backgroundColor: DsColors.primary,
+                disabledBackgroundColor: DsColors.primary.withAlpha(30),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(
+                    DsBorderRadius.borderRadius12,
+                  ),
+                ),
+              ),
+              iconSize: DsSizing.size24,
+              icon: Icon(isStreaming ? Icons.stop_rounded : Icons.send_rounded),
+              color: DsColors.onPrimary,
+              onPressed: isStreaming
+                  ? () {
+                      getBloc<ChatBloc>(context).stopGeneration();
+                      FocusScope.of(context).unfocus();
+                    }
+                  : (hasText
+                        ? () {
+                            getBloc<ChatBloc>(context).sendMessage();
+                            FocusScope.of(context).unfocus();
+                          }
+                        : null),
+            ),
+          ],
+        ),
       );
+    },
+  );
 
   void _handleState(BuildContext context, ChatState state) => switch (state) {
-    OnQueryUpdate(:final store) =>
-    _controller.text = store.searchQuery?.input ?? '',
+    OnQueryUpdate(:final store)  || OnMessageSent(:final store) =>
+      _controller.text = store.searchQuery?.input ?? '',
     _ => {},
   };
 }

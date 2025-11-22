@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:doc_helper_app/core/network/sse_handler/i_sse_handler.dart';
 import 'package:doc_helper_app/core/network/sse_handler/sse_event.dart';
