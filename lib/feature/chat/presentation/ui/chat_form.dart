@@ -43,6 +43,23 @@ class ChatListView extends StatelessWidget {
         noItemsFoundIndicatorBuilder: (_) =>
             const Center(child: DsText.bodyLarge(data: 'No messages yet')),
         noMoreItemsIndicatorBuilder: (_) => const SizedBox.shrink(),
+        firstPageErrorIndicatorBuilder: (_) => Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            spacing: DsSpacing.verticalSpace8,
+            children: [
+              Icon(
+                Icons.warning_outlined,
+                color: DsColors.iconError,
+                size: DsSizing.size24,
+              ),
+              const DsText.bodyLarge(data: 'Failed to load previous messages'),
+            ],
+          ),
+        ),
+        newPageErrorIndicatorBuilder: (_) => const Center(
+          child: DsText.bodyLarge(data: 'Failed to load more messages'),
+        ),
       ),
     ),
   );
@@ -85,18 +102,23 @@ class ChatMessageBubble extends StatelessWidget {
         ),
       );
     } else {
+      final isError = message.isError ?? false;
       decoration = BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [DsColors.backgroundSurface, DsColors.backgroundSubtle],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        color: isError ? DsColors.chatBubbleErrorBackground : null,
+        gradient: isError
+            ? null
+            : const LinearGradient(
+                colors: [DsColors.backgroundSurface, DsColors.backgroundSubtle],
+              ),
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(DsBorderRadius.borderRadius16),
           bottomRight: Radius.circular(DsBorderRadius.borderRadius16),
           topLeft: Radius.zero,
           topRight: Radius.circular(DsBorderRadius.borderRadius16),
         ),
+        border: isError
+            ? Border.all(color: DsColors.iconError.withAlpha(80))
+            : null,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withAlpha(3),
@@ -392,7 +414,7 @@ class _ChatInputBarState extends State<ChatInputBar> {
   );
 
   void _handleState(BuildContext context, ChatState state) => switch (state) {
-    OnQueryUpdate(:final store)  || OnMessageSent(:final store) =>
+    OnQueryUpdate(:final store) || OnMessageSent(:final store) =>
       _controller.text = store.searchQuery?.input ?? '',
     _ => {},
   };

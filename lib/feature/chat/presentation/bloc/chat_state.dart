@@ -4,29 +4,31 @@ part of 'chat_bloc.dart';
 sealed class ChatState extends BaseState with _$ChatState {
   const ChatState._();
 
-  const factory ChatState.initial({
-    required ChatStateStore store,
-  }) = Initial;
+  const factory ChatState.initial({required ChatStateStore store}) = Initial;
 
-  const factory ChatState.onChatHistoryFetch({
-    required ChatStateStore store,
-  }) = OnChatHistoryFetch;
+  const factory ChatState.onChatHistoryFetch({required ChatStateStore store}) =
+      OnChatHistoryFetch;
 
-  const factory ChatState.onWebSearchToggle({
-    required ChatStateStore store,
-  }) = OnWebSearchToggle;
+  const factory ChatState.onWebSearchToggle({required ChatStateStore store}) =
+      OnWebSearchToggle;
 
-  const factory ChatState.onQueryUpdate({
-    required ChatStateStore store,
-  }) = OnQueryUpdate;
+  const factory ChatState.onQueryUpdate({required ChatStateStore store}) =
+      OnQueryUpdate;
 
-  const factory ChatState.onMessageSent({
-    required ChatStateStore store,
-  }) = OnMessageSent;
+  const factory ChatState.onMessageSent({required ChatStateStore store}) =
+      OnMessageSent;
 
-  const factory ChatState.invalidateLoader({
+  const factory ChatState.onChatHistoryFetchError({
     required ChatStateStore store,
-  }) = InvalidateLoader;
+    required Exception exception,
+  }) = OnChatHistoryFetchError;
+
+  const factory ChatState.onMessageResponseError({
+    required ChatStateStore store,
+  }) = OnMessageResponseError;
+
+  const factory ChatState.invalidateLoader({required ChatStateStore store}) =
+      InvalidateLoader;
 
   const factory ChatState.onException({
     required ChatStateStore store,
@@ -34,11 +36,10 @@ sealed class ChatState extends BaseState with _$ChatState {
   }) = OnException;
 
   @override
-  BaseState getExceptionState(Exception exception) =>
-      ChatState.onException(
-        store: store.copyWith(loading: false),
-        exception: exception,
-      );
+  BaseState getExceptionState(Exception exception) => ChatState.onException(
+    store: store.copyWith(loading: false),
+    exception: exception,
+  );
 
   @override
   BaseState getLoaderState({required bool loading}) =>

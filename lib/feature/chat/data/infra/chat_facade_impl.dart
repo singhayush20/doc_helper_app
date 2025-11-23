@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:dartz/dartz.dart';
 import 'package:doc_helper_app/core/common/constants/enums.dart';
 import 'package:doc_helper_app/core/exception_handling/server_exception.dart';
+import 'package:doc_helper_app/core/extensions/extensions.dart';
 import 'package:doc_helper_app/core/network/api_call_handler.dart';
 import 'package:doc_helper_app/core/network/retrofit_api_client.dart';
 import 'package:doc_helper_app/core/network/sse_handler/i_sse_handler.dart';
@@ -11,6 +12,7 @@ import 'package:doc_helper_app/env/env_config.dart';
 import 'package:doc_helper_app/feature/chat/data/models/chat_dto.dart';
 import 'package:doc_helper_app/feature/chat/data/models/dto_to_model_mapper.dart';
 import 'package:doc_helper_app/feature/chat/domain/entities/chat_entities.dart';
+import 'package:doc_helper_app/feature/chat/domain/enums/chat_enums.dart';
 import 'package:doc_helper_app/feature/chat/domain/interface/i_chat_facade.dart';
 import 'package:injectable/injectable.dart';
 
@@ -101,7 +103,7 @@ class ChatFacadeImpl implements IChatFacade {
               right(
                 QuestionAnswerResponse(
                   message: dto.message,
-                  event: sseEvent.event,
+                  event: MessageEventType.values.by(sseEvent.event),
                 ),
               ),
             );
@@ -171,5 +173,12 @@ class ChatFacadeImpl implements IChatFacade {
       (exception) => left(exception),
       (_) => right(unit),
     );
+  }
+
+  @override
+  Future<void> closeStreams() async {
+    await _internalSubscription?.cancel();
+    await _sseHandler.stop();
+    _internalSubscription = null;
   }
 }

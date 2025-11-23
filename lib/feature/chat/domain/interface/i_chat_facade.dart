@@ -19,4 +19,6 @@ abstract class IChatFacade {
   Future<Either<ServerException, Unit>> cancelCurrentStream({
     required String generationId,
   });
+
+  Future<void> closeStreams();
 }

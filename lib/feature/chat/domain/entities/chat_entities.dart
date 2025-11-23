@@ -19,6 +19,7 @@ abstract class ChatMessage with _$ChatMessage {
     final String? content,
     final MessageActor? role,
     final DateTime? timestamp,
+    final bool? isError,
   }) = _ChatMessage;
 }
 
@@ -26,7 +27,7 @@ abstract class ChatMessage with _$ChatMessage {
 abstract class QuestionAnswerResponse with _$QuestionAnswerResponse {
   const factory QuestionAnswerResponse({
     final String? message,
-    final String? event,
+    final MessageEventType? event,
   }) = _QuestionAnswerResponse;
 }
 

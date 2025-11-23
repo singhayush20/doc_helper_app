@@ -1,10 +1,12 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:dartz/dartz.dart';
 import 'package:doc_helper_app/core/common/base_bloc/base_bloc.dart';
 import 'package:doc_helper_app/core/common/base_bloc/base_event.dart';
 import 'package:doc_helper_app/core/common/base_bloc/base_state.dart';
 import 'package:doc_helper_app/core/common/constants/app_constants.dart';
+import 'package:doc_helper_app/core/common/constants/enums.dart';
 import 'package:doc_helper_app/core/common/utils/app_utils.dart';
 import 'package:doc_helper_app/core/exception_handling/server_exception.dart';
 import 'package:doc_helper_app/core/value_objects/value_objects.dart';
@@ -95,10 +97,21 @@ class ChatBloc extends BaseBloc<ChatEvent, ChatState> {
     );
 
     _isFetching = false;
-
     result.fold(
-      (ServerException exception) {
-        // TODO: Handle error
+      (exception) {
+        final pagingState = state.store.chatPagingState;
+
+        emit(
+          ChatState.onChatHistoryFetchError(
+            store: state.store.copyWith(
+              chatPagingState: pagingState.copyWith(
+                error: exception,
+                isLoading: false,
+              ),
+            ),
+            exception: exception,
+          ),
+        );
       },
       (ChatHistory history) {
         final messages = history.messages ?? [];
@@ -243,31 +256,47 @@ class ChatBloc extends BaseBloc<ChatEvent, ChatState> {
       generationId: generationId,
     );
 
-    await for (final either in stream) {
-      await either.fold(
-        (ServerException exception) async {
-          add(
-            ChatEvent.aiStreamError(
-              errorMessage: exception.metaData?.message ?? 'Unknown error',
-            ),
+    var hasError = false;
+
+    await for (var messageOrError in stream) {
+      var isError = false;
+      messageOrError.fold(
+        (exception) {
+          isError = true;
+          aiStreamError(
+            errorMessage: exception.metaData?.message ?? 'Unknown error',
           );
         },
-        (QuestionAnswerResponse res) async {
-          if (res.message?.isNotEmpty ?? false) {
-            add(ChatEvent.aiStreamChunkReceived(chunk: res.message ?? ''));
+        (response) {
+          if (response.event == MessageEventType.message) {
+            if (response.message?.isNotEmpty ?? false) {
+              aiStreamChunkReceived(chunk: response.message ?? '');
+            }
+          } else if (response.event == MessageEventType.error) {
+            isError = true;
+            aiStreamError(errorMessage: response.message ?? '');
           }
         },
       );
+
+      if (isError) {
+        hasError = true;
+        break;
+      }
     }
 
-    add(const ChatEvent.aiStreamCompleted());
+    if (!hasError) {
+      add(const ChatEvent.aiStreamCompleted());
+    } else {
+      _chatFacade.closeStreams();
+    }
   }
 
   String createGenerationId() => _uuid.v4();
 
   void _onAiStreamStarted(_AiStreamStarted event, Emitter<ChatState> emit) {
     emit(
-      ChatState.onChatHistoryFetch(
+      ChatState.onMessageResponseError(
         store: state.store.copyWith(isStreaming: true, streamingError: null),
       ),
     );
@@ -322,11 +351,43 @@ class ChatBloc extends BaseBloc<ChatEvent, ChatState> {
   }
 
   void _onAiStreamError(_AiStreamError event, Emitter<ChatState> emit) {
+    final store = state.store;
+
+    const uiMessage = 'Something went wrong. Please try again.';
+
+    final updatedMessages = (store.chatHistory?.messages ?? []).map((message) {
+      final isStreamingAssistant =
+          message.role == MessageActor.assistant &&
+          (message.content == null || (message.content?.isEmpty ?? true));
+
+      if (isStreamingAssistant) {
+        return message.copyWith(content: uiMessage, isError: true);
+      }
+      return message;
+    }).toList();
+
+    final pages = store.chatPagingState.pages;
+    final updatedPages = pages == null
+        ? null
+        : [
+            [
+              for (final message in pages.first)
+                (message.role == MessageActor.assistant &&
+                        (message.content == null ||
+                            (message.content?.isEmpty ?? true)))
+                    ? message.copyWith(content: uiMessage, isError: true)
+                    : message,
+            ],
+            ...pages.skip(1),
+          ];
+
     emit(
-      ChatState.onChatHistoryFetch(
-        store: state.store.copyWith(
+      ChatState.onMessageResponseError(
+        store: store.copyWith(
           isStreaming: false,
           streamingError: event.errorMessage,
+          chatHistory: store.chatHistory?.copyWith(messages: updatedMessages),
+          chatPagingState: store.chatPagingState.copyWith(pages: updatedPages),
         ),
       ),
     );
@@ -426,4 +487,10 @@ class ChatBloc extends BaseBloc<ChatEvent, ChatState> {
   void sendMessage() => add(const ChatEvent.sendMessage());
 
   void stopGeneration() => add(const ChatEvent.stopGeneration());
+
+  void aiStreamChunkReceived({required String chunk}) =>
+      add(ChatEvent.aiStreamChunkReceived(chunk: chunk));
+
+  void aiStreamError({required String errorMessage}) =>
+      add(ChatEvent.aiStreamError(errorMessage: errorMessage));
 }
