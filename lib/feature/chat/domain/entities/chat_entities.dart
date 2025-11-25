@@ -27,6 +27,8 @@ abstract class ChatMessage with _$ChatMessage {
 abstract class QuestionAnswerResponse with _$QuestionAnswerResponse {
   const factory QuestionAnswerResponse({
     final String? message,
+    final String? errorMessage,
+    final String? errorCode,
     final MessageEventType? event,
   }) = _QuestionAnswerResponse;
 }

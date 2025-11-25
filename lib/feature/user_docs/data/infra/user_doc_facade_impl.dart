@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
+import 'package:doc_helper_app/core/common/constants/enums.dart';
 import 'package:doc_helper_app/core/exception_handling/server_exception.dart';
 import 'package:doc_helper_app/core/network/api_call_handler.dart';
 import 'package:doc_helper_app/core/network/retrofit_api_client.dart';
@@ -45,17 +46,22 @@ class UserDocFacadeImpl implements IUserDocFacade {
         controller.add(1.0);
         await controller.close();
       } on DioException catch (e) {
-        if (CancelToken.isCancel(e)) {
-          controller.addError(Exception('Upload cancelled'));
-        } else {
-          controller.addError(Exception('Upload failed'));
-        }
+        final errorResponse = e.response?.data as Map<String, dynamic>?;
+        final errorCode = errorResponse?['code'];
+        final message = errorResponse?['message'];
+        controller.addError(
+          ServerException(
+            exceptionType: ServerExceptionType.fileUploadError,
+            metaData: ExceptionMetaData(errorCode: errorCode, message: message),
+          ),
+        );
         await controller.close();
       } catch (e) {
         controller.addError(e);
         await controller.close();
       }
     }
+
     start();
     return controller.stream;
   }
@@ -101,7 +107,7 @@ class UserDocFacadeImpl implements IUserDocFacade {
   }) async {
     final responseOrError = await _apiCallHandler.handleApi(
       _retrofitApiClient.getDocSearchResults,
-      [query,page,size],
+      [query, page, size],
     );
 
     return responseOrError.fold((error) => left(error), (response) {

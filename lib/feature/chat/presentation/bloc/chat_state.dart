@@ -66,6 +66,7 @@ sealed class ChatStateStore with _$ChatStateStore {
     // Streaming state
     @Default(false) bool isStreaming,
     String? streamingError,
+    String? streamingErrorCode,
     String? generationId,
   }) = _ChatStateStore;
 }

@@ -32,19 +32,21 @@ class _BaseListTile extends StatelessWidget {
       margin: EdgeInsets.zero,
       elevation: 0,
       clipBehavior: Clip.antiAlias,
-      color: backgroundColor ?? theme.tileColor ?? DsColors.backgroundPrimary,
       shape: RoundedRectangleBorder(
-        borderRadius: borderRadius ??
+        borderRadius:
+            borderRadius ??
             (theme.shape as RoundedRectangleBorder?)?.borderRadius ??
             BorderRadius.circular(DsBorderRadius.borderRadius4),
         side: (borderColor == null)
             ? BorderSide.none
             : BorderSide(
-          color: borderColor ?? DsColors.borderPrimary,
-          width: borderWidth ?? DsBorderWidth.borderWidth1,
-        ),
+                color: borderColor ?? DsColors.borderPrimary,
+                width: borderWidth ?? DsBorderWidth.borderWidth1,
+              ),
       ),
       child: ListTile(
+        tileColor:
+            backgroundColor ?? theme.tileColor ?? DsColors.backgroundPrimary,
         leading: leading,
         trailing: trailing,
         onTap: onTap,

@@ -80,4 +80,7 @@ abstract class RetrofitApiClient {
   Future<HttpResponse> cancelChatMessage(
     @Query('generationId') String generationId,
   );
+
+  @GET('/api/v1/usage/quota')
+  Future<HttpResponse> getUsageInfo();
 }

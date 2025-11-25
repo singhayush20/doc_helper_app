@@ -46,10 +46,16 @@ class ChatMessageDto {
 
 @JsonSerializable()
 class QuestionAnswerResponseDto {
-  const QuestionAnswerResponseDto({required this.message});
+  const QuestionAnswerResponseDto({
+    this.errorMessage,
+    this.errorCode,
+    this.message,
+  });
 
   factory QuestionAnswerResponseDto.fromJson(Map<String, dynamic> json) =>
       _$QuestionAnswerResponseDtoFromJson(json);
 
   final String? message;
+  final String? errorMessage;
+  final String? errorCode;
 }

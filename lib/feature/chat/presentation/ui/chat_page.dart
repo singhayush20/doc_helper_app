@@ -1,10 +1,13 @@
 import 'package:doc_helper_app/core/common/base_bloc/base_bloc.dart';
 import 'package:doc_helper_app/core/common/constants/app_constants.dart';
+import 'package:doc_helper_app/core/exception_handling/server_exception.dart';
+import 'package:doc_helper_app/core/router/route_mapper.dart';
 import 'package:doc_helper_app/design/design.dart';
 import 'package:doc_helper_app/di/injection.dart';
 import 'package:doc_helper_app/feature/chat/domain/entities/chat_entities.dart';
 import 'package:doc_helper_app/feature/chat/domain/enums/chat_enums.dart';
 import 'package:doc_helper_app/feature/chat/presentation/bloc/chat_bloc.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

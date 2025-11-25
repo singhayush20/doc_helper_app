@@ -16,7 +16,9 @@ sealed class DocUploadEvent extends BaseEvent with _$DocUploadEvent {
     required double progress,
   }) = _UploadProgressUpdated;
 
-  const factory DocUploadEvent.onUploadProgressError() = _OnUploadProgressError;
+  const factory DocUploadEvent.onUploadProgressError({
+    required Exception exception,
+  }) = _OnUploadProgressError;
 
   const factory DocUploadEvent.uploadCompleted() = _UploadCompleted;
 }

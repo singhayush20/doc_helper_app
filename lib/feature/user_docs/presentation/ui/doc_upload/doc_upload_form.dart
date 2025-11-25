@@ -76,10 +76,68 @@ class _DocUploadForm extends StatelessWidget {
               errorMessage: state.store.uploadError,
               onCancel: state.store.isUploading ? () {} : null,
             ),
+          if (state.store.uploadErrorCode ==
+              ErrorCodes.quotaExceededServerError) ...[
+            const _QuotaExceededMessage(),
+          ],
         ],
       ),
     ),
   );
+}
+
+class _QuotaExceededMessage extends StatefulWidget {
+  const _QuotaExceededMessage();
+
+  @override
+  State<_QuotaExceededMessage> createState() => _QuotaExceededMessageState();
+}
+
+class _QuotaExceededMessageState extends State<_QuotaExceededMessage> {
+  late final TapGestureRecognizer _recognizer;
+
+  @override
+  void initState() {
+    super.initState();
+    _recognizer = TapGestureRecognizer()..onTap = _navigateToProfile;
+  }
+
+  @override
+  void dispose() {
+    _recognizer.dispose();
+    super.dispose();
+  }
+
+  void _navigateToProfile() {
+    context.goNamed(Routes.profile);
+  }
+
+  @override
+  Widget build(BuildContext context) => Padding(
+      padding: EdgeInsets.symmetric(
+        horizontal: DsSpacing.horizontalSpace16,
+        vertical: DsSpacing.verticalSpace12,
+      ),
+      child: RichText(
+        textAlign: TextAlign.center,
+        text: TextSpan(
+          style: DsTextStyle.bodyMedium.copyWith(color: DsColors.textSecondary),
+          children: [
+            const TextSpan(text: 'You have exceeded your quota. '),
+            TextSpan(
+              text: 'Upgrade your plan',
+              style: DsTextStyle.bodyMedium.copyWith(
+                color: DsColors.textError,
+                fontWeight: FontWeight.bold,
+                decoration: TextDecoration.underline,
+              ),
+              recognizer: _recognizer,
+            ),
+            const TextSpan(text: ' to continue.'),
+          ],
+        ),
+      ),
+    );
 }
 
 class UploadDocCard extends StatelessWidget {

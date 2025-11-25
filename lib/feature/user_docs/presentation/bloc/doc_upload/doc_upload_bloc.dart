@@ -6,6 +6,7 @@ import 'package:doc_helper_app/core/common/base_bloc/base_bloc.dart';
 import 'package:doc_helper_app/core/common/base_bloc/base_event.dart';
 import 'package:doc_helper_app/core/common/base_bloc/base_state.dart';
 import 'package:doc_helper_app/core/common/utils/app_utils.dart';
+import 'package:doc_helper_app/core/exception_handling/server_exception.dart';
 import 'package:doc_helper_app/feature/user_docs/domain/entities/user_doc_entity.dart';
 import 'package:doc_helper_app/feature/user_docs/domain/interfaces/i_user_doc_facade.dart';
 import 'package:file_picker/file_picker.dart';
@@ -14,7 +15,9 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
 part 'doc_upload_bloc.freezed.dart';
+
 part 'doc_upload_event.dart';
+
 part 'doc_upload_state.dart';
 
 @injectable
@@ -92,7 +95,7 @@ class DocUploadBloc extends BaseBloc<DocUploadEvent, DocUploadState> {
         .uploadDocument(file: multipart, cancelToken: _cancelToken!)
         .listen(
           (progress) => onUploadProgressUpdated(progress: progress),
-          onError: (error) => onUploadProgressError(),
+          onError: (exception) => onUploadProgressError(exception: exception),
           onDone: () => onUploadCompleted(),
           cancelOnError: true,
         );
@@ -144,14 +147,29 @@ class DocUploadBloc extends BaseBloc<DocUploadEvent, DocUploadState> {
   void _onUploadProgressError(
     _OnUploadProgressError event,
     Emitter<DocUploadState> emit,
-  ) => emit(
-    DocUploadState.onUploadProgressError(
-      store: state.store.copyWith(
-        isUploading: false,
-        uploadError: 'Error occurred when uploading file',
-      ),
-    ),
-  );
+  ) {
+    if (event.exception is ServerException) {
+      final exception = event.exception as ServerException;
+      emit(
+        DocUploadState.onUploadProgressError(
+          store: state.store.copyWith(
+            isUploading: false,
+            uploadError: exception.metaData?.message,
+            uploadErrorCode: exception.metaData?.errorCode,
+          ),
+        ),
+      );
+    } else {
+      emit(
+        DocUploadState.onUploadProgressError(
+          store: state.store.copyWith(
+            isUploading: false,
+            uploadError: ErrorCodes.unknownError,
+          ),
+        ),
+      );
+    }
+  }
 
   Future<void> _onUploadCompleted(_, Emitter<DocUploadState> emit) async {
     emit(
@@ -180,8 +198,8 @@ class DocUploadBloc extends BaseBloc<DocUploadEvent, DocUploadState> {
   void onUploadProgressUpdated({required double progress}) =>
       add(DocUploadEvent.uploadProgressUpdated(progress: progress));
 
-  void onUploadProgressError() =>
-      add(const DocUploadEvent.onUploadProgressError());
+  void onUploadProgressError({required Exception exception}) =>
+      add(DocUploadEvent.onUploadProgressError(exception: exception));
 
   void onUploadCompleted() => add(const DocUploadEvent.uploadCompleted());
 }

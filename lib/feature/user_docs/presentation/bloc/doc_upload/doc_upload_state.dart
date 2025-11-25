@@ -57,6 +57,7 @@ sealed class DocUploadStateStore with _$DocUploadStateStore {
     required bool isUploading,
     required String fileName,
     String? uploadError,
+    String? uploadErrorCode,
     FileUploadResponse? uploadResponse,
     @Default(false) bool loading,
   }) = _DocUploadStateStore;

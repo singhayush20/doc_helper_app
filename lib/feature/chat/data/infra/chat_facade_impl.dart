@@ -131,15 +131,19 @@ class ChatFacadeImpl implements IChatFacade {
         }
       },
       onError: (err) {
-        controller.add(
-          left(
-            ServerException(
-              exceptionType: ServerExceptionType.sseError,
-              metaData: ExceptionMetaData(message: err.toString()),
+        if (err is ServerException) {
+          controller.add(left(err));
+          controller.close();
+        } else {
+          controller.add(
+            left(
+              ServerException(
+                exceptionType: ServerExceptionType.sseError,
+                metaData: ExceptionMetaData(message: err.toString()),
+              ),
             ),
-          ),
-        );
-        controller.close();
+          );
+        }
       },
       onDone: () {
         controller.close();

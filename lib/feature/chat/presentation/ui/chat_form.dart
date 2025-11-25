@@ -7,14 +7,72 @@ class _ChatForm extends StatelessWidget {
   Widget build(BuildContext context) => BlocBuilder<ChatBloc, ChatState>(
     builder: (context, state) => Container(
       color: DsColors.backgroundPrimary,
-      child: const Column(
+      child: Column(
         children: [
-          Expanded(child: ChatListView()),
-          ChatInputBar(),
+          const Expanded(child: ChatListView()),
+          if (state.store.streamingErrorCode ==
+              ErrorCodes.quotaExceededServerError) ...const [
+            _QuotaExceededMessage(),
+          ],
+          const ChatInputBar(),
         ],
       ),
     ),
   );
+}
+
+class _QuotaExceededMessage extends StatefulWidget {
+  const _QuotaExceededMessage();
+
+  @override
+  State<_QuotaExceededMessage> createState() => _QuotaExceededMessageState();
+}
+
+class _QuotaExceededMessageState extends State<_QuotaExceededMessage> {
+  late final TapGestureRecognizer _recognizer;
+
+  @override
+  void initState() {
+    super.initState();
+    _recognizer = TapGestureRecognizer()..onTap = _navigateToProfile;
+  }
+
+  @override
+  void dispose() {
+    _recognizer.dispose();
+    super.dispose();
+  }
+
+  void _navigateToProfile() {
+    context.goNamed(Routes.profile);
+  }
+
+  @override
+  Widget build(BuildContext context) => Padding(
+      padding: EdgeInsets.symmetric(
+        horizontal: DsSpacing.horizontalSpace16,
+        vertical: DsSpacing.verticalSpace12,
+      ),
+      child: RichText(
+        textAlign: TextAlign.center,
+        text: TextSpan(
+          style: DsTextStyle.bodyMedium.copyWith(color: DsColors.textSecondary),
+          children: [
+            const TextSpan(text: 'You have exceeded your quota. '),
+            TextSpan(
+              text: 'Upgrade your plan',
+              style: DsTextStyle.bodyMedium.copyWith(
+                color: DsColors.textError,
+                fontWeight: FontWeight.bold,
+                decoration: TextDecoration.underline,
+              ),
+              recognizer: _recognizer,
+            ),
+            const TextSpan(text: ' to continue.'),
+          ],
+        ),
+      ),
+    );
 }
 
 class ChatListView extends StatelessWidget {
@@ -395,7 +453,10 @@ class _ChatInputBarState extends State<ChatInputBar> {
               iconSize: DsSizing.size24,
               icon: Icon(isStreaming ? Icons.stop_rounded : Icons.send_rounded),
               color: DsColors.onPrimary,
-              onPressed: isStreaming
+              onPressed:
+                  _shouldDisableChat(errorCode: state.store.streamingErrorCode)
+                  ? null
+                  : isStreaming
                   ? () {
                       getBloc<ChatBloc>(context).stopGeneration();
                       FocusScope.of(context).unfocus();
@@ -418,4 +479,7 @@ class _ChatInputBarState extends State<ChatInputBar> {
       _controller.text = store.searchQuery?.input ?? '',
     _ => {},
   };
+
+  bool _shouldDisableChat({required String? errorCode}) =>
+      errorCode == ErrorCodes.quotaExceededServerError;
 }

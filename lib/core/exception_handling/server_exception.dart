@@ -26,6 +26,7 @@ class ErrorCodes {
   static const String firebaseOperationNotAllowed = 'operation-not-allowed';
   static const String firebaseWeakPassword = 'weak-password';
   static const String firebaseTooManyRequests = 'too-many-requests';
+  static const String quotaExceededServerError = 'E0019';
 }
 
 class ErrorMessages {

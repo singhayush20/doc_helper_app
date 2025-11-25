@@ -6,5 +6,5 @@ enum ServerExceptionType {
   badRequest,
   connectionTimeout,
   signInFailure,
-  sseError,
+  sseError, fileUploadError,
 }

@@ -1,12 +1,10 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:dartz/dartz.dart';
 import 'package:doc_helper_app/core/common/base_bloc/base_bloc.dart';
 import 'package:doc_helper_app/core/common/base_bloc/base_event.dart';
 import 'package:doc_helper_app/core/common/base_bloc/base_state.dart';
 import 'package:doc_helper_app/core/common/constants/app_constants.dart';
-import 'package:doc_helper_app/core/common/constants/enums.dart';
 import 'package:doc_helper_app/core/common/utils/app_utils.dart';
 import 'package:doc_helper_app/core/exception_handling/server_exception.dart';
 import 'package:doc_helper_app/core/value_objects/value_objects.dart';
@@ -264,7 +262,8 @@ class ChatBloc extends BaseBloc<ChatEvent, ChatState> {
         (exception) {
           isError = true;
           aiStreamError(
-            errorMessage: exception.metaData?.message ?? 'Unknown error',
+            errorMessage: exception.metaData?.message ?? '',
+            errorCode: exception.metaData?.errorCode ?? ErrorCodes.unknownError,
           );
         },
         (response) {
@@ -274,7 +273,10 @@ class ChatBloc extends BaseBloc<ChatEvent, ChatState> {
             }
           } else if (response.event == MessageEventType.error) {
             isError = true;
-            aiStreamError(errorMessage: response.message ?? '');
+            aiStreamError(
+              errorMessage: response.errorMessage ?? '',
+              errorCode: response.errorCode ?? '',
+            );
           }
         },
       );
@@ -386,6 +388,7 @@ class ChatBloc extends BaseBloc<ChatEvent, ChatState> {
         store: store.copyWith(
           isStreaming: false,
           streamingError: event.errorMessage,
+          streamingErrorCode: event.errorCode,
           chatHistory: store.chatHistory?.copyWith(messages: updatedMessages),
           chatPagingState: store.chatPagingState.copyWith(pages: updatedPages),
         ),
@@ -491,6 +494,10 @@ class ChatBloc extends BaseBloc<ChatEvent, ChatState> {
   void aiStreamChunkReceived({required String chunk}) =>
       add(ChatEvent.aiStreamChunkReceived(chunk: chunk));
 
-  void aiStreamError({required String errorMessage}) =>
-      add(ChatEvent.aiStreamError(errorMessage: errorMessage));
+  void aiStreamError({
+    required String errorMessage,
+    required String errorCode,
+  }) => add(
+    ChatEvent.aiStreamError(errorMessage: errorMessage, errorCode: errorCode),
+  );
 }

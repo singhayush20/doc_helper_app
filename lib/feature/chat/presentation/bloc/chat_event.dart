@@ -37,8 +37,8 @@ sealed class ChatEvent extends BaseEvent with _$ChatEvent {
 
   const factory ChatEvent.aiStreamError({
     required String errorMessage,
+    required String errorCode,
   }) = _AiStreamError;
 
-  /// User clicked stop (cancel generation)
   const factory ChatEvent.stopGeneration() = _StopGeneration;
 }
