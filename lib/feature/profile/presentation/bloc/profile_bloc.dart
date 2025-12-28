@@ -8,11 +8,10 @@ import 'package:doc_helper_app/core/common/base_bloc/base_state.dart';
 import 'package:doc_helper_app/core/common/utils/app_utils.dart';
 import 'package:doc_helper_app/core/exception_handling/server_exception.dart';
 import 'package:doc_helper_app/feature/auth/domain/interfaces/i_auth_facade.dart';
-import 'package:doc_helper_app/feature/plan/domain/interface/i_plan_facade.dart';
-import 'package:doc_helper_app/feature/plan/domain/models/plan_info.dart';
+import 'package:doc_helper_app/feature/plan/domain/interface/i_usage_facade.dart';
+import 'package:doc_helper_app/feature/plan/domain/models/usage_info.dart';
 import 'package:doc_helper_app/feature/user/domain/entity/user.dart';
 import 'package:doc_helper_app/feature/user/domain/interface/i_user_facade.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
@@ -29,7 +28,7 @@ class ProfileBloc extends BaseBloc<ProfileEvent, ProfileState> {
 
   final IUserFacade _userFacade;
   final IAuthFacade _authFacade;
-  final IPlanFacade _planFacade;
+  final IUsageFacade _planFacade;
 
   @override
   void handleEvents() {
@@ -42,11 +41,11 @@ class ProfileBloc extends BaseBloc<ProfileEvent, ProfileState> {
     invalidateLoader(emit, loading: true);
 
     Either<ServerException, AppUser?>? userInfoOrFailure;
-    Either<ServerException, PlanInfo?>? planInfoOrFailure;
+    Either<ServerException, UsageInfo?>? usageInfoOrFailure;
 
     await Future.wait([
       (() async => userInfoOrFailure = await _userFacade.getUserInfo())(),
-      (() async => planInfoOrFailure = await _planFacade.getUsageInfo())(),
+      (() async => usageInfoOrFailure = await _planFacade.getUsageInfo())(),
     ]);
 
     userInfoOrFailure?.fold((exception) => handleException(emit, exception), (
@@ -56,7 +55,7 @@ class ProfileBloc extends BaseBloc<ProfileEvent, ProfileState> {
         ProfileState.onUserInfoFetch(
           store: state.store.copyWith(
             userInfo: userInfo,
-            planInfo: planInfoOrFailure?.getOrElse(() => null),
+            usageInfo: usageInfoOrFailure?.getOrElse(() => null),
             loading: false,
           ),
         ),

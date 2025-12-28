@@ -83,4 +83,21 @@ abstract class RetrofitApiClient {
 
   @GET('/api/v1/usage/quota')
   Future<HttpResponse> getUsageInfo();
+
+  @GET('/api/v1/billing/products/active')
+  Future<HttpResponse> getActiveBillingProducts();
+
+  @GET('/api/b1/billing/products/{productId}/prices/active')
+  Future<HttpResponse> getActiveBillingPricesForProduct(
+    @Path('productId') int productId,
+  );
+
+  @POST('/api/v1/billing/checkout')
+  Future<HttpResponse> subscribe(@Query('priceCode') String priceCode);
+
+  @GET('/api/v1/billing/subscription/current')
+  Future<HttpResponse> getCurrentSubscriptionDetails();
+
+  @POST('/api/v1/billing/subscription/cancel')
+  Future<HttpResponse> cancelSubscription();
 }

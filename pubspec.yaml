@@ -41,6 +41,8 @@ dependencies:
   file_picker: ^10.3.3
   gpt_markdown: ^1.1.4
   uuid: ^4.5.2
+  razorpay_flutter: ^1.4.0
+
 
 dev_dependencies:
   flutter_test:

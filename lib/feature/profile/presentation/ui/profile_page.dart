@@ -8,7 +8,6 @@ import 'package:doc_helper_app/design/design.dart'
 import 'package:doc_helper_app/design/molecules/list_tile/ds_list_tile.dart';
 import 'package:doc_helper_app/design/molecules/list_tile/list_tile_title.dart';
 import 'package:doc_helper_app/di/injection.dart';
-import 'package:doc_helper_app/feature/plan/domain/enum/plan_info_enum.dart';
 import 'package:doc_helper_app/feature/profile/presentation/bloc/profile_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

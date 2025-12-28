@@ -1,24 +1,23 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'plan_info_dto.g.dart';
+part 'usage_info_dto.g.dart';
 
 @JsonSerializable()
-class PlanInfoDto {
-  const PlanInfoDto({
+class UsageInfoDto {
+  const UsageInfoDto({
     required this.userId,
     required this.monthlyLimit,
     required this.currentMonthlyUsage,
     required this.remainingTokens,
     required this.usagePercentage,
     required this.resetDate,
-    required this.tier,
     required this.isActive,
   });
 
-  factory PlanInfoDto.fromJson(Map<String, dynamic> json) =>
-      _$PlanInfoDtoFromJson(json);
+  factory UsageInfoDto.fromJson(Map<String, dynamic> json) =>
+      _$UsageInfoDtoFromJson(json);
 
-  Map<String, dynamic> toJson() => _$PlanInfoDtoToJson(this);
+  Map<String, dynamic> toJson() => _$UsageInfoDtoToJson(this);
 
   final int? userId;
   final int? monthlyLimit;
@@ -26,6 +25,5 @@ class PlanInfoDto {
   final int? remainingTokens;
   final double? usagePercentage;
   final DateTime? resetDate;
-  final String? tier;
   final bool? isActive;
 }

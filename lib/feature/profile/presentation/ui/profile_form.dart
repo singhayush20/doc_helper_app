@@ -17,7 +17,7 @@ class _ProfileForm extends StatelessWidget {
           children: [
             const DsText.titleLarge(data: 'My Account'),
             _UserInfoSection(),
-            if (state.store.planInfo != null) ...[_PlanSection()],
+            if (state.store.usageInfo != null) ...[_UsageSection()],
             _SettingsSection(),
             DsButton.secondary(
               data: 'Log Out',
@@ -30,19 +30,18 @@ class _ProfileForm extends StatelessWidget {
   );
 }
 
-class _PlanSection extends StatelessWidget {
+class _UsageSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) => BlocBuilder<ProfileBloc, ProfileState>(
     builder: (context, state) {
-      final planInfo = state.store.planInfo;
-      if (planInfo == null) return const SizedBox.shrink();
+      final usageInfo = state.store.usageInfo;
+      if (usageInfo == null) return const SizedBox.shrink();
 
-      final isFree = planInfo.tier == AccountType.free;
-      final limit = planInfo.monthlyLimit ?? 5000;
-      final usage = planInfo.currentMonthlyUsage ?? 0;
+      final limit = usageInfo.monthlyLimit ?? 5000;
+      final usage = usageInfo.currentMonthlyUsage ?? 0;
       final percentage = (usage / limit).clamp(0.0, 1.0);
 
-      final resetDate = planInfo.resetDate;
+      final resetDate = usageInfo.resetDate;
       final dateStr = resetDate != null
           ? '${_monthName(resetDate.month)} ${resetDate.day}, ${resetDate.year}'
           : '';
@@ -57,21 +56,6 @@ class _PlanSection extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const DsText.titleLarge(data: 'My Plan'),
-            DsSpacing.verticalSpaceSizedBox4,
-            Row(
-              children: [
-                const DsText.bodyMedium(
-                  data: 'You are on the ',
-                  color: DsColors.textSecondary,
-                ),
-                DsText.bodyMedium(
-                  data: isFree ? 'Free Plan' : 'Pro Plan',
-                  color: DsColors.primary,
-                ),
-              ],
-            ),
-            DsSpacing.verticalSpaceSizedBox16,
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               spacing: DsSpacing.horizontalSpace4,
@@ -118,22 +102,6 @@ class _PlanSection extends StatelessWidget {
                 data: 'Resets on $dateStr',
                 color: DsColors.textSecondary,
               ),
-            if (isFree) ...[
-              DsSpacing.verticalSpaceSizedBox16,
-              DsListTile(
-                backgroundColor: DsColors.backgroundSubtle,
-                borderRadius: BorderRadius.circular(
-                  DsBorderRadius.borderRadius8,
-                ),
-                title: const ListTileTitleMedium(
-                  data:
-                      '''Unlock unlimited document uploads and advanced features.''',
-                ),
-                leading: Icon(Icons.workspace_premium, size: DsSizing.size24),
-                trailing: Icon(Icons.chevron_right, size: DsSizing.size24),
-                onTap: () {},
-              ),
-            ],
           ],
         ),
       );
