@@ -8,6 +8,8 @@ import 'package:doc_helper_app/core/common/base_bloc/base_state.dart';
 import 'package:doc_helper_app/core/common/utils/app_utils.dart';
 import 'package:doc_helper_app/core/exception_handling/server_exception.dart';
 import 'package:doc_helper_app/feature/auth/domain/interfaces/i_auth_facade.dart';
+import 'package:doc_helper_app/feature/billing/domain/entities/billing_entity.dart';
+import 'package:doc_helper_app/feature/billing/domain/interfaces/i_billing_facade.dart';
 import 'package:doc_helper_app/feature/plan/domain/interface/i_usage_facade.dart';
 import 'package:doc_helper_app/feature/plan/domain/models/usage_info.dart';
 import 'package:doc_helper_app/feature/user/domain/entity/user.dart';
@@ -23,12 +25,17 @@ part 'profile_state.dart';
 
 @injectable
 class ProfileBloc extends BaseBloc<ProfileEvent, ProfileState> {
-  ProfileBloc(this._userFacade, this._authFacade, this._planFacade)
-    : super(const ProfileState.initial(store: ProfileStateStore()));
+  ProfileBloc(
+    this._userFacade,
+    this._authFacade,
+    this._usageFacade,
+    this._billingFacade,
+  ) : super(const ProfileState.initial(store: ProfileStateStore()));
 
   final IUserFacade _userFacade;
   final IAuthFacade _authFacade;
-  final IUsageFacade _planFacade;
+  final IUsageFacade _usageFacade;
+  final IBillingFacade _billingFacade;
 
   @override
   void handleEvents() {
@@ -42,10 +49,13 @@ class ProfileBloc extends BaseBloc<ProfileEvent, ProfileState> {
 
     Either<ServerException, AppUser?>? userInfoOrFailure;
     Either<ServerException, UsageInfo?>? usageInfoOrFailure;
+    Either<ServerException, SubscriptionResponse?>? subscriptionInfoOrFailure;
 
     await Future.wait([
       (() async => userInfoOrFailure = await _userFacade.getUserInfo())(),
-      (() async => usageInfoOrFailure = await _planFacade.getUsageInfo())(),
+      (() async => usageInfoOrFailure = await _usageFacade.getUsageInfo())(),
+      (() async => subscriptionInfoOrFailure = await _billingFacade
+          .getCurrentSubscriptionDetails())(),
     ]);
 
     userInfoOrFailure?.fold((exception) => handleException(emit, exception), (
@@ -56,6 +66,7 @@ class ProfileBloc extends BaseBloc<ProfileEvent, ProfileState> {
           store: state.store.copyWith(
             userInfo: userInfo,
             usageInfo: usageInfoOrFailure?.getOrElse(() => null),
+            subscriptionInfo: subscriptionInfoOrFailure?.getOrElse(() => null),
             loading: false,
           ),
         ),

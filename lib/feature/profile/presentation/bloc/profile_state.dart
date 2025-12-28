@@ -43,6 +43,7 @@ sealed class ProfileStateStore with _$ProfileStateStore {
   const factory ProfileStateStore({
     AppUser? userInfo,
     UsageInfo? usageInfo,
+    SubscriptionResponse? subscriptionInfo,
     @Default(false) bool loading,
   }) = _ProfileStateStore;
 }

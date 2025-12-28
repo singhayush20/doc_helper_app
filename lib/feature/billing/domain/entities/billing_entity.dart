@@ -61,5 +61,11 @@ abstract class SubscriptionResponse with _$SubscriptionResponse {
     final bool? cancelAtPeriodEnd,
     final DateTime? currentPeriodStart,
     final DateTime? currentPeriodEnd,
+    final String? planName,
+    final String? planTier,
+    final String? planMonthlyTokenLimit,
+    final int? amount,
+    final String? currency,
+    final String? description,
   }) = _SubscriptionResponse;
 }

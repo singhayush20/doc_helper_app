@@ -18,10 +18,54 @@ class _ProfileForm extends StatelessWidget {
             const DsText.titleLarge(data: 'My Account'),
             _UserInfoSection(),
             if (state.store.usageInfo != null) ...[_UsageSection()],
+            if (state.store.subscriptionInfo != null) ...[ _SubscriptionSection()],
             _SettingsSection(),
             DsButton.secondary(
               data: 'Log Out',
               onTap: () => getBloc<ProfileBloc>(context).onLogoutPressed(),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
+class _UserInfoSection extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) => BlocBuilder<ProfileBloc, ProfileState>(
+    builder: (context, state) => DecoratedBox(
+      decoration: BoxDecoration(
+        color: DsColors.backgroundPrimary,
+        borderRadius: BorderRadius.circular(DsBorderRadius.borderRadius12),
+      ),
+      child: Padding(
+        padding: EdgeInsets.all(DsSpacing.radialSpace16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          spacing: DsSpacing.verticalSpace12,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              spacing: DsSpacing.verticalSpace8,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const DsText.titleLarge(data: 'Full Name'),
+                DsText.bodyLarge(
+                  data:
+                  '''${state.store.userInfo?.firstName?.input ?? ''} ${state.store.userInfo?.lastName?.input ?? ''}''',
+                ),
+              ],
+            ),
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              spacing: DsSpacing.verticalSpace8,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const DsText.titleLarge(data: 'Email Address'),
+                DsText.bodyLarge(data: '${state.store.userInfo?.email?.input}'),
+              ],
             ),
           ],
         ),
@@ -140,48 +184,18 @@ class _UsageSection extends StatelessWidget {
   }
 }
 
-class _UserInfoSection extends StatelessWidget {
+class _SubscriptionSection extends StatelessWidget {
+  const _SubscriptionSection({super.key});
+
   @override
-  Widget build(BuildContext context) => BlocBuilder<ProfileBloc, ProfileState>(
-    builder: (context, state) => DecoratedBox(
-      decoration: BoxDecoration(
-        color: DsColors.backgroundPrimary,
-        borderRadius: BorderRadius.circular(DsBorderRadius.borderRadius12),
-      ),
-      child: Padding(
-        padding: EdgeInsets.all(DsSpacing.radialSpace16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          spacing: DsSpacing.verticalSpace12,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              spacing: DsSpacing.verticalSpace8,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const DsText.titleLarge(data: 'Full Name'),
-                DsText.bodyLarge(
-                  data:
-                      '''${state.store.userInfo?.firstName?.input ?? ''} ${state.store.userInfo?.lastName?.input ?? ''}''',
-                ),
-              ],
-            ),
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              spacing: DsSpacing.verticalSpace8,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const DsText.titleLarge(data: 'Email Address'),
-                DsText.bodyLarge(data: '${state.store.userInfo?.email?.input}'),
-              ],
-            ),
-          ],
-        ),
-      ),
-    ),
+  Widget build(BuildContext context) => BlocBuilder<ProfileBloc,ProfileState>(
+    builder: (context,state) {
+        // TODO: Build the subscription UI
+      return const SizedBox();
+    },
   );
 }
+
 
 class _SettingsSection extends StatelessWidget {
   @override

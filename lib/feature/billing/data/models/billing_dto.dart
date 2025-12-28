@@ -95,6 +95,12 @@ class SubscriptionResponseDto {
     this.cancelAtPeriodEnd,
     this.currentPeriodStart,
     this.currentPeriodEnd,
+    this.planName,
+    this.planTier,
+    this.planMonthlyTokenLimit,
+    this.amount,
+    this.currency,
+    this.description,
   });
 
   factory SubscriptionResponseDto.fromJson(Map<String, dynamic> json) =>
@@ -106,5 +112,11 @@ class SubscriptionResponseDto {
   final bool? cancelAtPeriodEnd;
   final DateTime? currentPeriodStart;
   final DateTime? currentPeriodEnd;
+  final String? planName;
+  final String? planTier;
+  final String? planMonthlyTokenLimit;
+  final int? amount;
+  final String? currency;
+  final String? description;
 }
 

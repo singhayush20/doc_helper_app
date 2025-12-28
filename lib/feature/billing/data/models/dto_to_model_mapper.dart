@@ -53,5 +53,11 @@ extension SubscriptionResponseDtoX on SubscriptionResponseDto {
         cancelAtPeriodEnd: cancelAtPeriodEnd,
         currentPeriodStart: currentPeriodStart,
         currentPeriodEnd: currentPeriodEnd,
+        planName: planName,
+        planTier: planTier,
+        planMonthlyTokenLimit: planMonthlyTokenLimit,
+        amount: amount,
+        currency: currency,
+        description: description,
       );
 }
