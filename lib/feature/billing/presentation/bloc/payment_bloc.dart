@@ -27,6 +27,8 @@ class PaymentBloc extends BaseBloc<PaymentEvent, PaymentState> {
   @override
   void handleEvents() {
     on<_Started>(_onStarted);
+    on<_SelectPrice>(_onSelectPrice);
+    on<_CheckoutStarted>(_onCheckoutStarted);
   }
 
   Future<void> _onStarted(_Started event, Emitter<PaymentState> emit) async {
@@ -36,13 +38,48 @@ class PaymentBloc extends BaseBloc<PaymentEvent, PaymentState> {
 
     billingPricesOrFailure.fold(
       (exception) => handleException(emit, exception),
-      (billingPricesResponse) => emit(
-        PaymentState.onBillingPriceFetch(
-          store: state.store.copyWith(
-            billingProductInfo: event.billingProductInfo,
-            pricesResponse: billingPricesResponse,
-            loading: false,
+      (billingPricesResponse) {
+        final firstActivePrice = billingPricesResponse?.prices?.firstWhere(
+          (p) => (p?.active ?? true),
+          orElse: () => billingPricesResponse.prices?.first,
+        );
+        final firstActivePriceCode = firstActivePrice?.priceCode;
+
+        emit(
+          PaymentState.onBillingPriceFetch(
+            store: state.store.copyWith(
+              billingProductInfo: event.billingProductInfo,
+              pricesResponse: billingPricesResponse,
+              selectedPriceCode: firstActivePriceCode,
+              loading: false,
+            ),
           ),
+        );
+      },
+    );
+  }
+
+  void _onSelectPrice(_SelectPrice event, Emitter<PaymentState> emit) {
+    emit(
+      PaymentState.onBillingPriceFetch(
+        store: state.store.copyWith(selectedPriceCode: event.priceCode),
+      ),
+    );
+  }
+
+  Future<void> _onCheckoutStarted(
+    _CheckoutStarted event,
+    Emitter<PaymentState> emit,
+  ) async {
+    invalidateLoader(emit, loading: true);
+    final checkoutOrFailure = await _billingFacade.subscribe(event.priceCode);
+
+    checkoutOrFailure.fold(
+      (exception) => handleException(emit, exception),
+      (session) => emit(
+        PaymentState.onCheckoutCreate(
+          store: state.store.copyWith(checkoutSession: session, loading: false),
+          session: session,
         ),
       ),
     );
@@ -52,5 +89,13 @@ class PaymentBloc extends BaseBloc<PaymentEvent, PaymentState> {
   void started({Map<String, dynamic>? args}) {
     final product = args?[AppConstants.product] as BillingProductInfo;
     add(PaymentEvent.started(billingProductInfo: product));
+  }
+
+  void onSelectPrice({required String? priceCode}) {
+    add(PaymentEvent.selectPrice(priceCode: priceCode));
+  }
+
+  void onCheckoutStarted({required String? priceCode}) {
+    add(PaymentEvent.checkoutStarted(priceCode: priceCode ?? ''));
   }
 }

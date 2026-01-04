@@ -11,6 +11,11 @@ sealed class PaymentState extends BaseState with _$PaymentState {
     required PaymentStateStore store,
   }) = _OnBillingPriceFetch;
 
+    const factory PaymentState.onCheckoutCreate({
+    required PaymentStateStore store,
+    required CheckoutSessionResponse? session,
+  }) = OnCheckoutCreate;
+
   const factory PaymentState.invalidateLoader({
     required PaymentStateStore store,
   }) = InvalidateLoader;
@@ -36,6 +41,8 @@ sealed class PaymentStateStore with _$PaymentStateStore {
   const factory PaymentStateStore({
     BillingPricesResponse? pricesResponse,
     BillingProductInfo? billingProductInfo,
+    String? selectedPriceCode,
+    CheckoutSessionResponse? checkoutSession,
     @Default(false) bool loading,
   }) = _PaymentStateStore;
 }

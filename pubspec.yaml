@@ -42,6 +42,7 @@ dependencies:
   gpt_markdown: ^1.1.4
   uuid: ^4.5.2
   razorpay_flutter: ^1.4.0
+  intl: ^0.20.2
 
 
 dev_dependencies:

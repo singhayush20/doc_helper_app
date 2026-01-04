@@ -23,7 +23,7 @@ final appTheme = ThemeData(
   ),
   dividerTheme: DividerThemeData(
     thickness: DsBorderWidth.borderWidth1,
-    color: DsColors.divider,
+    color: DsColors.dividerColor,
     space: DsBorderWidth.borderWidth1,
   ),
   listTileTheme: ListTileThemeData(

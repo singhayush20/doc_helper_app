@@ -7,4 +7,12 @@ sealed class PaymentEvent extends BaseEvent with _$PaymentEvent {
   const factory PaymentEvent.started({
     required BillingProductInfo? billingProductInfo,
   }) = _Started;
+
+  const factory PaymentEvent.selectPrice({
+    required String? priceCode,
+  }) = _SelectPrice;
+
+  const factory PaymentEvent.checkoutStarted({
+    required String priceCode,
+  }) = _CheckoutStarted;
 }

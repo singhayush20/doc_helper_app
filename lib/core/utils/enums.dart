@@ -1,0 +1,1 @@
+enum NumberFormatSymbol { noSymbol, rupee }
