@@ -11,7 +11,6 @@ class UsageInfoDto {
     required this.remainingTokens,
     required this.usagePercentage,
     required this.resetDate,
-    required this.isActive,
   });
 
   factory UsageInfoDto.fromJson(Map<String, dynamic> json) =>
@@ -25,5 +24,4 @@ class UsageInfoDto {
   final int? remainingTokens;
   final double? usagePercentage;
   final DateTime? resetDate;
-  final bool? isActive;
 }

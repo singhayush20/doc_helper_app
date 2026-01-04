@@ -9,6 +9,5 @@ extension PlanInfoDtoX on UsageInfoDto {
     remainingTokens: remainingTokens,
     usagePercentage: usagePercentage,
     resetDate: resetDate,
-    isActive: isActive,
   );
 }

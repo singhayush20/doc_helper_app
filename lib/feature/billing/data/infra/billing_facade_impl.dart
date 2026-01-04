@@ -17,8 +17,8 @@ class BillingFacadeImpl implements IBillingFacade {
   final ApiCallHandler _apiCallHandler;
 
   @override
-  Future<Either<ServerException, BillingProductsInfoList>>
-      getBillingProducts() async {
+  Future<Either<ServerException, BillingProductsInfoList?>>
+  getBillingProducts() async {
     final responseOrError = await _apiCallHandler.handleApi(
       _retrofitApiClient.getActiveBillingProducts,
     );
@@ -31,8 +31,8 @@ class BillingFacadeImpl implements IBillingFacade {
   }
 
   @override
-  Future<Either<ServerException, BillingPricesResponse>>
-      getActiveBillingPricesForProduct(int productId) async {
+  Future<Either<ServerException, BillingPricesResponse?>>
+  getActiveBillingPricesForProduct(int productId) async {
     final responseOrError = await _apiCallHandler.handleApi(
       () => _retrofitApiClient.getActiveBillingPricesForProduct(productId),
     );
@@ -45,8 +45,9 @@ class BillingFacadeImpl implements IBillingFacade {
   }
 
   @override
-  Future<Either<ServerException, CheckoutSessionResponse>> subscribe(
-      String priceCode) async {
+  Future<Either<ServerException, CheckoutSessionResponse?>> subscribe(
+    String priceCode,
+  ) async {
     final responseOrError = await _apiCallHandler.handleApi(
       () => _retrofitApiClient.subscribe(priceCode),
     );
@@ -59,8 +60,8 @@ class BillingFacadeImpl implements IBillingFacade {
   }
 
   @override
-  Future<Either<ServerException, SubscriptionResponse>>
-      getCurrentSubscriptionDetails() async {
+  Future<Either<ServerException, SubscriptionResponse?>>
+  getCurrentSubscriptionDetails() async {
     final responseOrError = await _apiCallHandler.handleApi(
       _retrofitApiClient.getCurrentSubscriptionDetails,
     );

@@ -10,6 +10,7 @@
 ## Fixes (High Priority)
 - Check web search properly
 - Design Home Page
+- FIX THE LOADER OVERLAY ISSUE- MOVE THE LOADER TO THE GLOBAL LEVEL, PAGE LEVEL LOADER REMAINS IN CONTEXT
 
 ## Features
 

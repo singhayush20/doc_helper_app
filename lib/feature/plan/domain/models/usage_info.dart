@@ -12,6 +12,5 @@ abstract class UsageInfo with _$UsageInfo {
     final int? remainingTokens,
     final double? usagePercentage,
     final DateTime? resetDate,
-    final bool? isActive,
   }) = _UsageInfo;
 }

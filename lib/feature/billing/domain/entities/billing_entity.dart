@@ -19,6 +19,7 @@ abstract class BillingProductInfo with _$BillingProductInfo {
     final String? tier,
     final int? monthlyTokenLimit,
     final bool? active,
+    final List<String?>? features,
   }) = _BillingProductInfo;
 }
 

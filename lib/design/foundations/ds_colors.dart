@@ -33,6 +33,8 @@ abstract class DsColors {
   /// Success state background (light green tint)
   static const Color backgroundSuccess = _BaseColors.green600;
 
+  static const Color backgroundEnabled = _BaseColors.green200;
+
   /// Warning state background (light orange tint)
   static const Color backgroundWarning = _BaseColors.orange700;
 
@@ -96,6 +98,8 @@ abstract class DsColors {
   static const Color borderSubtle = _BaseColors.neutral200;
 
   static const Color borderDisabled = _BaseColors.neutral500;
+
+  static const Color dividerColor = _BaseColors.neutral800;
 
   static const Color borderPrimary = _BaseColors.purple600;
 

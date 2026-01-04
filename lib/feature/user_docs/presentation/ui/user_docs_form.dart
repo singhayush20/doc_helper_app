@@ -241,7 +241,6 @@ class _ShimmerListTile extends StatelessWidget {
           width: 48.w,
           decoration: BoxDecoration(
             color: DsColors.backgroundDisabled,
-            // Using DsBorderRadius
             borderRadius: BorderRadius.circular(DsBorderRadius.borderRadius8),
           ),
         ),
@@ -255,7 +254,6 @@ class _ShimmerListTile extends StatelessWidget {
                 width: double.infinity,
                 decoration: BoxDecoration(
                   color: DsColors.backgroundDisabled,
-                  // Using DsBorderRadius
                   borderRadius: BorderRadius.circular(
                     DsBorderRadius.borderRadius4,
                   ),

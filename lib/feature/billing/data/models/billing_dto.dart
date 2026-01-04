@@ -21,6 +21,7 @@ class BillingProductInfoDto {
     this.tier,
     this.monthlyTokenLimit,
     this.active,
+    this.features,
   });
 
   factory BillingProductInfoDto.fromJson(Map<String, dynamic> json) =>
@@ -32,6 +33,7 @@ class BillingProductInfoDto {
   final String? tier;
   final int? monthlyTokenLimit;
   final bool? active;
+  final List<String?>? features;
 }
 
 @JsonSerializable()

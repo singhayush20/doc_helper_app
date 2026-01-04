@@ -18,7 +18,9 @@ class _ProfileForm extends StatelessWidget {
             const DsText.titleLarge(data: 'My Account'),
             _UserInfoSection(),
             if (state.store.usageInfo != null) ...[_UsageSection()],
-            if (state.store.subscriptionInfo != null) ...[ _SubscriptionSection()],
+            if (state.store.subscriptionInfo != null) ...[
+              const _SubscriptionSection(),
+            ],
             _SettingsSection(),
             DsButton.secondary(
               data: 'Log Out',
@@ -54,7 +56,7 @@ class _UserInfoSection extends StatelessWidget {
                 const DsText.titleLarge(data: 'Full Name'),
                 DsText.bodyLarge(
                   data:
-                  '''${state.store.userInfo?.firstName?.input ?? ''} ${state.store.userInfo?.lastName?.input ?? ''}''',
+                      '''${state.store.userInfo?.firstName?.input ?? ''} ${state.store.userInfo?.lastName?.input ?? ''}''',
                 ),
               ],
             ),
@@ -185,149 +187,109 @@ class _UsageSection extends StatelessWidget {
 }
 
 class _SubscriptionSection extends StatelessWidget {
-  const _SubscriptionSection({super.key});
+  const _SubscriptionSection();
 
   @override
-  Widget build(BuildContext context) => Container(
-    padding: EdgeInsets.all(DsSpacing.radialSpace16),
-    decoration: BoxDecoration(
-      color: DsColors.backgroundPrimary,
-      borderRadius: BorderRadius.circular(DsBorderRadius.borderRadius12),
-      border: Border.all(color: DsColors.borderSubtle),
-    ),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        // Header
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+  Widget build(BuildContext context) => BlocBuilder<ProfileBloc, ProfileState>(
+    builder: (context, state) =>
+        (state.store.subscriptionInfo?.planName == null)
+        ? Container(
+            padding: EdgeInsets.all(DsSpacing.radialSpace16),
+            decoration: BoxDecoration(
+              color: DsColors.primary,
+              borderRadius: BorderRadius.circular(
+                DsBorderRadius.borderRadius12,
+              ),
+            ),
+            child: Column(
               children: [
-                const DsText.titleLarge(data: 'Plan Information'),
-                DsSpacing.verticalSpaceSizedBox4,
-                const DsText.bodySmall(
-                  data: 'Subscription Details',
-                  color: DsColors.textSecondary,
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: DsColors.white.withAlpha(20),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Icon(
+                        Icons.diamond_outlined,
+                        color: DsColors.white,
+                      ),
+                    ),
+                    DsSpacing.horizontalSpaceSizedBox12,
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        spacing: DsSpacing.verticalSpace4,
+                        children: [
+                          const DsText.titleMedium(
+                            data: 'Premium Plan',
+                            color: DsColors.white,
+                          ),
+                          const DsText.bodySmall(
+                            data: 'Upgrade today, to get more features',
+                            color: DsColors.textTertiary,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                DsSpacing.verticalSpaceSizedBox16,
+                SizedBox(
+                  width: double.infinity,
+                  child: DsButton.secondary(
+                    data: 'Upgrade',
+                    onTap: () => GoRouter.of(context).pushNamed(Routes.plans),
+                  ),
                 ),
               ],
             ),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: DsColors.backgroundSurface,
-                borderRadius: BorderRadius.circular(100),
+          )
+        : DecoratedBox(
+            decoration: BoxDecoration(
+              color: DsColors.backgroundPrimary,
+              borderRadius: BorderRadius.circular(
+                DsBorderRadius.borderRadius12,
               ),
-              child: const DsText.bodySmall(
-                data: 'FREE TIER',
-                color: DsColors.textSecondary,
-              ),
+              border: Border.all(color: DsColors.borderSubtle),
             ),
-          ],
-        ),
-        DsSpacing.verticalSpaceSizedBox24,
-
-        // Details
-        const _DetailRow(label: 'Plan Name', value: 'Basic Starter'),
-        DsSpacing.verticalSpaceSizedBox12,
-        const _DetailRow(label: 'Price', value: '\$0.00 USD'),
-        DsSpacing.verticalSpaceSizedBox12,
-        const _DetailRow(label: 'Token Limit', value: '5,000 / mo'),
-        DsSpacing.verticalSpaceSizedBox12,
-
-        // Description
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const DsText.bodyMedium(
-              data: 'Description',
-              color: DsColors.textSecondary,
-            ),
-            const SizedBox(width: 16),
-            Flexible(
-              child: const DsText.bodyMedium(
-                data: 'Essential tools for personal document analysis.',
-                textAlign: TextAlign.end,
-                color: DsColors.textPrimary,
-              ),
-            ),
-          ],
-        ),
-
-        DsSpacing.verticalSpaceSizedBox24,
-
-        // Pro Banner
-        Container(
-          padding: EdgeInsets.all(DsSpacing.radialSpace16),
-          decoration: BoxDecoration(
-            color: DsColors.primary,
-            borderRadius: BorderRadius.circular(DsBorderRadius.borderRadius12),
-          ),
-          child: Column(
-            children: [
-              Row(
+            child: Padding(
+              padding: EdgeInsets.all(DsSpacing.radialSpace16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: DsColors.white.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: const Icon(Icons.diamond_outlined, color: DsColors.white),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const DsText.titleLarge(data: 'Plan Information'),
+                      DsSpacing.verticalSpaceSizedBox4,
+                      const DsText.bodySmall(
+                        data: 'Subscription Details',
+                        color: DsColors.textSecondary,
+                      ),
+                    ],
                   ),
-                  DsSpacing.horizontalSpaceSizedBox12,
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const DsText.titleMedium(
-                          data: 'Unlock Pro Features',
-                          color: DsColors.white,
-                        ),
-                        DsText.bodySmall(
-                          data: 'Get 50k tokens, priority support & more.',
-                          color: DsColors.white.withOpacity(0.8),
-                        ),
-                      ],
+                  Container(
+                    padding:  EdgeInsets.symmetric(
+                      horizontal: DsSpacing.radialSpace8,
+                      vertical: DsSpacing.radialSpace4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: DsColors.backgroundSurface,
+                      borderRadius: BorderRadius.circular(100),
+                    ),
+                    child: const DsText.bodySmall(
+                      data: 'FREE TIER',
+                      color: DsColors.textSecondary,
                     ),
                   ),
                 ],
               ),
-              DsSpacing.verticalSpaceSizedBox16,
-              SizedBox(
-                width: double.infinity,
-                child: DsButton.secondary(
-                  data: 'Upgrade to Pro \u2192',
-                  onTap: () {},
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
-      ],
-    ),
   );
-}
-
-class _DetailRow extends StatelessWidget {
-  const _DetailRow({required this.label, required this.value});
-
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        DsText.bodyMedium(data: label, color: DsColors.textSecondary),
-        DsText.titleMedium(data: value, color: DsColors.textPrimary),
-      ],
-    );
-  }
 }
 
 class _SettingsSection extends StatelessWidget {

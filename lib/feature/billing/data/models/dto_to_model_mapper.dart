@@ -15,6 +15,7 @@ extension BillingProductInfoDtoX on BillingProductInfoDto {
         tier: tier,
         monthlyTokenLimit: monthlyTokenLimit,
         active: active,
+        features: features,
       );
 }
 
