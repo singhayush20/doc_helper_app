@@ -4,6 +4,7 @@ import 'package:doc_helper_app/feature/auth/presentation/ui/email_verification/e
 import 'package:doc_helper_app/feature/auth/presentation/ui/password_reset/password_reset_page.dart';
 import 'package:doc_helper_app/feature/auth/presentation/ui/sign_in_page.dart';
 import 'package:doc_helper_app/feature/auth/presentation/ui/sign_up/signup_page.dart';
+import 'package:doc_helper_app/feature/billing/presentation/ui/payment_page.dart';
 import 'package:doc_helper_app/feature/chat/presentation/ui/chat_page.dart';
 import 'package:doc_helper_app/feature/home/presentation/ui/home_page.dart';
 import 'package:doc_helper_app/feature/main/presentation/ui/landing_page.dart';
@@ -83,9 +84,17 @@ GoRouter buildRouter(AuthNotifier authNotifier) => GoRouter(
     ),
     GoRoute(
       name: Routes.plans,
-      path: '/profile/plans',
+      path: '/plans',
       pageBuilder: (context, state) =>
       const NoTransitionPage(child: PlansPage()),
+      routes: [
+        GoRoute(
+          name: Routes.payment,
+          path: '/payment',
+          pageBuilder: (context, state) =>
+          const NoTransitionPage(child: PaymentPage()),
+        ),
+      ]
     ),
     GoRoute(
       name: Routes.chat,

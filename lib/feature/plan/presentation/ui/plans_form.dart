@@ -142,7 +142,12 @@ class _PlanCard extends StatelessWidget {
           ),
           if (!isActive) ...[
             DsSpacing.verticalSpaceSizedBox32,
-            DsButton.primary(data: 'Buy Subscription', onTap: () {}),
+            DsButton.primary(
+              data: 'Buy Subscription',
+              onTap: () => GoRouter.of(
+                context,
+              ).pushNamed(Routes.payment, extra: product),
+            ),
           ],
           DsSpacing.verticalSpaceSizedBox16,
         ],

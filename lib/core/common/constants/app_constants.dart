@@ -1,7 +1,9 @@
 abstract class AppConstants {
   AppConstants._();
 
-  static final parentRoute = 'parentRoute';
-  static final documentId = 'documentId';
-  static final documentName = 'documentName';
+  static final String parentRoute = 'parentRoute';
+  static final String documentId = 'documentId';
+  static final String documentName = 'documentName';
+  static final String productId = 'productId';
+  static final String product = 'product';
 }

@@ -87,7 +87,7 @@ abstract class RetrofitApiClient {
   @GET('/api/v1/billing/products/active')
   Future<HttpResponse> getActiveBillingProducts();
 
-  @GET('/api/b1/billing/products/{productId}/prices/active')
+  @GET('/api/v1/billing/products/{productId}/prices/active')
   Future<HttpResponse> getActiveBillingPricesForProduct(
     @Path('productId') int productId,
   );
