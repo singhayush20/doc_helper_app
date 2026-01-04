@@ -71,21 +71,23 @@ class BillingPriceDetailsDto {
 }
 
 @JsonSerializable()
-class CheckoutSessionResponseDto {
-  const CheckoutSessionResponseDto({
+class CheckoutSessionInfoDto {
+  const CheckoutSessionInfoDto({
     this.providerSubscriptionId,
     this.providerKeyId,
     this.planCode,
     this.priceCode,
+    this.amount,
   });
 
-  factory CheckoutSessionResponseDto.fromJson(Map<String, dynamic> json) =>
-      _$CheckoutSessionResponseDtoFromJson(json);
+  factory CheckoutSessionInfoDto.fromJson(Map<String, dynamic> json) =>
+      _$CheckoutSessionInfoDtoFromJson(json);
 
   final String? providerSubscriptionId;
   final String? providerKeyId;
   final String? planCode;
   final String? priceCode;
+  final double? amount;
 }
 
 @JsonSerializable()

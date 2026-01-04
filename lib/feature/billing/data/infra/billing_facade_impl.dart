@@ -45,7 +45,7 @@ class BillingFacadeImpl implements IBillingFacade {
   }
 
   @override
-  Future<Either<ServerException, CheckoutSessionResponse?>> subscribe(
+  Future<Either<ServerException, CheckoutSessionInfo?>> subscribe(
     String priceCode,
   ) async {
     final responseOrError = await _apiCallHandler.handleApi(
@@ -55,7 +55,7 @@ class BillingFacadeImpl implements IBillingFacade {
     return responseOrError.fold(
       (exception) => left(exception),
       (response) =>
-          right(CheckoutSessionResponseDto.fromJson(response.data).toDomain()),
+          right(CheckoutSessionInfoDto.fromJson(response.data).toDomain()),
     );
   }
 

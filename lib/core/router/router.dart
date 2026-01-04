@@ -90,7 +90,7 @@ GoRouter buildRouter(AuthNotifier authNotifier) => GoRouter(
       routes: [
         GoRoute(
           name: Routes.payment,
-          path: '/payment',
+          path: '/payment_gateway',
           pageBuilder: (context, state) =>
           const NoTransitionPage(child: PaymentPage()),
         ),

@@ -11,10 +11,25 @@ sealed class PaymentState extends BaseState with _$PaymentState {
     required PaymentStateStore store,
   }) = _OnBillingPriceFetch;
 
-    const factory PaymentState.onCheckoutCreate({
+  const factory PaymentState.onCheckoutCreate({
     required PaymentStateStore store,
-    required CheckoutSessionResponse? session,
+    required CheckoutSessionInfo? session,
   }) = OnCheckoutCreate;
+
+  const factory PaymentState.onPaymentSuccess({
+    required PaymentStateStore store,
+    required PaymentGatewaySuccess event,
+  }) = OnPaymentSuccess;
+
+  const factory PaymentState.onPaymentFailure({
+    required PaymentStateStore store,
+    required PaymentGatewayFailure event,
+  }) = OnPaymentFailure;
+
+  const factory PaymentState.onExternalWalletEvent({
+    required PaymentStateStore store,
+    required PaymentGatewayExternalWallet event,
+  }) = OnExternalWalletEvent;
 
   const factory PaymentState.invalidateLoader({
     required PaymentStateStore store,
@@ -42,7 +57,7 @@ sealed class PaymentStateStore with _$PaymentStateStore {
     BillingPricesResponse? pricesResponse,
     BillingProductInfo? billingProductInfo,
     String? selectedPriceCode,
-    CheckoutSessionResponse? checkoutSession,
+    CheckoutSessionInfo? checkoutSession,
     @Default(false) bool loading,
   }) = _PaymentStateStore;
 }

@@ -37,8 +37,8 @@ extension BillingPriceDetailsDtoX on BillingPriceDetailsDto {
       );
 }
 
-extension CheckoutSessionResponseDtoX on CheckoutSessionResponseDto {
-  CheckoutSessionResponse toDomain() => CheckoutSessionResponse(
+extension CheckoutSessionInfoDtoX on CheckoutSessionInfoDto {
+  CheckoutSessionInfo toDomain() => CheckoutSessionInfo(
         providerSubscriptionId: providerSubscriptionId,
         providerKeyId: providerKeyId,
         planCode: planCode,

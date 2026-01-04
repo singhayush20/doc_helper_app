@@ -44,13 +44,14 @@ abstract class BillingPriceDetails with _$BillingPriceDetails {
 }
 
 @liteFreezed
-abstract class CheckoutSessionResponse with _$CheckoutSessionResponse {
-  const factory CheckoutSessionResponse({
+abstract class CheckoutSessionInfo with _$CheckoutSessionInfo {
+  const factory CheckoutSessionInfo({
     final String? providerSubscriptionId,
     final String? providerKeyId,
     final String? planCode,
     final String? priceCode,
-  }) = _CheckoutSessionResponse;
+    final double? amount,
+  }) = _CheckoutSessionInfo;
 }
 
 @liteFreezed
