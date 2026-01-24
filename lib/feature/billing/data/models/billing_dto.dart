@@ -118,9 +118,24 @@ class SubscriptionResponseDto {
   final DateTime? currentPeriodEnd;
   final String? planName;
   final String? planTier;
-  final String? planMonthlyTokenLimit;
+  final int? planMonthlyTokenLimit;
   final int? amount;
   final String? currency;
   final String? description;
 }
 
+@JsonSerializable()
+class CancelCheckoutDto {
+  const CancelCheckoutDto({
+    this.paymentFailureErrorCode,
+    this.paymentFailureErrorMessage,
+  });
+
+  factory CancelCheckoutDto.fromJson(Map<String, dynamic> json) =>
+      _$CancelCheckoutDtoFromJson(json);
+
+  Map<String, dynamic> toJson() => _$CancelCheckoutDtoToJson(this);
+
+  final String? paymentFailureErrorCode;
+  final String? paymentFailureErrorMessage;
+}

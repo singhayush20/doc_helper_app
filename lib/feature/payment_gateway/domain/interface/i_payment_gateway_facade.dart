@@ -3,6 +3,6 @@ import 'package:doc_helper_app/feature/payment_gateway/domain/entities/payment_e
 
 abstract interface class IPaymentGatewayFacade {
   Future<void> startCheckout(CheckoutSessionInfo? session);
-  Stream<PaymentGatewayEvent> get paymentGatewayStream;
+  Stream<PaymentGatewayEvent>? get paymentGatewayStream;
   Future<void> dispose();
 }

@@ -9,4 +9,7 @@ sealed class ProfileEvent extends BaseEvent with _$ProfileEvent {
   const factory ProfileEvent.onLogoutPressed() = _OnLogoutPressed;
 
   const factory ProfileEvent.onResetPasswordPressed() = _OnResetPasswordPressed;
+
+  const factory ProfileEvent.onManageSubscriptionTapped() =
+      _OnManageSubscriptionTapped;
 }

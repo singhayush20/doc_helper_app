@@ -34,7 +34,7 @@ GoRouter buildRouter(AuthNotifier authNotifier) => GoRouter(
   refreshListenable: authNotifier,
   redirect: (context, state) {
     final authed = authNotifier.isAuthenticated;
-    final currentRoute = state.uri.toString();
+    final currentRoute = state.matchedLocation;
 
     // Always allow splash to handle its own logic
     if (currentRoute == '/splash') return null;

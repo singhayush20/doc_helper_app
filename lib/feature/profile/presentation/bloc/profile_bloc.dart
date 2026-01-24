@@ -42,6 +42,7 @@ class ProfileBloc extends BaseBloc<ProfileEvent, ProfileState> {
     on<_Started>(_onStarted);
     on<_OnLogoutPressed>(_onLogoutPressed);
     on<_OnResetPasswordPressed>(_onResetPasswordPressed);
+    on<_OnManageSubscriptionTapped>(_onManageSubscriptionTapped);
   }
 
   Future<void> _onStarted(_, Emitter<ProfileState> emit) async {
@@ -90,6 +91,11 @@ class ProfileBloc extends BaseBloc<ProfileEvent, ProfileState> {
     emit(ProfileState.onResetPasswordPress(store: state.store));
   }
 
+  void _onManageSubscriptionTapped(_, Emitter<ProfileState> emit) {
+    invalidateLoader(emit,loading: false);
+    emit(ProfileState.onManageSubscriptionTap(store: state.store));
+  }
+
   @override
   void started({Map<String, dynamic>? args}) {
     add(const ProfileEvent.started());
@@ -101,4 +107,7 @@ class ProfileBloc extends BaseBloc<ProfileEvent, ProfileState> {
 
   void onPasswordResetPressed() =>
       add(const ProfileEvent.onResetPasswordPressed());
+
+  void onManageSubscriptionTapped() =>
+      add(const ProfileEvent.onManageSubscriptionTapped());
 }

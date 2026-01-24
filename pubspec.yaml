@@ -43,6 +43,7 @@ dependencies:
   uuid: ^4.5.2
   razorpay_flutter: ^1.4.0
   intl: ^0.20.2
+  lottie: ^3.3.2
 
 
 dev_dependencies:
@@ -58,5 +59,5 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/images/
     - assets/vectors/
+    - assets/animations/

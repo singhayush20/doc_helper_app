@@ -11,6 +11,7 @@ class PrimaryAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.actions,
     this.leading,
     this.backButtonRequired = true,
+    this.onBackPressed,
   });
 
   final String? titleText;
@@ -19,6 +20,7 @@ class PrimaryAppBar extends StatelessWidget implements PreferredSizeWidget {
   final List<Widget>? actions;
   final Widget? leading;
   final bool backButtonRequired;
+  final VoidCallback? onBackPressed;
 
   @override
   Widget build(BuildContext context) => AppBar(
@@ -30,8 +32,12 @@ class PrimaryAppBar extends StatelessWidget implements PreferredSizeWidget {
         ? leading
         : IconButton(
             onPressed: () {
-              if (context.canPop()) {
-                GoRouter.of(context).pop();
+              if (onBackPressed != null) {
+                onBackPressed?.call();
+              } else {
+                if (context.canPop()) {
+                  GoRouter.of(context).pop();
+                }
               }
             },
             icon: const Icon(Icons.arrow_back),

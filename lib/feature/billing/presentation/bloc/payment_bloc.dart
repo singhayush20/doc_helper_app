@@ -37,6 +37,7 @@ class PaymentBloc extends BaseBloc<PaymentEvent, PaymentState> {
     on<_OnPaymentSuccess>(_paymentSuccess);
     on<_OnPaymentFailure>(_paymentFailure);
     on<_OnExternalWalletEvent>(_externalWalletEvent);
+    on<_OnPaymentFailed>(_onPaymentFailed);
   }
 
   Future<void> _onStarted(_Started event, Emitter<PaymentState> emit) async {
@@ -80,7 +81,7 @@ class PaymentBloc extends BaseBloc<PaymentEvent, PaymentState> {
     Emitter<PaymentState> emit,
   ) async {
     invalidateLoader(emit, loading: true);
-    final checkoutOrFailure = await _billingFacade.subscribe(event.priceCode);
+    final checkoutOrFailure = await _billingFacade.checkout(event.priceCode);
 
     checkoutOrFailure.fold(
       (exception) => handleException(emit, exception),
@@ -101,7 +102,7 @@ class PaymentBloc extends BaseBloc<PaymentEvent, PaymentState> {
 
     _paymentGatewayStreamSubscription = _paymentGatewayFacade
         .paymentGatewayStream
-        .listen(
+        ?.listen(
           (event) => switch (event) {
             PaymentGatewaySuccess() => _onPaymentSuccess(event),
             PaymentGatewayFailure() => _onPaymentFailure(event),
@@ -116,8 +117,10 @@ class PaymentBloc extends BaseBloc<PaymentEvent, PaymentState> {
   void _paymentSuccess(_OnPaymentSuccess event, Emitter<PaymentState> emit) {
     emit(
       PaymentState.onPaymentSuccess(
-        store: state.store,
-        event: event.event,
+        store: state.store.copyWith(
+          paymentSuccess: event.event,
+          refreshOnBackRequired: true,
+        ),
       ),
     );
   }
@@ -125,8 +128,10 @@ class PaymentBloc extends BaseBloc<PaymentEvent, PaymentState> {
   void _paymentFailure(_OnPaymentFailure event, Emitter<PaymentState> emit) {
     emit(
       PaymentState.onPaymentFailure(
-        store: state.store,
-        event: event.event,
+        store: state.store.copyWith(
+          paymentFailure: event.event,
+          refreshOnBackRequired: true,
+        ),
       ),
     );
   }
@@ -137,8 +142,26 @@ class PaymentBloc extends BaseBloc<PaymentEvent, PaymentState> {
   ) {
     emit(
       PaymentState.onExternalWalletEvent(
-        store: state.store,
-        event: event.event,
+        store: state.store.copyWith(
+          paymentExternalWallet: event.event,
+          refreshOnBackRequired: true,
+        ),
+      ),
+    );
+  }
+
+  Future<void> _onPaymentFailed(_, Emitter<PaymentState> emit) async {
+    invalidateLoader(emit, loading: true);
+    final cancelCheckoutResponseOrFailure = await _billingFacade.cancelCheckout(
+      errorCode: state.store.paymentFailure?.code,
+      message: state.store.paymentFailure?.message,
+    );
+    cancelCheckoutResponseOrFailure.fold(
+      (exception) => handleException(emit, exception),
+      (_) => emit(
+        PaymentState.onTransactionCancel(
+          store: state.store.copyWith(loading: false),
+        ),
       ),
     );
   }
@@ -178,5 +201,9 @@ class PaymentBloc extends BaseBloc<PaymentEvent, PaymentState> {
 
   void _onExternalWalletEvent(PaymentGatewayExternalWallet event) {
     add(PaymentEvent.onExternalWalletEvent(event: event));
+  }
+
+  void onPaymentFailed() {
+    add(const PaymentEvent.onPaymentFailed());
   }
 }

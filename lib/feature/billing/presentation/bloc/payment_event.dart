@@ -27,4 +27,7 @@ sealed class PaymentEvent extends BaseEvent with _$PaymentEvent {
   const factory PaymentEvent.onExternalWalletEvent({
     required PaymentGatewayExternalWallet event,
   }) = _OnExternalWalletEvent;
+
+  const factory PaymentEvent.onPaymentFailed() =
+      _OnPaymentFailed;
 }

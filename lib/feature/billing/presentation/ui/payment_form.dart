@@ -16,13 +16,17 @@ class _PaymentForm extends StatelessWidget {
             ? const _PaymentCardShimmer()
             : Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  SingleChildScrollView(
-                    child: Column(
-                      spacing: DsSpacing.verticalSpace12,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [const _PlanSection(), const _PricesSection()],
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        spacing: DsSpacing.verticalSpace12,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const _PlanSection(),
+                          const _PricesSection(),
+                        ],
+                      ),
                     ),
                   ),
                   DsSpacing.verticalSpaceSizedBox24,
@@ -401,6 +405,112 @@ class _PaymentCardShimmer extends StatelessWidget {
           color: DsColors.backgroundDisabled,
         ),
       ),
+    ],
+  );
+}
+
+class _PaymentSuccessForm extends StatelessWidget {
+  const _PaymentSuccessForm();
+
+  @override
+  Widget build(BuildContext context) => BlocBuilder<PaymentBloc, PaymentState>(
+    builder: (context, state) => Padding(
+      padding: EdgeInsets.symmetric(
+        vertical: DsSpacing.radialSpace24,
+        horizontal: DsSpacing.radialSpace12,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        spacing: DsSpacing.verticalSpace24,
+        children: [
+          DsLottie(
+            lottieUrl: AnimationKeys.successTickAnimation,
+            height: 150.h,
+            repeat: false,
+          ),
+          const DsText.headlineMedium(
+            data: 'Payment Successful',
+            color: DsColors.textSuccess,
+          ),
+          DecoratedBox(
+            decoration: BoxDecoration(
+              color: DsColors.backgroundSurface,
+              borderRadius: BorderRadius.circular(
+                DsBorderRadius.borderRadius12,
+              ),
+            ),
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                vertical: DsSpacing.radialSpace12,
+                horizontal: DsSpacing.radialSpace8,
+              ),
+              child: Column(
+                spacing: DsSpacing.verticalSpace8,
+                children: [
+                  if (state.store.paymentSuccess?.paymentId != null) ...[
+                    _PaymentItem(
+                      title: 'Payment ID',
+                      value: state.store.paymentSuccess?.paymentId ?? '',
+                    ),
+                  ],
+                  if (state.store.paymentSuccess?.orderId != null) ...[
+                    _PaymentItem(
+                      title: 'Payment ID',
+                      value: state.store.paymentSuccess?.orderId ?? '',
+                    ),
+                  ],
+                  if (state.store.checkoutSession?.providerSubscriptionId !=
+                      null) ...[
+                    _PaymentItem(
+                      title: 'Subscription ID',
+                      value:
+                          state.store.checkoutSession?.providerSubscriptionId ??
+                          '',
+                    ),
+                  ],
+                  if (state.store.checkoutSession?.amount != null) ...[
+                    _PaymentItem(
+                      title: 'Amount',
+                      value: formatNumberWithSymbol(
+                        state.store.checkoutSession?.amount?.toDouble(),
+                        prefix: NumberFormatSymbol.rupee,
+                      ),
+                    ),
+                  ],
+                  if (state.store.billingProductInfo?.displayName?.isNotEmpty ??
+                      false) ...[
+                    _PaymentItem(
+                      title: 'Plan Name',
+                      value: state.store.billingProductInfo?.displayName ?? '',
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+class _PaymentItem extends StatelessWidget {
+  const _PaymentItem({required this.title, required this.value});
+
+  final String? title;
+  final String? value;
+
+  @override
+  Widget build(BuildContext context) => Row(
+    spacing: DsSpacing.horizontalSpace4,
+    children: [
+      Expanded(
+        child: DsText.bodyMedium(
+          data: title ?? '',
+          color: DsColors.textSecondary,
+        ),
+      ),
+      DsText.bodyMedium(data: value ?? '', color: DsColors.textPrimary),
     ],
   );
 }

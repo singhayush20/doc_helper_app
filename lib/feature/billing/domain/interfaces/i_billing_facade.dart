@@ -9,7 +9,7 @@ abstract class IBillingFacade {
   Future<Either<ServerException, BillingPricesResponse?>>
   getActiveBillingPricesForProduct(int productId);
 
-  Future<Either<ServerException, CheckoutSessionInfo?>> subscribe(
+  Future<Either<ServerException, CheckoutSessionInfo?>> checkout(
     String priceCode,
   );
 
@@ -17,4 +17,9 @@ abstract class IBillingFacade {
   getCurrentSubscriptionDetails();
 
   Future<Either<ServerException, Unit>> cancelSubscription();
+
+  Future<Either<ServerException, Unit>> cancelCheckout({
+    required int? errorCode,
+    required String? message,
+  });
 }

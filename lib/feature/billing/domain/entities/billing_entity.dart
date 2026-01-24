@@ -65,7 +65,7 @@ abstract class SubscriptionResponse with _$SubscriptionResponse {
     final DateTime? currentPeriodEnd,
     final String? planName,
     final String? planTier,
-    final String? planMonthlyTokenLimit,
+    final int? planMonthlyTokenLimit,
     final int? amount,
     final String? currency,
     final String? description,

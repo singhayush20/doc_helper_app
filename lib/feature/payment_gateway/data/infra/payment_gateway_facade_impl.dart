@@ -16,24 +16,26 @@ class RazorpayPaymentGateway implements IPaymentGatewayFacade {
   }
 
   Razorpay? _razorpay;
-  final _controller = StreamController<PaymentGatewayEvent>();
+  StreamController<PaymentGatewayEvent>? _controller;
 
   @override
   Future<void> startCheckout(CheckoutSessionInfo? session) async {
+    if(!(_controller?.isClosed ?? false)) {
+      _controller?.close();
+    }
+    _controller =  StreamController<PaymentGatewayEvent>();
     final options = {
       'key': session?.providerKeyId,
-      'order_id': session?.providerSubscriptionId,
-      'amount': session?.amount,
-      'currency': 'INR',
+      'subscription_id': session?.providerSubscriptionId,
+      'name': 'Doc Helper',
+      'description': 'Subscription',
     };
-
-    print('## options: $options');
 
     _razorpay?.open(options);
   }
 
   void _onSuccess(PaymentSuccessResponse res) {
-    _controller.add(
+    _controller?.add(
       PaymentGatewaySuccess(
         paymentId: res.paymentId,
         orderId: res.orderId,
@@ -43,23 +45,23 @@ class RazorpayPaymentGateway implements IPaymentGatewayFacade {
   }
 
   void _onError(PaymentFailureResponse res) {
-    _controller.add(
+    _controller?.add(
       PaymentGatewayEvent.failure(code: res.code, message: res.message),
     );
   }
 
   void _handleExternalWallet(ExternalWalletResponse response) {
-    _controller.add(
+    _controller?.add(
       PaymentGatewayEvent.externalWallet(walletName: response.walletName),
     );
   }
 
   @override
-  Stream<PaymentGatewayEvent> get paymentGatewayStream => _controller.stream;
+  Stream<PaymentGatewayEvent>? get paymentGatewayStream => _controller?.stream;
 
   @override
   Future<void> dispose() async {
     _razorpay?.clear();
-    await _controller.close();
+    await _controller?.close();
   }
 }

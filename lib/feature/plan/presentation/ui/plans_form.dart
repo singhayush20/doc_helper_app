@@ -5,29 +5,45 @@ class _PlansForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => BlocBuilder<PlansBloc, PlansState>(
-    builder: (context, state) => DsShimmer(
-      enabled: state.store.loading,
-      child: Visibility(
-        visible:
-            !state.store.loading && state.store.billingProductsInfoList != null,
-        replacement: const _PlanCardShimmer(),
-        child: ListView.separated(
-          shrinkWrap: true,
-          itemBuilder: (_, index) {
-            final billingProduct =
-                state.store.billingProductsInfoList?.products?[index];
-            final isActive =
-                billingProduct?.code ==
-                state.store.subscriptionDetails?.planCode;
-            return _PlanCard(isActive: isActive, product: billingProduct);
-          },
-          separatorBuilder: (_, index) =>
-              index ==
-                  (state.store.billingProductsInfoList?.products?.length ?? 0) -
-                      1
-              ? const SizedBox()
-              : DsSpacing.verticalSpaceSizedBox16,
-          itemCount: state.store.billingProductsInfoList?.products?.length ?? 0,
+    builder: (context, state) => Padding(
+      padding: EdgeInsets.symmetric(
+        horizontal: DsSpacing.radialSpace16,
+        vertical: DsSpacing.radialSpace24,
+      ),
+      child: DsShimmer(
+        enabled:
+            state.store.loading || state.store.billingProductsInfoList == null,
+        child: Visibility(
+          visible: state.store.billingProductsInfoList != null,
+          replacement: const _PlanCardShimmer(),
+          child: ListView.separated(
+            shrinkWrap: true,
+            itemBuilder: (_, index) {
+              final billingProduct =
+                  state.store.billingProductsInfoList?.products?[index];
+              final isActive =
+                  billingProduct?.code ==
+                  state.store.subscriptionDetails?.planCode;
+              if (billingProduct != null) {
+                return _PlanCard(
+                  isActive: isActive,
+                  product: billingProduct,
+                  subscriptionDetails: state.store.subscriptionDetails,
+                );
+              } else {
+                return const SizedBox();
+              }
+            },
+            separatorBuilder: (_, index) =>
+                index ==
+                    (state.store.billingProductsInfoList?.products?.length ??
+                            0) -
+                        1
+                ? const SizedBox()
+                : DsSpacing.verticalSpaceSizedBox16,
+            itemCount:
+                state.store.billingProductsInfoList?.products?.length ?? 0,
+          ),
         ),
       ),
     ),
@@ -92,10 +108,15 @@ class _PlanCardShimmer extends StatelessWidget {
 }
 
 class _PlanCard extends StatelessWidget {
-  const _PlanCard({this.isActive = false, this.product});
+  const _PlanCard({
+    this.isActive = false,
+    required this.product,
+    required this.subscriptionDetails,
+  });
 
   final bool isActive;
-  final BillingProductInfo? product;
+  final BillingProductInfo product;
+  final SubscriptionResponse? subscriptionDetails;
 
   @override
   Widget build(BuildContext context) => DecoratedBox(
@@ -121,7 +142,7 @@ class _PlanCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              DsText.titleLarge(data: product?.displayName ?? ''),
+              DsText.titleLarge(data: product.displayName ?? ''),
               _ProductBadge(isActive: isActive),
             ],
           ),
@@ -133,20 +154,33 @@ class _PlanCard extends StatelessWidget {
             primary: false,
             physics: const NeverScrollableScrollPhysics(),
             itemBuilder: (_, index) =>
-                _FeatureItem(data: product?.features?[index] ?? ''),
+                _FeatureItem(data: product.features?[index] ?? ''),
             separatorBuilder: (_, index) =>
-                index == (product?.features?.length ?? 0) - 1
+                index == (product.features?.length ?? 0) - 1
                 ? const SizedBox()
                 : DsSpacing.verticalSpaceSizedBox8,
-            itemCount: product?.features?.length ?? 0,
+            itemCount: product.features?.length ?? 0,
           ),
-          if (!isActive) ...[
+          if (!isActive && subscriptionDetails?.planCode == null) ...[
             DsSpacing.verticalSpaceSizedBox32,
             DsButton.primary(
               data: 'Buy Subscription',
-              onTap: () => GoRouter.of(
-                context,
-              ).pushNamed(Routes.payment, extra: product),
+              onTap: () =>
+                  getBloc<PlansBloc>(context).onBuyTapped(product: product),
+            ),
+          ] else if (isActive &&
+              !(subscriptionDetails?.cancelAtPeriodEnd ?? false)) ...[
+            DsSpacing.verticalSpaceSizedBox32,
+            DsButton.secondary(
+              data: 'Cancel Subscription',
+              onTap: () => getBloc<PlansBloc>(context).onCancelPlan(),
+            ),
+          ] else if (isActive &&
+              (subscriptionDetails?.cancelAtPeriodEnd ?? false)) ...[
+            DsSpacing.verticalSpaceSizedBox32,
+            const DsText.bodyMedium(
+              data: 'Your plan will end after the current billing cycle',
+              textAlign: TextAlign.center,
             ),
           ],
           DsSpacing.verticalSpaceSizedBox16,

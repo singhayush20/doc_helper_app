@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:doc_helper_app/feature/auth/data/models/auth_dto.dart';
+import 'package:doc_helper_app/feature/billing/data/models/billing_dto.dart';
 import 'package:doc_helper_app/feature/chat/data/models/chat_dto.dart';
 import 'package:doc_helper_app/feature/user/data/models/user_dto.dart';
 import 'package:injectable/injectable.dart';
@@ -93,11 +94,16 @@ abstract class RetrofitApiClient {
   );
 
   @POST('/api/v1/billing/checkout')
-  Future<HttpResponse> subscribe(@Query('priceCode') String priceCode);
+  Future<HttpResponse> checkout(@Query('priceCode') String priceCode);
 
   @GET('/api/v1/billing/subscription/current')
   Future<HttpResponse> getCurrentSubscriptionDetails();
 
   @POST('/api/v1/billing/subscription/cancel')
   Future<HttpResponse> cancelSubscription();
+
+  @PUT('/api/v1/billing/subscription/cancel-checkout')
+  Future<HttpResponse> cancelCheckout(
+    @Body() CancelCheckoutDto cancelCheckoutDto,
+  );
 }

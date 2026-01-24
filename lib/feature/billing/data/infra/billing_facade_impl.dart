@@ -45,17 +45,35 @@ class BillingFacadeImpl implements IBillingFacade {
   }
 
   @override
-  Future<Either<ServerException, CheckoutSessionInfo?>> subscribe(
+  Future<Either<ServerException, CheckoutSessionInfo?>> checkout(
     String priceCode,
   ) async {
     final responseOrError = await _apiCallHandler.handleApi(
-      () => _retrofitApiClient.subscribe(priceCode),
+      () => _retrofitApiClient.checkout(priceCode),
     );
 
     return responseOrError.fold(
       (exception) => left(exception),
       (response) =>
           right(CheckoutSessionInfoDto.fromJson(response.data).toDomain()),
+    );
+  }
+
+  @override
+  Future<Either<ServerException, Unit>> cancelCheckout({
+    required int? errorCode,
+    required String? message,
+  }) async {
+    final cancelCheckoutDto = CancelCheckoutDto(
+      paymentFailureErrorCode: errorCode.toString(),
+      paymentFailureErrorMessage: message,
+    );
+    final responseOrError = await _apiCallHandler.handleApi(
+      () => _retrofitApiClient.cancelCheckout(cancelCheckoutDto),
+    );
+    return responseOrError.fold(
+      (exception) => left(exception),
+      (response) => right(unit),
     );
   }
 

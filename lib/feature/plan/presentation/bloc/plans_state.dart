@@ -9,6 +9,17 @@ sealed class PlansState extends BaseState with _$PlansState {
   const factory PlansState.onPlansInfoFetch({required PlansStateStore store}) =
       _OnPlansInfoFetch;
 
+  const factory PlansState.onPlanCancel({required PlansStateStore store}) =
+      OnPlanCancel;
+
+  const factory PlansState.onBuyTap({
+    required PlansStateStore store,
+    required BillingProductInfo selectedProduct,
+  }) = OnBuyTap;
+
+  const factory PlansState.onDataRefreshed({required PlansStateStore store}) =
+      OnDataRefreshed;
+
   const factory PlansState.invalidateLoader({required PlansStateStore store}) =
       InvalidateLoader;
 
@@ -31,9 +42,9 @@ sealed class PlansState extends BaseState with _$PlansState {
 @liteFreezed
 sealed class PlansStateStore with _$PlansStateStore {
   const factory PlansStateStore({
-    SubscriptionResponse? subscriptionInfo,
     BillingProductsInfoList? billingProductsInfoList,
     SubscriptionResponse? subscriptionDetails,
+    @Default(false) bool refreshOnBackRequired,
     @Default(false) bool loading,
   }) = _PlansStateStore;
 }
