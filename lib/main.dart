@@ -2,6 +2,7 @@ import 'package:doc_helper_app/di/injection.dart';
 import 'package:doc_helper_app/env/config_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:loader_overlay/loader_overlay.dart';
@@ -13,6 +14,10 @@ import 'firebase_options.dart';
 
 Future<void> mainCommon(String env) async {
   WidgetsFlutterBinding.ensureInitialized();
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
   Hive.initFlutter();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   initConfig(env: env);
@@ -29,19 +34,19 @@ class MyApp extends StatelessWidget {
     designSize: const Size(360, 690),
     minTextAdapt: true,
     splitScreenMode: true,
-    builder: (context, child) => MaterialApp.router(
-      theme: appTheme,
-      debugShowCheckedModeBanner: false,
-      routerConfig: router,
-      builder: (context, child) => GlobalLoaderOverlay(
-          overlayColor: DsColors.overlayColor,
-          overlayWidgetBuilder: (progress) => const Center(
-            child: CircularProgressIndicator(
-              color: DsColors.loadingIndicatorColorPrimary,
-            ),
-          ),
-          child: child!,
+    builder: (context, child) => GlobalLoaderOverlay(
+      overlayColor: DsColors.overlayColor,
+      overlayWidgetBuilder: (progress) => const Center(
+        child: CircularProgressIndicator(
+          color: DsColors.loadingIndicatorColorPrimary,
         ),
+      ),
+      child: MaterialApp.router(
+        theme: appTheme,
+        debugShowCheckedModeBanner: false,
+        routerConfig: router,
+        builder: (context, child) => child!,
+      ),
     ),
   );
 }

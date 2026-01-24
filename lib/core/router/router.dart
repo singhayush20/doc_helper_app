@@ -4,9 +4,11 @@ import 'package:doc_helper_app/feature/auth/presentation/ui/email_verification/e
 import 'package:doc_helper_app/feature/auth/presentation/ui/password_reset/password_reset_page.dart';
 import 'package:doc_helper_app/feature/auth/presentation/ui/sign_in_page.dart';
 import 'package:doc_helper_app/feature/auth/presentation/ui/sign_up/signup_page.dart';
+import 'package:doc_helper_app/feature/billing/presentation/ui/payment_page.dart';
 import 'package:doc_helper_app/feature/chat/presentation/ui/chat_page.dart';
 import 'package:doc_helper_app/feature/home/presentation/ui/home_page.dart';
 import 'package:doc_helper_app/feature/main/presentation/ui/landing_page.dart';
+import 'package:doc_helper_app/feature/plan/presentation/ui/plans_page.dart';
 import 'package:doc_helper_app/feature/profile/presentation/ui/profile_page.dart';
 import 'package:doc_helper_app/feature/splash_screen/presentation/ui/splash_page.dart';
 import 'package:doc_helper_app/feature/user_docs/presentation/ui/doc_upload/doc_upload_page.dart';
@@ -32,7 +34,7 @@ GoRouter buildRouter(AuthNotifier authNotifier) => GoRouter(
   refreshListenable: authNotifier,
   redirect: (context, state) {
     final authed = authNotifier.isAuthenticated;
-    final currentRoute = state.uri.toString();
+    final currentRoute = state.matchedLocation;
 
     // Always allow splash to handle its own logic
     if (currentRoute == '/splash') return null;
@@ -79,6 +81,20 @@ GoRouter buildRouter(AuthNotifier authNotifier) => GoRouter(
       path: '/docs/upload',
       pageBuilder: (context, state) =>
       const NoTransitionPage(child: DocUploadPage()),
+    ),
+    GoRoute(
+      name: Routes.plans,
+      path: '/plans',
+      pageBuilder: (context, state) =>
+      const NoTransitionPage(child: PlansPage()),
+      routes: [
+        GoRoute(
+          name: Routes.payment,
+          path: '/payment_gateway',
+          pageBuilder: (context, state) =>
+          const NoTransitionPage(child: PaymentPage()),
+        ),
+      ]
     ),
     GoRoute(
       name: Routes.chat,

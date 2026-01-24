@@ -18,6 +18,10 @@ sealed class ProfileState extends BaseState with _$ProfileState {
     required ProfileStateStore store,
   }) = OnResetPasswordPress;
 
+  const factory ProfileState.onManageSubscriptionTap({
+    required ProfileStateStore store,
+  }) = OnManageSubscriptionTap;
+
   const factory ProfileState.invalidateLoader({
     required ProfileStateStore store,
   }) = InvalidateLoader;
@@ -42,7 +46,8 @@ sealed class ProfileState extends BaseState with _$ProfileState {
 sealed class ProfileStateStore with _$ProfileStateStore {
   const factory ProfileStateStore({
     AppUser? userInfo,
-    PlanInfo? planInfo,
+    UsageInfo? usageInfo,
+    SubscriptionResponse? subscriptionInfo,
     @Default(false) bool loading,
   }) = _ProfileStateStore;
 }

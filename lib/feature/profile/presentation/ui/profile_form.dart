@@ -15,9 +15,11 @@ class _ProfileForm extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           spacing: DsSpacing.verticalSpace24,
           children: [
-            const DsText.titleLarge(data: 'My Account'),
             _UserInfoSection(),
-            if (state.store.planInfo != null) ...[_PlanSection()],
+            if (state.store.usageInfo != null) ...[_UsageSection()],
+            if (state.store.subscriptionInfo != null) ...[
+              const _SubscriptionSection(),
+            ],
             _SettingsSection(),
             DsButton.secondary(
               data: 'Log Out',
@@ -28,148 +30,6 @@ class _ProfileForm extends StatelessWidget {
       ),
     ),
   );
-}
-
-class _PlanSection extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) => BlocBuilder<ProfileBloc, ProfileState>(
-    builder: (context, state) {
-      final planInfo = state.store.planInfo;
-      if (planInfo == null) return const SizedBox.shrink();
-
-      final isFree = planInfo.tier == AccountType.free;
-      final limit = planInfo.monthlyLimit ?? 5000;
-      final usage = planInfo.currentMonthlyUsage ?? 0;
-      final percentage = (usage / limit).clamp(0.0, 1.0);
-
-      final resetDate = planInfo.resetDate;
-      final dateStr = resetDate != null
-          ? '${_monthName(resetDate.month)} ${resetDate.day}, ${resetDate.year}'
-          : '';
-
-      return Container(
-        padding: EdgeInsets.all(DsSpacing.radialSpace16),
-        decoration: BoxDecoration(
-          color: DsColors.backgroundPrimary,
-          borderRadius: BorderRadius.circular(DsBorderRadius.borderRadius12),
-          border: Border.all(color: DsColors.borderSubtle),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const DsText.titleLarge(data: 'My Plan'),
-            DsSpacing.verticalSpaceSizedBox4,
-            Row(
-              children: [
-                const DsText.bodyMedium(
-                  data: 'You are on the ',
-                  color: DsColors.textSecondary,
-                ),
-                DsText.bodyMedium(
-                  data: isFree ? 'Free Plan' : 'Pro Plan',
-                  color: DsColors.primary,
-                ),
-              ],
-            ),
-            DsSpacing.verticalSpaceSizedBox16,
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              spacing: DsSpacing.horizontalSpace4,
-              children: [
-                const Expanded(
-                  child: DsText.titleMedium(data: 'Monthly Usage'),
-                ),
-                RichText(
-                  text: TextSpan(
-                    style: const TextStyle(color: DsColors.textPrimary),
-                    children: [
-                      TextSpan(
-                        text: _formatNumber(usage),
-                        style: DsTextStyle.bodyMedium.copyWith(
-                          color: DsColors.textSecondary,
-                        ),
-                      ),
-                      TextSpan(
-                        text: ' / ${_formatNumber(limit)} tokens',
-                        style: DsTextStyle.bodyMedium.copyWith(
-                          color: DsColors.textSecondary,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            DsSpacing.verticalSpaceSizedBox8,
-            ClipRRect(
-              borderRadius: BorderRadius.circular(DsBorderRadius.borderRadius4),
-              child: LinearProgressIndicator(
-                value: percentage,
-                minHeight: 6,
-                backgroundColor: DsColors.backgroundDisabled,
-                valueColor: const AlwaysStoppedAnimation<Color>(
-                  DsColors.primary,
-                ),
-              ),
-            ),
-            DsSpacing.verticalSpaceSizedBox8,
-            if (dateStr.isNotEmpty)
-              DsText.bodySmall(
-                data: 'Resets on $dateStr',
-                color: DsColors.textSecondary,
-              ),
-            if (isFree) ...[
-              DsSpacing.verticalSpaceSizedBox16,
-              DsListTile(
-                backgroundColor: DsColors.backgroundSubtle,
-                borderRadius: BorderRadius.circular(
-                  DsBorderRadius.borderRadius8,
-                ),
-                title: const ListTileTitleMedium(
-                  data:
-                      '''Unlock unlimited document uploads and advanced features.''',
-                ),
-                leading: Icon(Icons.workspace_premium, size: DsSizing.size24),
-                trailing: Icon(Icons.chevron_right, size: DsSizing.size24),
-                onTap: () {},
-              ),
-            ],
-          ],
-        ),
-      );
-    },
-  );
-
-  String _monthName(int month) {
-    const months = [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December',
-    ];
-    if (month < 1 || month > 12) return '';
-    return months[month - 1];
-  }
-
-  String _formatNumber(int number) {
-    final str = number.toString();
-    final buffer = StringBuffer();
-    for (int i = 0; i < str.length; i++) {
-      if (i > 0 && (str.length - i) % 3 == 0) {
-        buffer.write(',');
-      }
-      buffer.write(str[i]);
-    }
-    return buffer.toString();
-  }
 }
 
 class _UserInfoSection extends StatelessWidget {
@@ -211,6 +71,277 @@ class _UserInfoSection extends StatelessWidget {
           ],
         ),
       ),
+    ),
+  );
+}
+
+class _UsageSection extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) => BlocBuilder<ProfileBloc, ProfileState>(
+    builder: (context, state) {
+      final usageInfo = state.store.usageInfo;
+      if (usageInfo == null) return const SizedBox.shrink();
+
+      final limit = usageInfo.monthlyLimit ?? 5000;
+      final usage = usageInfo.currentMonthlyUsage ?? 0;
+      final percentage = (usage / limit).clamp(0.0, 1.0);
+
+      final resetDate = usageInfo.resetDate;
+      final dateStr = resetDate != null
+          ? '''${getMonthName(resetDate.month)} ${resetDate.day}, ${resetDate.year}'''
+          : '';
+
+      return Container(
+        padding: EdgeInsets.all(DsSpacing.radialSpace16),
+        decoration: BoxDecoration(
+          color: DsColors.backgroundPrimary,
+          borderRadius: BorderRadius.circular(DsBorderRadius.borderRadius12),
+          border: Border.all(color: DsColors.borderSubtle),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              spacing: DsSpacing.horizontalSpace4,
+              children: [
+                const Expanded(
+                  child: DsText.titleMedium(data: 'Monthly Usage'),
+                ),
+                RichText(
+                  text: TextSpan(
+                    style: const TextStyle(color: DsColors.textPrimary),
+                    children: [
+                      TextSpan(
+                        text: formatNumberWithSymbol(usage.toDouble()),
+                        style: DsTextStyle.bodyMedium.copyWith(
+                          color: DsColors.textSecondary,
+                        ),
+                      ),
+                      TextSpan(
+                        text:
+                            ' / ${formatNumberWithSymbol(limit.toDouble())} tokens',
+                        style: DsTextStyle.bodyMedium.copyWith(
+                          color: DsColors.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            DsSpacing.verticalSpaceSizedBox8,
+            ClipRRect(
+              borderRadius: BorderRadius.circular(DsBorderRadius.borderRadius4),
+              child: LinearProgressIndicator(
+                value: percentage,
+                minHeight: 6,
+                backgroundColor: DsColors.backgroundDisabled,
+                valueColor: const AlwaysStoppedAnimation<Color>(
+                  DsColors.primary,
+                ),
+              ),
+            ),
+            DsSpacing.verticalSpaceSizedBox8,
+            if (dateStr.isNotEmpty)
+              DsText.bodySmall(
+                data: 'Resets on $dateStr',
+                color: DsColors.textSecondary,
+              ),
+          ],
+        ),
+      );
+    },
+  );
+}
+
+class _SubscriptionSection extends StatelessWidget {
+  const _SubscriptionSection();
+
+  @override
+  Widget build(BuildContext context) => BlocBuilder<ProfileBloc, ProfileState>(
+    builder: (context, state) =>
+        (state.store.subscriptionInfo?.planName == null)
+        ? const _FreePlanBanner()
+        : const _CurrentPlanBanner(),
+  );
+}
+
+class _CurrentPlanBanner extends StatelessWidget {
+  const _CurrentPlanBanner();
+
+  @override
+  Widget build(BuildContext context) => BlocBuilder<ProfileBloc, ProfileState>(
+    builder: (context, state) {
+      final subscriptionInfo = state.store.subscriptionInfo;
+      return DecoratedBox(
+        decoration: BoxDecoration(
+          color: DsColors.backgroundInfo,
+          border: Border.all(color: DsColors.borderPrimary),
+          borderRadius: BorderRadius.circular(DsBorderRadius.borderRadius8),
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(DsSpacing.radialSpace20),
+          child: Column(
+            spacing: DsSpacing.verticalSpace8,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Column(
+                spacing: DsSpacing.verticalSpace4,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    spacing: DsSpacing.horizontalSpace4,
+                    children: [
+                      Expanded(
+                        child: DsText.titleLarge(
+                          data: subscriptionInfo?.planName ?? '',
+                        ),
+                      ),
+                      DecoratedBox(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(
+                            DsBorderRadius.borderRadius22,
+                          ),
+                          color: DsColors.backgroundSuccess,
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: DsSpacing.radialSpace8,
+                            vertical: DsSpacing.radialSpace4,
+                          ),
+                          child: DsText.bodyMedium(
+                            data: subscriptionInfo?.status ?? '',
+                            color: DsColors.textOnDark,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  DsText.bodyMedium(data: subscriptionInfo?.description ?? ''),
+                  if (subscriptionInfo?.cancelAtPeriodEnd ?? false) ...[
+                    const DsText.bodyMedium(
+                      data:
+                          '''Your planned is marked for cancellation. You will not be charged after the current billing cycle''',
+                    ),
+                  ],
+                ],
+              ),
+              const Divider(color: DsColors.dividerColor),
+              Column(
+                spacing: DsSpacing.verticalSpace16,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    spacing: DsSpacing.verticalSpace8,
+                    children: [
+                      _CurrentPlanInfoItem(
+                        title: 'Plan Price',
+                        value: formatNumberWithSymbol(
+                          subscriptionInfo?.amount?.toDouble(),
+                          prefix: NumberFormatSymbol.rupee,
+                        ),
+                      ),
+                      _CurrentPlanInfoItem(
+                        title: 'Plan Start Date',
+                        value:
+                            subscriptionInfo?.currentPeriodStart
+                                ?.toDayMonthYear() ??
+                            '',
+                      ),
+                      _CurrentPlanInfoItem(
+                        title: 'Plan End Date',
+                        value:
+                            subscriptionInfo?.currentPeriodEnd
+                                ?.toDayMonthYear() ??
+                            '',
+                      ),
+                    ],
+                  ),
+                  DsButton.primary(
+                    data: 'Manage Plan',
+                    onTap: () => getBloc<ProfileBloc>(
+                      context,
+                    ).onManageSubscriptionTapped(),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
+
+class _CurrentPlanInfoItem extends StatelessWidget {
+  const _CurrentPlanInfoItem({required this.title, required this.value});
+
+  final String title;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) => Row(
+    spacing: DsSpacing.horizontalSpace4,
+    children: [
+      Expanded(child: DsText.titleMedium(data: title)),
+      DsText.bodyMedium(data: value),
+    ],
+  );
+}
+
+class _FreePlanBanner extends StatelessWidget {
+  const _FreePlanBanner();
+
+  @override
+  Widget build(BuildContext context) => Container(
+    padding: EdgeInsets.all(DsSpacing.radialSpace16),
+    decoration: BoxDecoration(
+      color: DsColors.primary,
+      borderRadius: BorderRadius.circular(DsBorderRadius.borderRadius12),
+    ),
+    child: Column(
+      children: [
+        Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: DsColors.white.withAlpha(20),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Icon(Icons.diamond_outlined, color: DsColors.white),
+            ),
+            DsSpacing.horizontalSpaceSizedBox12,
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: DsSpacing.verticalSpace4,
+                children: [
+                  const DsText.titleMedium(
+                    data: 'Premium Plan',
+                    color: DsColors.white,
+                  ),
+                  const DsText.bodySmall(
+                    data: 'Upgrade today, to get more features',
+                    color: DsColors.textTertiary,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        DsSpacing.verticalSpaceSizedBox16,
+        SizedBox(
+          width: double.infinity,
+          child: DsButton.secondary(
+            data: 'Upgrade',
+            onTap: () =>
+                getBloc<ProfileBloc>(context).onManageSubscriptionTapped(),
+          ),
+        ),
+      ],
     ),
   );
 }

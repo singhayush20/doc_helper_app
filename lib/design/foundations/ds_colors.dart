@@ -33,6 +33,8 @@ abstract class DsColors {
   /// Success state background (light green tint)
   static const Color backgroundSuccess = _BaseColors.green600;
 
+  static const Color backgroundEnabled = _BaseColors.green200;
+
   /// Warning state background (light orange tint)
   static const Color backgroundWarning = _BaseColors.orange700;
 
@@ -59,10 +61,10 @@ abstract class DsColors {
   // 4. TEXT COLORS
   // ==========================================
   /// Primary text (headings, body)
-  static const Color textPrimary = _BaseColors.neutral800;
+  static const Color textPrimary = _BaseColors.black;
 
   /// Secondary text (subheadings, captions)
-  static const Color textSecondary = _BaseColors.neutral600;
+  static const Color textSecondary = _BaseColors.neutral700;
 
   /// Tertiary text (hints, labels)
   static const Color textTertiary = _BaseColors.neutral500;
@@ -91,7 +93,7 @@ abstract class DsColors {
   // ==========================================
   // 5. BORDER COLORS
   // ==========================================
-  static const Color borderDefault = _BaseColors.neutral300;
+  static const Color borderDefault = _BaseColors.neutral700;
 
   static const Color borderSubtle = _BaseColors.neutral200;
 
@@ -220,9 +222,10 @@ abstract class DsColors {
   // ==========================================
   // UTILITY COLORS
   // ==========================================
-  static const Color divider = _BaseColors.neutral200;
   static const Color navigationBarShadow = Color(0x52000000);
   static const Color overlayColor = Color(0x95FFFFFF);
+  static const Color dividerColor = _BaseColors.neutral800;
+  static const Color dividerColorSecondary = _BaseColors.neutral600;
   static const Color transparent = Colors.transparent;
   static const Color white = _BaseColors.white;
   static const Color black = _BaseColors.black;

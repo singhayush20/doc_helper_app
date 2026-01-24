@@ -32,22 +32,20 @@ class EmailVerificationPage extends StatelessWidget {
     create: (_) => getIt<EmailVerificationBloc>()..started(),
     child: BlocConsumer<EmailVerificationBloc, EmailVerificationState>(
       listener: _handleState,
-      builder: (context, state) => LoaderOverlay(
-        child: Scaffold(
-          resizeToAvoidBottomInset: true,
-          appBar: PrimaryAppBar(
-            titleText: 'Verify Email',
-            backButtonRequired: false,
-            actions: [
-              DsTextButton.secondary(
-                onTap: () =>
-                    getBloc<EmailVerificationBloc>(context).onLogoutPressed(),
-                data: 'Logout',
-              ),
-            ],
-          ),
-          body: const SafeArea(child: _EmailVerificationForm()),
+      builder: (context, state) => Scaffold(
+        resizeToAvoidBottomInset: true,
+        appBar: PrimaryAppBar(
+          titleText: 'Verify Email',
+          backButtonRequired: false,
+          actions: [
+            DsTextButton.secondary(
+              onTap: () =>
+                  getBloc<EmailVerificationBloc>(context).onLogoutPressed(),
+              data: 'Logout',
+            ),
+          ],
         ),
+        body: const SafeArea(child: _EmailVerificationForm()),
       ),
     ),
   );

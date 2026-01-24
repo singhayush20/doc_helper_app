@@ -89,49 +89,68 @@ class DsBottomSheet extends StatelessWidget {
             child: Padding(
               padding: EdgeInsets.all(DsSpacing.radialSpace24),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisSize: MainAxisSize.min,
+                spacing: DsSpacing.verticalSpace12,
                 children: [
                   if (showDefaultIcon) ...[
-                    Icon(
-                      Icons.info_outline_sharp,
-                      size: DsSizing.size24,
-                      color: DsColors.iconPrimary,
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Icon(
+                        Icons.info_outline_sharp,
+                        size: DsSizing.size28,
+                        color: DsColors.iconPrimary,
+                      ),
                     ),
                   ] else if (icon != null) ...[
-                    Icon(icon, size: DsSizing.size24),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Icon(icon, size: DsSizing.size28),
+                    ),
                   ] else if (imageKey != null) ...[
-                    DsImage(mediaUrl: imageKey ?? ''),
-                    DsSpacing.verticalSpaceSizedBox24,
-                  ],
-                  if (title != null) ...[
-                    DsText.titleLarge(data: title!),
-                    DsSpacing.verticalSpaceSizedBox8,
-                  ],
-                  if (description != null) ...[
-                    DsText.bodyMedium(
-                      data: description!,
-                      textAlign: TextAlign.center,
+                    Align(
+                      alignment: Alignment.centerLeft,
+
+                      child: DsImage(mediaUrl: imageKey ?? ''),
                     ),
-                    DsSpacing.verticalSpaceSizedBox24,
                   ],
-                  DsButton.primary(
-                    data: primaryButtonText,
-                    onTap: () {
-                      onPrimaryButtonTap?.call();
-                      GoRouter.of(context).pop();
-                    },
+                  Column(
+                    spacing: DsSpacing.verticalSpace8,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      if (title != null) ...[
+                        DsText.titleLarge(data: title ?? ''),
+                      ],
+                      if (description != null) ...[
+                        DsText.bodyMedium(
+                          data: description ?? '',
+                          textAlign: TextAlign.left,
+                        ),
+                      ],
+                    ],
                   ),
-                  if (secondaryButtonText != null &&
-                      onSecondaryButtonTap != null) ...[
-                    DsSpacing.verticalSpaceSizedBox12,
-                    DsButton.secondary(
-                      data: secondaryButtonText!,
-                      onTap: () {
-                        onSecondaryButtonTap?.call();
-                        GoRouter.of(context).pop();
-                      },
-                    ),
-                  ],
+                  Column(
+                    spacing: DsSpacing.verticalSpace8,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      DsButton.primary(
+                        data: primaryButtonText,
+                        onTap: () {
+                          onPrimaryButtonTap?.call();
+                          GoRouter.of(context).pop();
+                        },
+                      ),
+                      if (secondaryButtonText != null) ...[
+                        DsButton.secondary(
+                          data: secondaryButtonText!,
+                          onTap: () {
+                            onSecondaryButtonTap?.call();
+                            GoRouter.of(context).pop();
+                          },
+                        ),
+                      ],
+                    ],
+                  ),
                 ],
               ),
             ),
