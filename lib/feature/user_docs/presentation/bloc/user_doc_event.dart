@@ -23,4 +23,6 @@ sealed class UserDocEvent extends BaseEvent with _$UserDocEvent {
     required int? docId,
     required String? documentName,
   }) = _OnDocumentTapped;
+
+  const factory UserDocEvent.onAddDocumentTapped() = _OnAddDocumentTapped;
 }

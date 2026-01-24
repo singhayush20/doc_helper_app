@@ -34,6 +34,10 @@ sealed class UserDocState extends BaseState with _$UserDocState {
     required String? documentName,
   }) = OnDocumentTap;
 
+  const factory UserDocState.onAddDocumentTap({
+    required UserDocStateStore store,
+  }) = OnAddDocumentTap;
+
   const factory UserDocState.invalidateLoader({
     required UserDocStateStore store,
   }) = InvalidateLoader;
@@ -52,18 +56,17 @@ sealed class UserDocState extends BaseState with _$UserDocState {
   @override
   BaseState getLoaderState({required bool loading}) =>
       UserDocState.invalidateLoader(store: store.copyWith(loading: loading));
-
 }
 
 @liteFreezed
 sealed class UserDocStateStore with _$UserDocStateStore {
   const factory UserDocStateStore({
     required PagingState<int, UserDoc> userDocsPagingState,
+    required PagingState<int, UserDoc> searchPagingState,
     UserDocList? userDocList,
     @Default(false) bool isSearchMode,
     @Default('') String searchQuery,
     @Default('') String lastSearchedQuery,
-    required PagingState<int, UserDoc> searchPagingState,
     UserDocList? searchUserDocList,
     @Default(false) bool loading,
   }) = _UserDocStateStore;

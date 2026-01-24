@@ -28,8 +28,9 @@ class UserDocsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => BlocProvider<UserDocBloc>(
     create: (_) => getIt<UserDocBloc>()..started(),
-    child: BlocListener<UserDocBloc, UserDocState>(
+    child: BlocConsumer<UserDocBloc, UserDocState>(
       listener: (context, state) => switch (state) {
+        OnAddDocumentTap _ => _onAddDocument(context: context),
         OnDocumentTap(:final docId, :final documentName) => context.pushNamed(
           Routes.chat,
           queryParameters: {
@@ -39,7 +40,7 @@ class UserDocsPage extends StatelessWidget {
         ),
         _ => {},
       },
-      child: Scaffold(
+      builder: (context,state) => Scaffold(
         resizeToAvoidBottomInset: true,
         appBar: const PrimaryAppBar(
           titleText: 'Documents',
@@ -48,7 +49,7 @@ class UserDocsPage extends StatelessWidget {
         body: const SafeArea(child: _UserDocsForm()),
         floatingActionButton: FloatingActionButton(
           backgroundColor: DsColors.buttonPrimary,
-          onPressed: () => context.pushNamed(Routes.docUpload),
+          onPressed: () => getBloc<UserDocBloc>(context).onAddDocumentTapped(),
           child: const Icon(
             Icons.upload_file,
             color: DsColors.buttonPrimaryText,
@@ -57,4 +58,14 @@ class UserDocsPage extends StatelessWidget {
       ),
     ),
   );
+
+  Future<void> _onAddDocument({required BuildContext context}) async {
+    final args = await context.pushNamed<Map<String, dynamic>>(
+      Routes.docUpload,
+    );
+    final refreshRequired = args?[AppConstants.refreshRequired];
+    if (context.mounted && refreshRequired) {
+      getBloc<UserDocBloc>(context).onPageRefreshed();
+    }
+  }
 }

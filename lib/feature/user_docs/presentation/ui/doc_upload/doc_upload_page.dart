@@ -1,4 +1,5 @@
 import 'package:doc_helper_app/core/common/base_bloc/base_bloc.dart';
+import 'package:doc_helper_app/core/common/constants/app_constants.dart';
 import 'package:doc_helper_app/core/exception_handling/server_exception.dart';
 import 'package:doc_helper_app/core/router/route_mapper.dart';
 import 'package:doc_helper_app/design/atoms/text_button/ds_text_button.dart';
@@ -24,13 +25,31 @@ class DocUploadPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => BlocProvider<DocUploadBloc>(
     create: (_) => getIt<DocUploadBloc>()..started(),
-    child: const Scaffold(
-      resizeToAvoidBottomInset: true,
-      appBar: PrimaryAppBar(
-        titleText: 'Upload Documents',
-        backButtonRequired: true,
+    child: BlocBuilder<DocUploadBloc, DocUploadState>(
+      builder: (context, state) => PopScope(
+        canPop: false,
+        onPopInvokedWithResult: (didPop, _) =>
+            didPop ? null : _onBackPressed(context: context, state: state),
+        child: const Scaffold(
+          resizeToAvoidBottomInset: true,
+          appBar: PrimaryAppBar(
+            titleText: 'Upload Documents',
+            backButtonRequired: true,
+          ),
+          body: SafeArea(child: _DocUploadForm()),
+        ),
       ),
-      body: SafeArea(child: _DocUploadForm()),
     ),
   );
+
+  void _onBackPressed({
+    required BuildContext context,
+    required DocUploadState state,
+  }) {
+    if (state.store.refreshOnBackRequired) {
+      GoRouter.of(context).pop({AppConstants.refreshRequired: true});
+    } else {
+      GoRouter.of(context).pop();
+    }
+  }
 }

@@ -140,7 +140,11 @@ class DocUploadBloc extends BaseBloc<DocUploadEvent, DocUploadState> {
     Emitter<DocUploadState> emit,
   ) => emit(
     DocUploadState.uploadInProgress(
-      store: state.store.copyWith(progress: event.progress, isUploading: true),
+      store: state.store.copyWith(
+        progress: event.progress,
+        isUploading: true,
+        refreshOnBackRequired: (event.progress * 100).clamp(0, 100) == 100,
+      ),
     ),
   );
 
