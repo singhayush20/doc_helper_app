@@ -46,6 +46,7 @@ class UserDocBloc extends BaseBloc<UserDocEvent, UserDocState> {
     on<_OnPageRefreshed>(_onPageRefreshed);
     on<_OnDocumentTapped>(_onDocumentTapped);
     on<_OnAddDocumentTapped>(_onAddDocumentTapped);
+    on<_OnDeleteDocument>(_onDeleteDocument);
   }
 
   Future<void> _onStarted(_Started event, Emitter<UserDocState> emit) async {
@@ -381,6 +382,23 @@ class UserDocBloc extends BaseBloc<UserDocEvent, UserDocState> {
     emit(UserDocState.onAddDocumentTap(store: state.store));
   }
 
+  Future<void> _onDeleteDocument(_, Emitter<UserDocState> emit) async {
+    invalidateLoader(emit, loading: true);
+    final documentDeletionResponseOrFailure = await _userDocFacade
+        .deleteDocument(
+          documentId: state.store.userDocList?.userDocs?.first.id,
+        );
+
+    documentDeletionResponseOrFailure.fold(
+      (exception) => handleException(emit, exception),
+      (_) => emit(
+        UserDocState.onDocumentDeletionSuccess(
+          store: state.store.copyWith(loading: false),
+        ),
+      ),
+    );
+  }
+
   @override
   void started({Map<String, dynamic>? args}) {
     add(const UserDocEvent.started());
@@ -409,4 +427,8 @@ class UserDocBloc extends BaseBloc<UserDocEvent, UserDocState> {
   );
 
   void onAddDocumentTapped() => add(const UserDocEvent.onAddDocumentTapped());
+
+  void onDeleteDocument({required int? docId}) {
+    add(UserDocEvent.onDeleteDocument(docId: docId));
+  }
 }

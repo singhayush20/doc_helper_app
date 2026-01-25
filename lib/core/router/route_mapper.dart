@@ -11,7 +11,7 @@ abstract class Routes {
 
   // Shell routes
   static const String shell = 'shell';
-  static const String home = 'home';
+  static const String features = 'features_page';
   static const String docs = 'docs';
   static const String profile = 'profile';
 }

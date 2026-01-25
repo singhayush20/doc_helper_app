@@ -38,6 +38,11 @@ sealed class UserDocState extends BaseState with _$UserDocState {
     required UserDocStateStore store,
   }) = OnAddDocumentTap;
 
+  const factory UserDocState.onDocumentDeletionSuccess({
+    required UserDocStateStore store,
+  }) = OnDocumentDeletionSuccess;
+
+
   const factory UserDocState.invalidateLoader({
     required UserDocStateStore store,
   }) = InvalidateLoader;

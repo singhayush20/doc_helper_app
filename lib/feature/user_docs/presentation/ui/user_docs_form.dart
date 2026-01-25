@@ -7,13 +7,12 @@ class _UserDocsForm extends StatelessWidget {
   Widget build(BuildContext context) => BlocBuilder<UserDocBloc, UserDocState>(
     builder: (context, state) => Padding(
       padding: EdgeInsets.symmetric(horizontal: DsSpacing.radialSpace12),
-      child: Column(
-        children: [
-          const UserDocsSearchBar(),
-          Expanded(
-            child: RefreshIndicator(
-              onRefresh: () async =>
-                  getBloc<UserDocBloc>(context).onPageRefreshed(),
+      child: RefreshIndicator(
+        onRefresh: () async => getBloc<UserDocBloc>(context).onPageRefreshed(),
+        child: Column(
+          children: [
+            const UserDocsSearchBar(),
+            Expanded(
               child: PagedListView<int, UserDoc>.separated(
                 state: (state.store.isSearchMode)
                     ? state.store.searchPagingState
@@ -21,7 +20,8 @@ class _UserDocsForm extends StatelessWidget {
                 shrinkWrap: true,
                 fetchNextPage: () =>
                     getBloc<UserDocBloc>(context).fetchNextPage(),
-                separatorBuilder: (context, index) => const Divider(),
+                separatorBuilder: (context, index) =>
+                    DsSpacing.verticalSpaceSizedBox8,
                 builderDelegate: PagedChildBuilderDelegate<UserDoc>(
                   itemBuilder: (context, item, index) =>
                       _DocumentItem(userDoc: item),
@@ -40,8 +40,8 @@ class _UserDocsForm extends StatelessWidget {
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     ),
   );
@@ -58,6 +58,8 @@ class _DocumentItem extends StatelessWidget {
       return const SizedBox.shrink();
     }
     return DsListTile(
+      borderColor: DsColors.borderSubtle,
+      borderRadius: BorderRadius.circular(DsBorderRadius.borderRadius8),
       onTap: () => getBloc<UserDocBloc>(context).onDocumentTapped(
         docId: userDoc?.id,
         documentName: userDoc?.originalFilename,
@@ -79,72 +81,23 @@ class _DocumentItem extends StatelessWidget {
       title: ListTileTitleMedium(
         data: userDoc!.originalFilename ?? 'Unnamed Document',
       ),
-      trailing: _StatusBadge(status: userDoc?.status),
-    );
-  }
-}
-
-class _StatusBadge extends StatelessWidget {
-  const _StatusBadge({this.status});
-
-  final DocumentStatus? status;
-
-  @override
-  Widget build(BuildContext context) {
-    final (:backgroundColor, :textColor) = _getBadgeStyle(status);
-
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(
-          DsBorderRadius.borderRadius20,
-        ), // Pill shape
+      trailing: DsPopupMenu(
+        iconSize: DsSizing.size24,
+        actions: [
+          DsMenuAction(
+            label: 'Delete',
+            icon: Icons.delete_outline,
+            isDestructive: true,
+            onPressed: () {
+              getBloc<UserDocBloc>(context).onDeleteDocument(
+                docId: userDoc?.id,
+              );
+            },
+          ),
+        ],
       ),
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: DsSpacing.horizontalSpace12,
-          vertical: DsSpacing.verticalSpace4,
-        ),
-        child: DsText.labelMedium(
-          data: _formatStatusText(status),
-          color: textColor,
-        ),
-      ),
+
     );
-  }
-
-  ({Color backgroundColor, Color textColor}) _getBadgeStyle(
-    DocumentStatus? status,
-  ) {
-    switch (status) {
-      case DocumentStatus.ready:
-        return (
-          backgroundColor: DsColors.success.withAlpha(25),
-          textColor: DsColors.textSuccess,
-        );
-      case DocumentStatus.failed:
-        return (
-          backgroundColor: DsColors.error.withAlpha(25),
-          textColor: DsColors.textError,
-        );
-      case DocumentStatus.processing:
-      case DocumentStatus.uploaded:
-        return (
-          backgroundColor: DsColors.backgroundInfo,
-          textColor: DsColors.textAccent,
-        );
-      default:
-        return (
-          backgroundColor: DsColors.backgroundDisabled,
-          textColor: DsColors.textSecondary,
-        );
-    }
-  }
-
-  String _formatStatusText(DocumentStatus? status) {
-    if (status == null) return 'Unknown';
-    final name = status.name;
-    return name[0].toUpperCase() + name.substring(1);
   }
 }
 

@@ -6,23 +6,27 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
-part 'home_bloc.freezed.dart';
-part 'home_event.dart';
-part 'home_state.dart';
+part 'product_features_bloc.freezed.dart';
+part 'product_features_event.dart';
+part 'product_features_state.dart';
 
 @injectable
-class HomeBloc extends BaseBloc<HomeEvent, HomeState> {
-  HomeBloc() : super(const HomeState.initial(store: HomeStateStore()));
+class ProductFeaturesBloc
+    extends BaseBloc<ProductFeaturesEvent, ProductFeaturesState> {
+  ProductFeaturesBloc()
+    : super(
+        const ProductFeaturesState.initial(store: ProductFeaturesStateStore()),
+      );
 
   @override
   void handleEvents() {
     on<_Started>(_started);
   }
 
-  void _started(_, Emitter<HomeState> emit) {}
+  void _started(_, Emitter<ProductFeaturesState> emit) {}
 
   @override
   void started({Map<String, dynamic>? args}) {
-    add(const HomeEvent.started());
+    add(const ProductFeaturesEvent.started());
   }
 }

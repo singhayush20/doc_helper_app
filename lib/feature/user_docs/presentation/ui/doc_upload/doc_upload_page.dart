@@ -30,13 +30,14 @@ class DocUploadPage extends StatelessWidget {
         canPop: false,
         onPopInvokedWithResult: (didPop, _) =>
             didPop ? null : _onBackPressed(context: context, state: state),
-        child: const Scaffold(
+        child: Scaffold(
           resizeToAvoidBottomInset: true,
           appBar: PrimaryAppBar(
             titleText: 'Upload Documents',
             backButtonRequired: true,
+            onBackPressed: ()=> _onBackPressed(context: context, state: state),
           ),
-          body: SafeArea(child: _DocUploadForm()),
+          body: const SafeArea(child: _DocUploadForm()),
         ),
       ),
     ),

@@ -6,7 +6,7 @@ import 'package:doc_helper_app/feature/auth/presentation/ui/sign_in_page.dart';
 import 'package:doc_helper_app/feature/auth/presentation/ui/sign_up/signup_page.dart';
 import 'package:doc_helper_app/feature/billing/presentation/ui/payment_page.dart';
 import 'package:doc_helper_app/feature/chat/presentation/ui/chat_page.dart';
-import 'package:doc_helper_app/feature/home/presentation/ui/home_page.dart';
+import 'package:doc_helper_app/feature/features_page/presentation/ui/features_page.dart';
 import 'package:doc_helper_app/feature/main/presentation/ui/landing_page.dart';
 import 'package:doc_helper_app/feature/plan/presentation/ui/plans_page.dart';
 import 'package:doc_helper_app/feature/profile/presentation/ui/profile_page.dart';
@@ -106,17 +106,6 @@ GoRouter buildRouter(AuthNotifier authNotifier) => GoRouter(
           LandingPage(navigationShell: navigationShell),
       branches: [
         StatefulShellBranch(
-          navigatorKey: _shellNavigatorHomeKey,
-          routes: [
-            GoRoute(
-              name: Routes.home,
-              path: '/home',
-              pageBuilder: (context, state) =>
-                  const NoTransitionPage(child: HomePage()),
-            ),
-          ],
-        ),
-        StatefulShellBranch(
           navigatorKey: _shellNavigatorDocsKey,
           routes: [
             GoRoute(
@@ -124,6 +113,17 @@ GoRouter buildRouter(AuthNotifier authNotifier) => GoRouter(
               path: '/docs',
               pageBuilder: (context, state) =>
                   const NoTransitionPage(child: UserDocsPage()),
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          navigatorKey: _shellNavigatorHomeKey,
+          routes: [
+            GoRoute(
+              name: Routes.features,
+              path: '/features_page',
+              pageBuilder: (context, state) =>
+              const NoTransitionPage(child: FeaturesPage()),
             ),
           ],
         ),

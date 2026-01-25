@@ -19,6 +19,9 @@ sealed class UserDocEvent extends BaseEvent with _$UserDocEvent {
 
   const factory UserDocEvent.onPageRefreshed() = _OnPageRefreshed;
 
+  const factory UserDocEvent.onDeleteDocument({required int? docId}) =
+      _OnDeleteDocument;
+
   const factory UserDocEvent.onDocumentTapped({
     required int? docId,
     required String? documentName,

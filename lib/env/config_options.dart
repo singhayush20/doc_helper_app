@@ -7,7 +7,7 @@ abstract class IConfigOptions {
 
 class DevConfigOptions implements IConfigOptions {
   @override
-  String get baseUrl => 'https://0343d3970b2d.ngrok-free.app';
+  String get baseUrl => 'https://e4bdbe0927ae.ngrok-free.app';
 
   @override
   String get env => Env.dev;

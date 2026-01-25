@@ -85,9 +85,9 @@ class UserDocFacadeImpl implements IUserDocFacade {
   }
 
   @override
-  Future<Either<ServerException, FileDeletionResponse>> deleteDocument(
-    int documentId,
-  ) async {
+  Future<Either<ServerException, FileDeletionResponse>> deleteDocument({
+    required int? documentId,
+  }) async {
     final responseOrError = await _apiCallHandler.handleApi(
       _retrofitApiClient.deleteDocument,
       [documentId],

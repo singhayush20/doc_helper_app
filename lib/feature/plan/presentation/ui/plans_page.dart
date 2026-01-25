@@ -57,7 +57,7 @@ class PlansPage extends StatelessWidget {
       ).pop({AppConstants.refreshRequired: true}),
       OnDataRefreshed _ => getBloc<PlansBloc>(context).started(),
       OnException(:final exception) => handleException(exception, context),
-      _ => null,
+      _ => {},
     };
   }
 
