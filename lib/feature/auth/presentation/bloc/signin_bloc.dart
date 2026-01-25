@@ -3,6 +3,7 @@ import 'package:doc_helper_app/core/common/base_bloc/base_bloc.dart';
 import 'package:doc_helper_app/core/common/base_bloc/base_event.dart';
 import 'package:doc_helper_app/core/common/base_bloc/base_state.dart';
 import 'package:doc_helper_app/core/common/utils/app_utils.dart';
+import 'package:doc_helper_app/core/global_store/global_state_impl.dart';
 import 'package:doc_helper_app/core/value_objects/value_objects.dart';
 import 'package:doc_helper_app/feature/auth/domain/interfaces/i_auth_facade.dart';
 import 'package:doc_helper_app/feature/user/domain/entity/user.dart';
@@ -11,7 +12,9 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
 part 'signin_bloc.freezed.dart';
+
 part 'signin_event.dart';
+
 part 'signin_state.dart';
 
 @injectable
@@ -72,13 +75,19 @@ class SignInBloc extends BaseBloc<SignInEvent, SignInState> {
       password: state.store.password,
     );
 
-    loginResponseOrFailure.fold(
-      (exception) => handleException(emit, exception),
-      (userInfo) => emit(
-        SignInState.onLogin(
-          store: state.store.copyWith(loading: false, userInfo: userInfo),
-        ),
-      ),
+    await loginResponseOrFailure.fold(
+      (exception) async => handleException(emit, exception),
+      (userInfo) async {
+        final userDataOrFailure = await globalState.fetchUserData();
+        userDataOrFailure.fold(
+          (exception) => handleException(emit, exception),
+          (_) => emit(
+            SignInState.onLogin(
+              store: state.store.copyWith(loading: false, userInfo: userInfo),
+            ),
+          ),
+        );
+      },
     );
   }
 

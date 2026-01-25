@@ -6,4 +6,9 @@ sealed class ProductFeaturesEvent extends BaseEvent
   const ProductFeaturesEvent._() : super();
 
   const factory ProductFeaturesEvent.started() = _Started;
+
+  const factory ProductFeaturesEvent.onGlobalStoreUpdated({
+    required GlobalStore store,
+  }) = _OnGlobalStoreUpdated;
+
 }

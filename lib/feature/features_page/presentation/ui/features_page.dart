@@ -18,7 +18,7 @@ class FeaturesPage extends StatelessWidget {
         listener: (context, state) {},
         builder: (context, state) => const Scaffold(
           appBar: PrimaryAppBar(
-            titleText: 'More Features',
+            titleText: 'DocuHelper',
             backButtonRequired: false,
           ),
           body: _FeaturesForm(),

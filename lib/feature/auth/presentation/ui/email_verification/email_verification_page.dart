@@ -57,7 +57,7 @@ class EmailVerificationPage extends StatelessWidget {
       context.loaderOverlay.hide();
     }
     return switch (state) {
-      OnOTPVerificationSuccess _ => context.goNamed(Routes.docs),
+      OnOTPVerificationSuccess _ => context.goNamed(Routes.features),
       OnLogoutPress _ => context.goNamed(Routes.signIn),
       OnException(:final exception) => handleException(exception, context),
       _ => null,

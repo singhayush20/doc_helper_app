@@ -8,8 +8,8 @@ class LandingPage extends StatelessWidget {
   final StatefulNavigationShell navigationShell;
 
   static const List<(String label, IconData icon)> _navigationItems = [
+    ('Home', Icons.home),
     ('Docs', Icons.article_outlined),
-    ('Tools', Icons.menu),
     ('Profile', Icons.person_outline),
   ];
 

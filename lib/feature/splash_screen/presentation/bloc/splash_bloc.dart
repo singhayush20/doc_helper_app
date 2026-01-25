@@ -2,6 +2,7 @@ import 'package:doc_helper_app/core/common/base_bloc/base_bloc.dart';
 import 'package:doc_helper_app/core/common/base_bloc/base_event.dart';
 import 'package:doc_helper_app/core/common/base_bloc/base_state.dart';
 import 'package:doc_helper_app/core/common/utils/app_utils.dart';
+import 'package:doc_helper_app/core/global_store/global_state_impl.dart';
 import 'package:doc_helper_app/feature/auth/domain/interfaces/i_auth_facade.dart';
 import 'package:doc_helper_app/feature/user/domain/entity/user.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,7 +10,9 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
 part 'splash_bloc.freezed.dart';
+
 part 'splash_event.dart';
+
 part 'splash_state.dart';
 
 @injectable
@@ -30,15 +33,23 @@ class SplashBloc extends BaseBloc<SplashEvent, SplashState> {
 
     await Future.delayed(const Duration(seconds: 4));
 
-    currentUserOrFailure.fold(
-      (exception) => emit(state.getExceptionState(exception) as SplashState),
-      (user) {
-        emit(
-          SplashState.onCurrentUserFetch(
-            store: state.store.copyWith(loading: false),
-            user: user,
-          ),
-        );
+    await currentUserOrFailure.fold(
+      (exception) async =>
+          emit(state.getExceptionState(exception) as SplashState),
+      (user) async {
+        if (user != null) {
+          final fetchResult = await globalState.fetchUserData();
+
+          fetchResult.fold(
+            (exception) => handleException(emit, exception),
+            (_) => emit(
+              SplashState.onCurrentUserFetch(
+                store: state.store.copyWith(loading: false),
+                user: user,
+              ),
+            ),
+          );
+        }
       },
     );
   }

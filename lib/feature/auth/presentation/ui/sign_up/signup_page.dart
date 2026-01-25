@@ -51,7 +51,7 @@ class SignUpPage extends StatelessWidget {
     return switch (state) {
       OnSignInPress _ => GoRouter.of(context).pop(),
       OnAccountCreate _ => getBloc<SignUpBloc>(context).onTimerStarted(),
-      OnOTPVerificationSuccess _ => context.goNamed(Routes.docs),
+      OnOTPVerificationSuccess _ => context.goNamed(Routes.features),
       OnException(:final exception) => handleException(exception, context),
       _ => null,
     };

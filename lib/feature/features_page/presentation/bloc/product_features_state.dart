@@ -9,6 +9,10 @@ sealed class ProductFeaturesState extends BaseState
     required ProductFeaturesStateStore store,
   }) = _Initial;
 
+  const factory ProductFeaturesState.onGlobalStoreUpdate({
+    required ProductFeaturesStateStore store,
+  }) = _OnGlobalStoreUpdate;
+
   const factory ProductFeaturesState.invalidateLoader({
     required ProductFeaturesStateStore store,
   }) = InvalidateLoader;

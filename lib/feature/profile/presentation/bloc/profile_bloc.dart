@@ -1,12 +1,12 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:dartz/dartz.dart';
 import 'package:doc_helper_app/core/common/base_bloc/base_bloc.dart';
 import 'package:doc_helper_app/core/common/base_bloc/base_event.dart';
 import 'package:doc_helper_app/core/common/base_bloc/base_state.dart';
 import 'package:doc_helper_app/core/common/utils/app_utils.dart';
-import 'package:doc_helper_app/core/exception_handling/server_exception.dart';
+import 'package:doc_helper_app/core/global_store/global_state_impl.dart';
+import 'package:doc_helper_app/core/global_store/global_store.dart';
 import 'package:doc_helper_app/feature/auth/domain/interfaces/i_auth_facade.dart';
 import 'package:doc_helper_app/feature/billing/domain/entities/billing_entity.dart';
 import 'package:doc_helper_app/feature/billing/domain/interfaces/i_billing_facade.dart';
@@ -30,12 +30,18 @@ class ProfileBloc extends BaseBloc<ProfileEvent, ProfileState> {
     this._authFacade,
     this._usageFacade,
     this._billingFacade,
-  ) : super(const ProfileState.initial(store: ProfileStateStore()));
+  ) : super(const ProfileState.initial(store: ProfileStateStore())) {
+    _globalStoreSubscription = globalState.globalStoreStream.listen(
+      _globalStoreUpdated,
+    );
+  }
 
   final IUserFacade _userFacade;
   final IAuthFacade _authFacade;
   final IUsageFacade _usageFacade;
   final IBillingFacade _billingFacade;
+
+  StreamSubscription<GlobalStore>? _globalStoreSubscription;
 
   @override
   void handleEvents() {
@@ -43,36 +49,20 @@ class ProfileBloc extends BaseBloc<ProfileEvent, ProfileState> {
     on<_OnLogoutPressed>(_onLogoutPressed);
     on<_OnResetPasswordPressed>(_onResetPasswordPressed);
     on<_OnManageSubscriptionTapped>(_onManageSubscriptionTapped);
+    on<_OnGlobalStoreUpdated>(_onGlobalStoreUpdated);
   }
 
   Future<void> _onStarted(_, Emitter<ProfileState> emit) async {
-    invalidateLoader(emit, loading: true);
-
-    Either<ServerException, AppUser?>? userInfoOrFailure;
-    Either<ServerException, UsageInfo?>? usageInfoOrFailure;
-    Either<ServerException, SubscriptionResponse?>? subscriptionInfoOrFailure;
-
-    await Future.wait([
-      (() async => userInfoOrFailure = await _userFacade.getUserInfo())(),
-      (() async => usageInfoOrFailure = await _usageFacade.getUsageInfo())(),
-      (() async => subscriptionInfoOrFailure = await _billingFacade
-          .getCurrentSubscriptionDetails())(),
-    ]);
-
-    userInfoOrFailure?.fold((exception) => handleException(emit, exception), (
-      userInfo,
-    ) {
-      emit(
-        ProfileState.onUserInfoFetch(
-          store: state.store.copyWith(
-            userInfo: userInfo,
-            usageInfo: usageInfoOrFailure?.getOrElse(() => null),
-            subscriptionInfo: subscriptionInfoOrFailure?.getOrElse(() => null),
-            loading: false,
-          ),
+    emit(
+      ProfileState.onUserInfoFetch(
+        store: state.store.copyWith(
+          userInfo: globalState.store.userInfo,
+          usageInfo: globalState.store.usageInfo,
+          subscriptionInfo: globalState.store.subscriptionResponse,
+          loading: false,
         ),
-      );
-    });
+      ),
+    );
   }
 
   Future<void> _onLogoutPressed(_, Emitter<ProfileState> emit) async {
@@ -80,9 +70,12 @@ class ProfileBloc extends BaseBloc<ProfileEvent, ProfileState> {
     final signOutResponseOrFailure = await _authFacade.signOut();
     signOutResponseOrFailure.fold(
       (exception) => handleException(emit, exception),
-      (_) => emit(
-        ProfileState.onLogout(store: state.store.copyWith(loading: false)),
-      ),
+      (_) {
+        globalState.clear();
+        emit(
+          ProfileState.onLogout(store: state.store.copyWith(loading: false)),
+        );
+      }
     );
   }
 
@@ -96,9 +89,18 @@ class ProfileBloc extends BaseBloc<ProfileEvent, ProfileState> {
     emit(ProfileState.onManageSubscriptionTap(store: state.store));
   }
 
+  void _onGlobalStoreUpdated(_, Emitter<ProfileState> emit) {
+  }
+
   @override
   void started({Map<String, dynamic>? args}) {
     add(const ProfileEvent.started());
+  }
+
+  @override
+  Future<void> close() async {
+    await _globalStoreSubscription?.cancel();
+    super.close();
   }
 
   void onLogoutPressed() {
@@ -110,4 +112,12 @@ class ProfileBloc extends BaseBloc<ProfileEvent, ProfileState> {
 
   void onManageSubscriptionTapped() =>
       add(const ProfileEvent.onManageSubscriptionTapped());
+
+  void _globalStoreUpdated(GlobalStore updatedStore) {
+    add(
+      ProfileEvent.onGlobalStoreUpdated(
+        store: updatedStore,
+      ),
+    );
+  }
 }

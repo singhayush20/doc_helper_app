@@ -12,4 +12,8 @@ sealed class ProfileEvent extends BaseEvent with _$ProfileEvent {
 
   const factory ProfileEvent.onManageSubscriptionTapped() =
       _OnManageSubscriptionTapped;
+
+  const factory ProfileEvent.onGlobalStoreUpdated({
+    required GlobalStore store,
+  }) = _OnGlobalStoreUpdated;
 }
