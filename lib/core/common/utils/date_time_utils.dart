@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 /// A utility function to format a duration in seconds
 /// into a human-readable string.
 ///
@@ -46,4 +48,26 @@ String getMonthName(int month) {
   ];
   if (month < 1 || month > 12) return '';
   return months[month - 1];
+}
+
+String getTimeAgo(DateTime? dateTime) {
+  if (dateTime == null) return '';
+  final now = DateTime.now();
+  final difference = now.difference(dateTime);
+
+  if (difference.inDays > 365) {
+    return '${(difference.inDays / 365).floor()} years ago';
+  } else if (difference.inDays > 30) {
+    return '${(difference.inDays / 30).floor()} months ago';
+  } else if (difference.inDays > 7) {
+    return '${(difference.inDays / 7).floor()} weeks ago';
+  } else if (difference.inDays > 0) {
+    return '${difference.inDays} days ago';
+  } else if (difference.inHours > 0) {
+    return '${difference.inHours} hours ago';
+  } else if (difference.inMinutes > 0) {
+    return '${difference.inMinutes} minutes ago';
+  } else {
+    return 'just now';
+  }
 }

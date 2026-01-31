@@ -10,7 +10,7 @@ import 'package:doc_helper_app/feature/auth/data/models/auth_dto.dart';
 import 'package:doc_helper_app/feature/auth/data/models/dto_to_model_mapper.dart';
 import 'package:doc_helper_app/feature/auth/domain/entities/auth_entity.dart';
 import 'package:doc_helper_app/feature/auth/domain/interfaces/i_auth_facade.dart';
-import 'package:doc_helper_app/feature/user/data/models/dto_to_model_mapper.dart';
+import 'package:doc_helper_app/feature/user/data/models/dto_to_entity_mapper.dart';
 import 'package:doc_helper_app/feature/user/data/models/user_dto.dart';
 import 'package:doc_helper_app/feature/user/domain/entity/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';

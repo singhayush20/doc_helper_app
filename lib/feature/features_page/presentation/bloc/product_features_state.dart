@@ -9,6 +9,10 @@ sealed class ProductFeaturesState extends BaseState
     required ProductFeaturesStateStore store,
   }) = _Initial;
 
+  const factory ProductFeaturesState.onProductInfoFetch({
+    required ProductFeaturesStateStore store,
+  }) = _OnProductInfoFetch;
+
   const factory ProductFeaturesState.onGlobalStoreUpdate({
     required ProductFeaturesStateStore store,
   }) = _OnGlobalStoreUpdate;
@@ -38,6 +42,8 @@ sealed class ProductFeaturesState extends BaseState
 
 @liteFreezed
 sealed class ProductFeaturesStateStore with _$ProductFeaturesStateStore {
-  const factory ProductFeaturesStateStore({@Default(false) bool loading}) =
-      _HomeStateStore;
+  const factory ProductFeaturesStateStore({
+    UserActivityInfo? userActivityInfo,
+    @Default(false) bool loading,
+  }) = _HomeStateStore;
 }

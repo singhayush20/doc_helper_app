@@ -106,4 +106,7 @@ abstract class RetrofitApiClient {
   Future<HttpResponse> cancelCheckout(
     @Body() CancelCheckoutDto cancelCheckoutDto,
   );
+
+  @GET('/api/v1/user-activities/recent')
+  Future<HttpResponse> getRecentUserActivityInfo();
 }

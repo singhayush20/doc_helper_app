@@ -9,11 +9,8 @@ import 'package:doc_helper_app/core/global_store/global_state_impl.dart';
 import 'package:doc_helper_app/core/global_store/global_store.dart';
 import 'package:doc_helper_app/feature/auth/domain/interfaces/i_auth_facade.dart';
 import 'package:doc_helper_app/feature/billing/domain/entities/billing_entity.dart';
-import 'package:doc_helper_app/feature/billing/domain/interfaces/i_billing_facade.dart';
-import 'package:doc_helper_app/feature/plan/domain/interface/i_usage_facade.dart';
 import 'package:doc_helper_app/feature/plan/domain/models/usage_info.dart';
 import 'package:doc_helper_app/feature/user/domain/entity/user.dart';
-import 'package:doc_helper_app/feature/user/domain/interface/i_user_facade.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
@@ -25,21 +22,14 @@ part 'profile_state.dart';
 
 @injectable
 class ProfileBloc extends BaseBloc<ProfileEvent, ProfileState> {
-  ProfileBloc(
-    this._userFacade,
-    this._authFacade,
-    this._usageFacade,
-    this._billingFacade,
-  ) : super(const ProfileState.initial(store: ProfileStateStore())) {
+  ProfileBloc(this._authFacade)
+    : super(const ProfileState.initial(store: ProfileStateStore())) {
     _globalStoreSubscription = globalState.globalStoreStream.listen(
       _globalStoreUpdated,
     );
   }
 
-  final IUserFacade _userFacade;
   final IAuthFacade _authFacade;
-  final IUsageFacade _usageFacade;
-  final IBillingFacade _billingFacade;
 
   StreamSubscription<GlobalStore>? _globalStoreSubscription;
 
@@ -50,6 +40,7 @@ class ProfileBloc extends BaseBloc<ProfileEvent, ProfileState> {
     on<_OnResetPasswordPressed>(_onResetPasswordPressed);
     on<_OnManageSubscriptionTapped>(_onManageSubscriptionTapped);
     on<_OnGlobalStoreUpdated>(_onGlobalStoreUpdated);
+    on<_OnProfileRefreshed>(_onProfileRefreshed);
   }
 
   Future<void> _onStarted(_, Emitter<ProfileState> emit) async {
@@ -75,7 +66,7 @@ class ProfileBloc extends BaseBloc<ProfileEvent, ProfileState> {
         emit(
           ProfileState.onLogout(store: state.store.copyWith(loading: false)),
         );
-      }
+      },
     );
   }
 
@@ -85,11 +76,38 @@ class ProfileBloc extends BaseBloc<ProfileEvent, ProfileState> {
   }
 
   void _onManageSubscriptionTapped(_, Emitter<ProfileState> emit) {
-    invalidateLoader(emit,loading: false);
+    invalidateLoader(emit, loading: false);
     emit(ProfileState.onManageSubscriptionTap(store: state.store));
   }
 
   void _onGlobalStoreUpdated(_, Emitter<ProfileState> emit) {
+    emit(
+      ProfileState.onGlobalStoreUpdate(
+        store: state.store.copyWith(
+          userInfo: globalState.store.userInfo,
+          usageInfo: globalState.store.usageInfo,
+          subscriptionInfo: globalState.store.subscriptionResponse,
+        ),
+      ),
+    );
+  }
+
+  Future<void> _onProfileRefreshed(_, Emitter<ProfileState> emit) async {
+    invalidateLoader(emit, loading: false);
+    final userDataOrFailure = await globalState.fetchUserData();
+    userDataOrFailure.fold(
+      (exception) => handleException(emit, exception),
+      (_) => emit(
+        ProfileState.onProfileRefreshed(
+          store: state.store.copyWith(
+            userInfo: globalState.store.userInfo,
+            usageInfo: globalState.store.usageInfo,
+            subscriptionInfo: globalState.store.subscriptionResponse,
+            loading: false,
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -114,10 +132,10 @@ class ProfileBloc extends BaseBloc<ProfileEvent, ProfileState> {
       add(const ProfileEvent.onManageSubscriptionTapped());
 
   void _globalStoreUpdated(GlobalStore updatedStore) {
-    add(
-      ProfileEvent.onGlobalStoreUpdated(
-        store: updatedStore,
-      ),
-    );
+    add(ProfileEvent.onGlobalStoreUpdated(store: updatedStore));
+  }
+
+  void onProfileRefreshed() {
+    add(const ProfileEvent.onProfileRefreshed());
   }
 }

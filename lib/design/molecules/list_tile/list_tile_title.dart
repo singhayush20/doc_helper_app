@@ -31,3 +31,15 @@ class ListTileTitleMedium extends ListTileTitle {
   Widget build(BuildContext context) =>
       DsText.titleMedium(data: data ?? '', color: color);
 }
+
+class ListTileTitleRich extends ListTileTitle {
+  const ListTileTitleRich({
+    super.key,
+    required this.richText,
+  });
+
+  final Widget richText;
+
+  @override
+  Widget build(BuildContext context) => richText;
+}
