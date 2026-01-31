@@ -24,7 +24,7 @@ class FeaturesPage extends StatelessWidget {
     child: LoaderOverlay(
       child: Scaffold(
         appBar: const PrimaryAppBar(
-          titleText: 'DocuHelper',
+          titleText:'Home',
           backButtonRequired: false,
         ),
         body: BlocListener<ProductFeaturesBloc, ProductFeaturesState>(
