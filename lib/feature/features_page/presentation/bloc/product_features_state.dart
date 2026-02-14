@@ -44,6 +44,7 @@ sealed class ProductFeaturesState extends BaseState
 sealed class ProductFeaturesStateStore with _$ProductFeaturesStateStore {
   const factory ProductFeaturesStateStore({
     UserActivityInfo? userActivityInfo,
+    ProductFeatureList? featureCards,
     @Default(false) bool loading,
   }) = _HomeStateStore;
 }

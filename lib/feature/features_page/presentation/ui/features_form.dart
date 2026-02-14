@@ -24,7 +24,7 @@ class _FeaturesForm extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   spacing: DsSpacing.verticalSpace12,
                   children: [
-                    DsText.headlineMedium(
+                    DsText.headlineLarge(
                       data:
                           'Hi ${globalState.store.userInfo?.firstName?.input},',
                     ),
@@ -36,26 +36,11 @@ class _FeaturesForm extends StatelessWidget {
                         true) ...[
                       const _UpgradeToProCard(),
                     ],
-                    Row(
-                      spacing: DsSpacing.horizontalSpace16,
-                      children: [
-                        Expanded(
-                          child: DsButton.primary(
-                            data: 'Upload document',
-                            onTap: () {},
-                            leadingIcon: Icons.article_outlined,
-                          ),
-                        ),
-                        Expanded(
-                          child: DsButton.secondary(
-                            data: 'Scan document',
-                            onTap: () {},
-                            leadingIcon: Icons.document_scanner_outlined,
-                          ),
-                        ),
-                      ],
-                    ),
                     const _RecentActivitiesSection(),
+                    if (state.store.featureCards?.features?.isNotEmpty ??
+                        false) ...[
+                      const _ProductSection(),
+                    ],
                   ],
                 ),
               ),
@@ -157,7 +142,7 @@ class _RecentActivitiesSection extends StatelessWidget {
         spacing: DsSpacing.verticalSpace12,
         children: [
           const DsText.titleLarge(
-            data: 'Continue where you left',
+            data: 'Your recent activity',
             color: DsColors.textPrimary,
           ),
           SizedBox(
@@ -431,6 +416,78 @@ class _FeatureShimmerCard extends StatelessWidget {
           ),
         ),
       ],
+    ),
+  );
+}
+
+class _ProductSection extends StatelessWidget {
+  const _ProductSection();
+
+  @override
+  Widget build(BuildContext context) =>
+      BlocBuilder<ProductFeaturesBloc, ProductFeaturesState>(
+        builder: (context, state) => Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          spacing: DsSpacing.verticalSpace12,
+          children: [
+            const DsText.titleLarge(data: 'Tools', color: DsColors.textPrimary),
+            GridView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: state.store.featureCards?.features?.length,
+              shrinkWrap: true,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 1.2,
+                crossAxisSpacing: DsSpacing.horizontalSpace8,
+                mainAxisSpacing: DsSpacing.verticalSpace8,
+              ),
+              itemBuilder: (context, index) => _FeatureCard(
+                card: state.store.featureCards?.features?[index]?.ui?.card,
+              ),
+            ),
+          ],
+        ),
+      );
+}
+
+class _FeatureCard extends StatelessWidget {
+  const _FeatureCard({required this.card});
+
+  final FeatureCard? card;
+
+  @override
+  Widget build(BuildContext context) => Card(
+    color: card?.backgroundColor ?? DsColors.backgroundPrimary,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(DsBorderRadius.borderRadius8),
+    ),
+    child: InkWell(
+      onTap: () =>
+          handleComponentAction(context: context, action: card?.onClick),
+      child: Padding(
+        padding: EdgeInsets.all(DsSpacing.radialSpace12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          spacing: DsSpacing.verticalSpace8,
+          children: [
+            DsImage(mediaUrl: card?.iconUrl ?? '', height: 28.h),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              spacing: DsSpacing.verticalSpace4,
+              children: [
+                DsText.titleMedium(
+                  data: card?.title?.data ?? '',
+                  color: card?.title?.color ?? DsColors.textPrimary,
+                ),
+                DsText.bodySmall(
+                  data: card?.description?.data ?? '',
+                  color: card?.description?.color ?? DsColors.textSecondary,
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     ),
   );
 }

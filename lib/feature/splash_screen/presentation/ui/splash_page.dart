@@ -31,7 +31,7 @@ class SplashPage extends StatelessWidget {
       if (user == null)
         {context.goNamed(Routes.signIn)}
       else if (user.emailVerified ?? false)
-        {context.goNamed(Routes.features)}
+        {context.goNamed(Routes.home)}
       else
         {context.goNamed(Routes.emailVerification)},
     },

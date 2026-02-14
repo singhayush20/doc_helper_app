@@ -1,5 +1,6 @@
 import 'package:doc_helper_app/core/common/base_bloc/base_bloc.dart';
 import 'package:doc_helper_app/core/common/base_widget/base_widget_utils.dart';
+import 'package:doc_helper_app/core/common/utils/app_utils.dart';
 import 'package:doc_helper_app/core/common/utils/date_time_utils.dart';
 import 'package:doc_helper_app/core/global_store/global_state_impl.dart';
 import 'package:doc_helper_app/design/design.dart';
@@ -7,6 +8,7 @@ import 'package:doc_helper_app/design/molecules/list_tile/list_tile_subtitle.dar
 import 'package:doc_helper_app/design/molecules/list_tile/list_tile_title.dart';
 import 'package:doc_helper_app/di/injection.dart';
 import 'package:doc_helper_app/feature/features_page/presentation/bloc/product_features_bloc.dart';
+import 'package:doc_helper_app/feature/ui_component/domain/entities/ui_config_entities.dart';
 import 'package:doc_helper_app/feature/user_activity/domain/entities/user_activity_enum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,7 +26,7 @@ class FeaturesPage extends StatelessWidget {
     child: LoaderOverlay(
       child: Scaffold(
         appBar: const PrimaryAppBar(
-          titleText:'Home',
+          titleText: 'Home',
           backButtonRequired: false,
         ),
         body: BlocListener<ProductFeaturesBloc, ProductFeaturesState>(

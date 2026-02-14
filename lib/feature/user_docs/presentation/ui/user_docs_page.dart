@@ -35,7 +35,7 @@ class UserDocsPage extends StatelessWidget {
       builder: (context, state) => Scaffold(
         resizeToAvoidBottomInset: true,
         appBar: const PrimaryAppBar(
-          titleText: 'Documents',
+          titleText: 'Doc Chat',
           backButtonRequired: false,
         ),
         body: SafeArea(

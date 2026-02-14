@@ -1,5 +1,3 @@
-import 'package:intl/intl.dart';
-
 /// A utility function to format a duration in seconds
 /// into a human-readable string.
 ///
