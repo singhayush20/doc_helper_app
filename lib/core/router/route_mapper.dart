@@ -8,6 +8,7 @@ abstract class Routes {
   static const String chat = 'chat';
   static const String plans = 'plans';
   static const String payment = 'payment_gateway';
+  static const String docSummarizer = 'summarizer';
 
   // Shell routes
   static const String shell = 'shell';
