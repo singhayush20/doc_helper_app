@@ -52,7 +52,10 @@ class UserDocFacadeImpl implements IUserDocFacade {
         controller.addError(
           ServerException(
             exceptionType: ServerExceptionType.fileUploadError,
-            metaData: ExceptionMetaData(errorCode: errorCode, message: message),
+            metaData: ExceptionMetaData(
+              errorCode: errorCode ?? ErrorCodes.unknownError,
+              message: message ?? ErrorMessages.defaultErrorMessage,
+            ),
           ),
         );
         await controller.close();

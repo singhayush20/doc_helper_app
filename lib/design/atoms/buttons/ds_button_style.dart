@@ -68,7 +68,7 @@ abstract class DsButtonStyle {
         );
       }
       return RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(DsBorderRadius.borderRadius2),
+        borderRadius: BorderRadius.circular(DsBorderRadius.borderRadius8),
         side: const BorderSide(color: DsColors.buttonSecondaryBorder),
       );
     }),

@@ -52,7 +52,7 @@ class SignInPage extends StatelessWidget {
                 ).pushNamed(Routes.passwordReset),
                 OnLogin(:final store) =>
                   (store.userInfo?.emailVerified ?? false)
-                      ? context.goNamed(Routes.docs)
+                      ? context.goNamed(Routes.home)
                       : context.goNamed(Routes.emailVerification),
                 OnException(:final exception) => handleException(
                   exception,

@@ -106,4 +106,13 @@ abstract class RetrofitApiClient {
   Future<HttpResponse> cancelCheckout(
     @Body() CancelCheckoutDto cancelCheckoutDto,
   );
+
+  @GET('/api/v1/user-activities/recent')
+  Future<HttpResponse> getRecentUserActivityInfo();
+
+  @GET('/api/v1/features/ui-components')
+  Future<HttpResponse> getUiComponents(
+    @Query('screen') String screen,
+    @Query('componentType') String componentType,
+  );
 }

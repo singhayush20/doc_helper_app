@@ -3,7 +3,8 @@ import 'package:intl/intl.dart';
 extension EnumX<T extends Enum> on Iterable<T> {
   T? by(String? name) {
     for (final value in this) {
-      if (value.name.toLowerCase() == name?.toLowerCase()) {
+      if (value.name.replaceAll('_', '').toLowerCase() ==
+          name?.replaceAll('_', '').toLowerCase()) {
         return value;
       }
     }

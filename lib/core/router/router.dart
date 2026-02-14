@@ -106,6 +106,17 @@ GoRouter buildRouter(AuthNotifier authNotifier) => GoRouter(
           LandingPage(navigationShell: navigationShell),
       branches: [
         StatefulShellBranch(
+          navigatorKey: _shellNavigatorHomeKey,
+          routes: [
+            GoRoute(
+              name: Routes.home,
+              path: '/home_page',
+              pageBuilder: (context, state) =>
+              const NoTransitionPage(child: FeaturesPage()),
+            ),
+          ],
+        ),
+        StatefulShellBranch(
           navigatorKey: _shellNavigatorDocsKey,
           routes: [
             GoRoute(
@@ -113,17 +124,6 @@ GoRouter buildRouter(AuthNotifier authNotifier) => GoRouter(
               path: '/docs',
               pageBuilder: (context, state) =>
                   const NoTransitionPage(child: UserDocsPage()),
-            ),
-          ],
-        ),
-        StatefulShellBranch(
-          navigatorKey: _shellNavigatorHomeKey,
-          routes: [
-            GoRoute(
-              name: Routes.features,
-              path: '/features_page',
-              pageBuilder: (context, state) =>
-              const NoTransitionPage(child: FeaturesPage()),
             ),
           ],
         ),
@@ -144,3 +144,16 @@ GoRouter buildRouter(AuthNotifier authNotifier) => GoRouter(
 );
 
 final router = buildRouter(getIt<AuthNotifier>());
+
+int? branchIndexForRoute(String routeName) {
+  switch (routeName) {
+    case Routes.home:
+      return 0;
+    case Routes.docs:
+      return 1;
+    case Routes.profile:
+      return 2;
+    default:
+      return null;
+  }
+}

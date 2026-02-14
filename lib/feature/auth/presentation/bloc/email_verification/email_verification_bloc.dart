@@ -3,6 +3,7 @@ import 'package:doc_helper_app/core/common/base_bloc/base_bloc.dart';
 import 'package:doc_helper_app/core/common/base_bloc/base_event.dart';
 import 'package:doc_helper_app/core/common/base_bloc/base_state.dart';
 import 'package:doc_helper_app/core/common/utils/app_utils.dart';
+import 'package:doc_helper_app/core/global_store/global_state_impl.dart';
 import 'package:doc_helper_app/core/local_storage/i_local_storage_facade.dart';
 import 'package:doc_helper_app/core/value_objects/value_objects.dart';
 import 'package:doc_helper_app/feature/auth/domain/interfaces/i_auth_facade.dart';
@@ -132,9 +133,13 @@ class EmailVerificationBloc
     );
     if (otpVerificationOrFailure.isRight()) {
       await _authFacade.forceRefreshToken();
-      emit(
-        EmailVerificationState.onOTPVerificationSuccess(
-          store: state.store.copyWith(loading: false),
+      final userDataOrFailure = await globalState.fetchUserData();
+      userDataOrFailure.fold(
+        (exception) => handleException(emit, exception),
+        (_) => emit(
+          EmailVerificationState.onOTPVerificationSuccess(
+            store: state.store.copyWith(loading: false),
+          ),
         ),
       );
     }

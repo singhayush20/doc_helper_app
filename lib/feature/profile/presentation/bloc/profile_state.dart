@@ -22,6 +22,14 @@ sealed class ProfileState extends BaseState with _$ProfileState {
     required ProfileStateStore store,
   }) = OnManageSubscriptionTap;
 
+  const factory ProfileState.onGlobalStoreUpdate({
+    required ProfileStateStore store,
+  }) = _OnGlobalStoreUpdate;
+
+  const factory ProfileState.onProfileRefreshed({
+    required ProfileStateStore store,
+  }) = OnProfileRefreshed;
+
   const factory ProfileState.invalidateLoader({
     required ProfileStateStore store,
   }) = InvalidateLoader;

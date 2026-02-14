@@ -1,3 +1,4 @@
+import 'package:doc_helper_app/core/common/base_widget/base_widget_utils.dart';
 import 'package:doc_helper_app/core/router/route_mapper.dart';
 import 'package:doc_helper_app/design/design.dart';
 import 'package:doc_helper_app/di/injection.dart';
@@ -30,10 +31,11 @@ class SplashPage extends StatelessWidget {
       if (user == null)
         {context.goNamed(Routes.signIn)}
       else if (user.emailVerified ?? false)
-        {context.goNamed(Routes.docs)}
+        {context.goNamed(Routes.home)}
       else
         {context.goNamed(Routes.emailVerification)},
     },
+    OnException(:final exception) => handleException(exception, context),
     _ => {},
   };
 }

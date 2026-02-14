@@ -3,7 +3,7 @@ import 'package:doc_helper_app/core/exception_handling/server_exception.dart';
 import 'package:doc_helper_app/core/network/api_call_handler.dart';
 import 'package:doc_helper_app/core/network/retrofit_api_client.dart';
 import 'package:doc_helper_app/env/env_config.dart';
-import 'package:doc_helper_app/feature/user/data/models/dto_to_model_mapper.dart';
+import 'package:doc_helper_app/feature/user/data/models/dto_to_entity_mapper.dart';
 import 'package:doc_helper_app/feature/user/data/models/user_dto.dart';
 import 'package:doc_helper_app/feature/user/domain/entity/user.dart';
 import 'package:doc_helper_app/feature/user/domain/interface/i_user_facade.dart';

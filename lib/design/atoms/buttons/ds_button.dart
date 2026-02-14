@@ -10,16 +10,12 @@ final class DsButton extends BaseButton {
     super.key,
     required super.data,
     super.onTap,
-    super.borderColor,
-    super.disabledBorderColor,
     super.leadingIcon,
   }) : super(buttonStyleType: DsButtonStyleType.primary);
 
   const DsButton.secondary({
     super.key,
     required super.data,
-    super.borderColor,
-    super.disabledBorderColor,
     super.onTap,
     super.leadingIcon,
   }) : super(buttonStyleType: DsButtonStyleType.secondary);

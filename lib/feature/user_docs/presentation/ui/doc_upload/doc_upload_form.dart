@@ -8,81 +8,81 @@ class _DocUploadForm extends StatelessWidget {
     BuildContext context,
   ) => BlocBuilder<DocUploadBloc, DocUploadState>(
     builder: (context, state) => Padding(
-      padding: EdgeInsets.all(DsSpacing.radialSpace16),
-      child: Column(
-        spacing: DsSpacing.verticalSpace24,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          DecoratedBox(
-            decoration: BoxDecoration(
-              color: DsColors.backgroundPrimary,
-              borderRadius: BorderRadius.circular(
-                DsBorderRadius.borderRadius16,
+        padding: EdgeInsets.all(DsSpacing.radialSpace16),
+        child: Column(
+          spacing: DsSpacing.verticalSpace24,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            DecoratedBox(
+              decoration: BoxDecoration(
+                color: DsColors.backgroundPrimary,
+                borderRadius: BorderRadius.circular(
+                  DsBorderRadius.borderRadius16,
+                ),
+                border: Border.all(color: DsColors.borderSubtle),
               ),
-              border: Border.all(color: DsColors.borderSubtle),
-            ),
-            child: Padding(
-              padding: EdgeInsets.all(DsSpacing.radialSpace16),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                spacing: DsSpacing.verticalSpace12,
-                children: [
-                  Icon(
-                    Icons.cloud_upload_outlined,
-                    size: DsSizing.size20,
-                    color: DsColors.primary,
-                  ),
-                  const DsText.titleMedium(data: 'Drag & drop files here'),
-                  const DsText.bodySmall(
-                    data:
-                        '''Supported formats: PDF, DOCX, TXT. Max file size: 10MB.''',
-                    color: DsColors.textSecondary,
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(height: DsSpacing.verticalSpace12),
-                  ElevatedButton(
-                    onPressed: () =>
-                        getBloc<DocUploadBloc>(context).uploadRequested(),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: DsColors.buttonPrimary,
-                      foregroundColor: DsColors.buttonPrimaryText,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                          DsBorderRadius.borderRadius22,
+              child: Padding(
+                padding: EdgeInsets.all(DsSpacing.radialSpace16),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  spacing: DsSpacing.verticalSpace12,
+                  children: [
+                    Icon(
+                      Icons.cloud_upload_outlined,
+                      size: DsSizing.size20,
+                      color: DsColors.primary,
+                    ),
+                    const DsText.titleMedium(data: 'Drag & drop files here'),
+                    const DsText.bodySmall(
+                      data:
+                          '''Supported formats: PDF, DOCX, TXT. Max file size: 10MB.''',
+                      color: DsColors.textSecondary,
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: DsSpacing.verticalSpace12),
+                    ElevatedButton(
+                      onPressed: () =>
+                          getBloc<DocUploadBloc>(context).uploadRequested(),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: DsColors.buttonPrimary,
+                        foregroundColor: DsColors.buttonPrimaryText,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                            DsBorderRadius.borderRadius22,
+                          ),
                         ),
                       ),
+                      child: const DsText.labelLarge(
+                        data: 'Choose File',
+                        color: DsColors.buttonPrimaryText,
+                      ),
                     ),
-                    child: const DsText.labelLarge(
-                      data: 'Choose File',
-                      color: DsColors.buttonPrimaryText,
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-          if (state.store.isUploading ||
-              state.store.uploadError != null ||
-              state.store.uploadResponse != null ||
-              state is OnUploadSuccess)
-            UploadDocCard(
-              fileName: state.store.fileName.isEmpty
-                  ? 'Selected document'
-                  : state.store.fileName,
-              progress: state.store.progress,
-              isUploading: state.store.isUploading,
-              isError:
-                  state is OnUploadFailure || state is OnUploadProgressError,
-              errorMessage: state.store.uploadError,
-              onCancel: state.store.isUploading ? () {} : null,
-            ),
-          if (state.store.uploadErrorCode ==
-              ErrorCodes.quotaExceededServerError) ...[
-            const _QuotaExceededMessage(),
+            if (state.store.isUploading ||
+                state.store.uploadError != null ||
+                state.store.uploadResponse != null ||
+                state is OnUploadSuccess)
+              UploadDocCard(
+                fileName: state.store.fileName.isEmpty
+                    ? 'Selected document'
+                    : state.store.fileName,
+                progress: state.store.progress,
+                isUploading: state.store.isUploading,
+                isError:
+                    state is OnUploadFailure || state is OnUploadProgressError,
+                errorMessage: state.store.uploadError,
+                onCancel: state.store.isUploading ? () {} : null,
+              ),
+            if (state.store.uploadErrorCode ==
+                ErrorCodes.quotaExceededServerError) ...[
+              const _QuotaExceededMessage(),
+            ],
           ],
-        ],
+        ),
       ),
-    ),
   );
 }
 
@@ -114,30 +114,30 @@ class _QuotaExceededMessageState extends State<_QuotaExceededMessage> {
 
   @override
   Widget build(BuildContext context) => Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: DsSpacing.horizontalSpace16,
-        vertical: DsSpacing.verticalSpace12,
-      ),
-      child: RichText(
-        textAlign: TextAlign.center,
-        text: TextSpan(
-          style: DsTextStyle.bodyMedium.copyWith(color: DsColors.textSecondary),
-          children: [
-            const TextSpan(text: 'You have exceeded your quota. '),
-            TextSpan(
-              text: 'Upgrade your plan',
-              style: DsTextStyle.bodyMedium.copyWith(
-                color: DsColors.textError,
-                fontWeight: FontWeight.bold,
-                decoration: TextDecoration.underline,
-              ),
-              recognizer: _recognizer,
+    padding: EdgeInsets.symmetric(
+      horizontal: DsSpacing.horizontalSpace16,
+      vertical: DsSpacing.verticalSpace12,
+    ),
+    child: RichText(
+      textAlign: TextAlign.center,
+      text: TextSpan(
+        style: DsTextStyle.bodyMedium.copyWith(color: DsColors.textSecondary),
+        children: [
+          const TextSpan(text: 'You have exceeded your quota. '),
+          TextSpan(
+            text: 'Upgrade your plan',
+            style: DsTextStyle.bodyMedium.copyWith(
+              color: DsColors.textError,
+              fontWeight: FontWeight.bold,
+              decoration: TextDecoration.underline,
             ),
-            const TextSpan(text: ' to continue.'),
-          ],
-        ),
+            recognizer: _recognizer,
+          ),
+          const TextSpan(text: ' to continue.'),
+        ],
       ),
-    );
+    ),
+  );
 }
 
 class UploadDocCard extends StatelessWidget {
