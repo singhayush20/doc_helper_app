@@ -5,21 +5,21 @@ class _DocSummarizerForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => SingleChildScrollView(
-    child: Padding(
-      padding: EdgeInsets.symmetric(
-        vertical: DsSpacing.radialSpace24,
-        horizontal: DsSpacing.radialSpace16,
-      ),
-      child: Column(
-        spacing: DsSpacing.verticalSpace32,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const _UploadArea(),
-          const _RecentSummariesSection(),
-        ],
-      ),
-    ),
-  );
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            vertical: DsSpacing.radialSpace24,
+            horizontal: DsSpacing.radialSpace16,
+          ),
+          child: Column(
+            spacing: DsSpacing.verticalSpace32,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const _UploadArea(),
+              const _RecentSummariesSection(),
+            ],
+          ),
+        ),
+      );
 }
 
 class _UploadArea extends StatelessWidget {
@@ -27,67 +27,90 @@ class _UploadArea extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => CustomPaint(
-    painter: _DashedRectPainter(
-      color: DsColors.primary.withAlpha(80),
-      strokeWidth: 1.5,
-      gap: 5,
-    ),
-    child: DecoratedBox(
-      decoration: BoxDecoration(
-        color: DsColors.backgroundPrimary,
-        borderRadius: BorderRadius.circular(DsBorderRadius.borderRadius22),
-      ),
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-          vertical: DsSpacing.radialSpace16,
-          horizontal: DsSpacing.radialSpace8,
+        painter: _DashedRectPainter(
+          color: DsColors.primary.withAlpha(80),
+          strokeWidth: 1.5,
+          gap: 5,
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const _PreferencesSection(),
-            DsSpacing.verticalSpaceSizedBox32,
-            DecoratedBox(
-              decoration: const BoxDecoration(
-                color: DsColors.backgroundSubtle,
-                shape: BoxShape.circle,
-              ),
-              child: Padding(
-                padding: EdgeInsets.all(DsSpacing.radialSpace16),
-                child: Icon(
-                  Icons.cloud_upload_rounded,
-                  color: DsColors.primary,
-                  size: DsSizing.size32,
-                ),
-              ),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: DsColors.backgroundPrimary,
+            borderRadius: BorderRadius.circular(DsBorderRadius.borderRadius22),
+          ),
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              vertical: DsSpacing.radialSpace16,
+              horizontal: DsSpacing.radialSpace8,
             ),
-            DsSpacing.verticalSpaceSizedBox24,
-            // Header Text
-            const DsText.titleLarge(
-              data: 'Upload Document',
-              color: DsColors.textPrimary,
-              textAlign: TextAlign.center,
-            ),
-            DsSpacing.verticalSpaceSizedBox8,
-            // Subtitle Text
-            DsText.bodyMedium(
-              data: '.pdf, .docx, or .txt (Max 5MB)',
-              color: DsColors.textSecondary.withAlpha(180),
-              textAlign: TextAlign.center,
-            ),
-            DsSpacing.verticalSpaceSizedBox32,
-            DsButton.primary(
-              data: 'Choose File',
-              onTap: () {
-                // TODO: Implement file picker logic
+            child: BlocBuilder<DocSummarizerBloc, DocSummarizerState>(
+              builder: (context, state) {
+                final isUploading = state.store.uploading;
+                final validationError = state.store.validationErrorMessage;
+
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const _PreferencesSection(),
+                    DsSpacing.verticalSpaceSizedBox32,
+                    DecoratedBox(
+                      decoration: const BoxDecoration(
+                        color: DsColors.backgroundSubtle,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.all(DsSpacing.radialSpace16),
+                        child: Icon(
+                          Icons.cloud_upload_rounded,
+                          color: DsColors.primary,
+                          size: DsSizing.size32,
+                        ),
+                      ),
+                    ),
+                    DsSpacing.verticalSpaceSizedBox24,
+                    // Header Text
+                    const DsText.titleLarge(
+                      data: 'Upload Document',
+                      color: DsColors.textPrimary,
+                      textAlign: TextAlign.center,
+                    ),
+                    DsSpacing.verticalSpaceSizedBox8,
+                    // Subtitle or Progress Text
+                    DsText.bodyMedium(
+                      data: isUploading
+                          ? state.store.uploadProgressMessage ??
+                              'Upload in progress...'
+                          : '.pdf, .docx or .txt (Max 5MB)',
+                      color: isUploading
+                          ? DsColors.textAccent
+                          : DsColors.textSecondary.withAlpha(180),
+                      textAlign: TextAlign.center,
+                    ),
+
+                    if (validationError != null) ...[
+                      DsSpacing.verticalSpaceSizedBox8,
+                      DsText.bodySmall(
+                        data: validationError,
+                        color: DsColors.error,
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+
+                    DsSpacing.verticalSpaceSizedBox32,
+                    DsButton.primary(
+                      data: 'Choose File',
+                      onTap: isUploading
+                          ? null
+                          : () => getBloc<DocSummarizerBloc>(context)
+                              .add(const DocSummarizerEvent.uploadDocument()),
+                    ),
+                  ],
+                );
               },
             ),
-          ],
+          ),
         ),
-      ),
-    ),
-  );
+      );
 }
 
 class _DashedRectPainter extends CustomPainter {
@@ -141,35 +164,41 @@ class _PreferencesSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    spacing: DsSpacing.verticalSpace24,
-    children: [
-      Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: DsSpacing.verticalSpace24,
         children: [
-          Icon(
-            Icons.settings_rounded,
-            color: DsColors.primary,
-            size: DsSizing.size20,
+          Row(
+            children: [
+              Icon(
+                Icons.settings_rounded,
+                color: DsColors.primary,
+                size: DsSizing.size20,
+              ),
+              DsSpacing.horizontalSpaceSizedBox8,
+              const DsText.titleLarge(
+                data: 'Preferences',
+                color: DsColors.textPrimary,
+              ),
+            ],
           ),
-          DsSpacing.horizontalSpaceSizedBox8,
-          const DsText.titleLarge(
-            data: 'Preferences',
-            color: DsColors.textPrimary,
+          const _PreferenceToggleGroup(
+            label: 'SUMMARY TONE',
+            options: [
+              'Professional',
+              'Casual',
+              'Executive',
+              'Technical',
+              'Legal'
+            ],
+            selectedIndex: 0,
+          ),
+          const _PreferenceToggleGroup(
+            label: 'OUTPUT LENGTH',
+            options: ['Short', 'Medium', 'Long', 'Very Long'],
+            selectedIndex: 1,
           ),
         ],
-      ),
-      const _PreferenceToggleGroup(
-        label: 'SUMMARY TONE',
-        options: ['Professional', 'Casual', 'Executive', 'Technical', 'Legal'],
-        selectedIndex: 0,
-      ),
-      const _PreferenceToggleGroup(
-        label: 'OUTPUT LENGTH',
-        options: ['Short', 'Medium', 'Long', 'Very Long'],
-        selectedIndex: 1,
-      ),
-    ],
-  );
+      );
 }
 
 class _PreferenceToggleGroup extends StatelessWidget {
@@ -185,30 +214,30 @@ class _PreferenceToggleGroup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    spacing: DsSpacing.verticalSpace12,
-    children: [
-      DsText.labelMedium(data: label, color: DsColors.textTertiary),
-      SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          children: List.generate(options.length, (index) {
-            final isSelected = index == selectedIndex;
-            return Padding(
-              padding: EdgeInsets.only(right: DsSpacing.radialSpace12),
-              child: _PreferenceChip(
-                label: options[index],
-                isSelected: isSelected,
-                onTap: () {
-                  // TODO: Implement state management for selection
-                },
-              ),
-            );
-          }),
-        ),
-      ),
-    ],
-  );
+        crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: DsSpacing.verticalSpace12,
+        children: [
+          DsText.labelMedium(data: label, color: DsColors.textTertiary),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: List.generate(options.length, (index) {
+                final isSelected = index == selectedIndex;
+                return Padding(
+                  padding: EdgeInsets.only(right: DsSpacing.radialSpace12),
+                  child: _PreferenceChip(
+                    label: options[index],
+                    isSelected: isSelected,
+                    onTap: () {
+                      // TODO: Implement state management for selection
+                    },
+                  ),
+                );
+              }),
+            ),
+          ),
+        ],
+      );
 }
 
 class _PreferenceChip extends StatelessWidget {
@@ -224,33 +253,33 @@ class _PreferenceChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => InkWell(
-    onTap: onTap,
-    borderRadius: BorderRadius.circular(DsBorderRadius.borderRadius12),
-    child: AnimatedContainer(
-      duration: const Duration(milliseconds: 200),
-      padding: EdgeInsets.symmetric(
-        horizontal: DsSpacing.radialSpace20,
-        vertical: DsSpacing.radialSpace12,
-      ),
-      decoration: BoxDecoration(
-        color: isSelected ? DsColors.primary : DsColors.backgroundSurface,
+        onTap: onTap,
         borderRadius: BorderRadius.circular(DsBorderRadius.borderRadius12),
-        boxShadow: isSelected
-            ? [
-                BoxShadow(
-                  color: DsColors.primary.withAlpha(40),
-                  blurRadius: 10,
-                  offset: const Offset(0, 4),
-                ),
-              ]
-            : null,
-      ),
-      child: DsText.titleSmall(
-        data: label,
-        color: isSelected ? DsColors.textOnDark : DsColors.textSecondary,
-      ),
-    ),
-  );
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: EdgeInsets.symmetric(
+            horizontal: DsSpacing.radialSpace20,
+            vertical: DsSpacing.radialSpace12,
+          ),
+          decoration: BoxDecoration(
+            color: isSelected ? DsColors.primary : DsColors.backgroundSurface,
+            borderRadius: BorderRadius.circular(DsBorderRadius.borderRadius12),
+            boxShadow: isSelected
+                ? [
+                    BoxShadow(
+                      color: DsColors.primary.withAlpha(40),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ]
+                : null,
+          ),
+          child: DsText.titleSmall(
+            data: label,
+            color: isSelected ? DsColors.textOnDark : DsColors.textSecondary,
+          ),
+        ),
+      );
 }
 
 class _RecentSummariesSection extends StatelessWidget {
@@ -258,67 +287,67 @@ class _RecentSummariesSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    spacing: DsSpacing.verticalSpace16,
-    children: [
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: DsSpacing.verticalSpace16,
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Icon(
-                Icons.history_rounded,
-                color: DsColors.primary,
-                size: DsSizing.size20,
+              Row(
+                children: [
+                  Icon(
+                    Icons.history_rounded,
+                    color: DsColors.primary,
+                    size: DsSizing.size20,
+                  ),
+                  DsSpacing.horizontalSpaceSizedBox8,
+                  const DsText.titleLarge(
+                    data: 'Recent Summaries',
+                    color: DsColors.textPrimary,
+                  ),
+                ],
               ),
-              DsSpacing.horizontalSpaceSizedBox8,
-              const DsText.titleLarge(
-                data: 'Recent Summaries',
-                color: DsColors.textPrimary,
-              ),
+              const DsText.titleSmall(data: 'View All', color: DsColors.primary),
             ],
           ),
-          const DsText.titleSmall(data: 'View All', color: DsColors.primary),
-        ],
-      ),
-      ListView.separated(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: 3,
-        separatorBuilder: (_, __) => DsSpacing.verticalSpaceSizedBox12,
-        itemBuilder: (context, index) {
-          final List<Map<String, dynamic>> mockData = [
-            {
-              'name': 'Project_Alpha_Spec.pdf',
-              'date': 'Oct 24, 2023',
-              'version': 'V3',
-              'type': 'pdf',
-            },
-            {
-              'name': 'Annual_Market_Analysis.do...',
-              'date': 'Oct 22, 2023',
-              'version': 'V1',
-              'type': 'doc',
-            },
-            {
-              'name': 'Meeting_Notes_Sales.txt',
-              'date': 'Oct 21, 2023',
-              'version': 'V2',
-              'type': 'txt',
-            },
-          ];
-          final item = mockData[index];
+          ListView.separated(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: 3,
+            separatorBuilder: (_, _) => DsSpacing.verticalSpaceSizedBox12,
+            itemBuilder: (context, index) {
+              final List<Map<String, dynamic>> mockData = [
+                {
+                  'name': 'Project_Alpha_Spec.pdf',
+                  'date': 'Oct 24, 2023',
+                  'version': 'V3',
+                  'type': 'pdf',
+                },
+                {
+                  'name': 'Annual_Market_Analysis.do...',
+                  'date': 'Oct 22, 2023',
+                  'version': 'V1',
+                  'type': 'doc',
+                },
+                {
+                  'name': 'Meeting_Notes_Sales.txt',
+                  'date': 'Oct 21, 2023',
+                  'version': 'V2',
+                  'type': 'txt',
+                },
+              ];
+              final item = mockData[index];
 
-          return _SummaryCard(
-            fileName: item['name'],
-            date: item['date'],
-            version: item['version'],
-            fileType: item['type'],
-          );
-        },
-      ),
-    ],
-  );
+              return _SummaryCard(
+                fileName: item['name'],
+                date: item['date'],
+                version: item['version'],
+                fileType: item['type'],
+              );
+            },
+          ),
+        ],
+      );
 }
 
 class _SummaryCard extends StatelessWidget {
@@ -336,34 +365,35 @@ class _SummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => DsListTile(
-    onTap: () {},
-    backgroundColor: DsColors.backgroundPrimary,
-    borderRadius: BorderRadius.circular(DsBorderRadius.borderRadius20),
-    borderColor: DsColors.borderSubtle,
-    borderWidth: DsBorderWidth.borderWidth1,
-    leading: _FileIcon(fileType: fileType),
-    title: ListTileTitleMedium(data: fileName),
-    subtitle: ListTileSubTitleRich(
-      richText: RichText(
-        text: TextSpan(
-          style: DsTextStyle.bodySmall.copyWith(color: DsColors.textSecondary),
-          children: [
-            TextSpan(text: date),
-            const TextSpan(text: '  •  '),
-            WidgetSpan(
-              alignment: PlaceholderAlignment.middle,
-              child: _VersionBadge(version: version),
+        onTap: () {},
+        backgroundColor: DsColors.backgroundPrimary,
+        borderRadius: BorderRadius.circular(DsBorderRadius.borderRadius20),
+        borderColor: DsColors.borderSubtle,
+        borderWidth: DsBorderWidth.borderWidth1,
+        leading: _FileIcon(fileType: fileType),
+        title: ListTileTitleMedium(data: fileName),
+        subtitle: ListTileSubTitleRich(
+          richText: RichText(
+            text: TextSpan(
+              style:
+                  DsTextStyle.bodySmall.copyWith(color: DsColors.textSecondary),
+              children: [
+                TextSpan(text: date),
+                const TextSpan(text: '  •  '),
+                WidgetSpan(
+                  alignment: PlaceholderAlignment.middle,
+                  child: _VersionBadge(version: version),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
-      ),
-    ),
-    trailing: Icon(
-      Icons.chevron_right_rounded,
-      color: DsColors.iconDisabled,
-      size: DsSizing.size24,
-    ),
-  );
+        trailing: Icon(
+          Icons.chevron_right_rounded,
+          color: DsColors.iconDisabled,
+          size: DsSizing.size24,
+        ),
+      );
 }
 
 class _FileIcon extends StatelessWidget {
@@ -375,15 +405,15 @@ class _FileIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     final (bgColor, iconColor, icon) = switch (fileType) {
       'pdf' => (
-        const Color(0xFFFFEBEE),
-        const Color(0xFFD32F2F),
-        Icons.picture_as_pdf_rounded,
-      ),
+          const Color(0xFFFFEBEE),
+          const Color(0xFFD32F2F),
+          Icons.picture_as_pdf_rounded,
+        ),
       'doc' => (
-        const Color(0xFFE3F2FD),
-        const Color(0xFF1976D2),
-        Icons.description_rounded,
-      ),
+          const Color(0xFFE3F2FD),
+          const Color(0xFF1976D2),
+          Icons.description_rounded,
+        ),
       _ => (DsColors.backgroundSubtle, DsColors.primary, Icons.article_rounded),
     };
 
@@ -407,16 +437,16 @@ class _VersionBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => DecoratedBox(
-    decoration: BoxDecoration(
-      color: DsColors.backgroundSubtle,
-      borderRadius: BorderRadius.circular(DsBorderRadius.borderRadius4),
-    ),
-    child: Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: DsSpacing.radialSpace8,
-        vertical: DsSpacing.radialSpace2,
-      ),
-      child: DsText.labelSmall(data: version, color: DsColors.primary),
-    ),
-  );
+        decoration: BoxDecoration(
+          color: DsColors.backgroundSubtle,
+          borderRadius: BorderRadius.circular(DsBorderRadius.borderRadius4),
+        ),
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: DsSpacing.radialSpace8,
+            vertical: DsSpacing.radialSpace2,
+          ),
+          child: DsText.labelSmall(data: version, color: DsColors.primary),
+        ),
+      );
 }
