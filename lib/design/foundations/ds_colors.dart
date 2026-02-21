@@ -235,4 +235,9 @@ abstract class DsColors {
   static const Color gradientEnd = _BaseColors.purple800;
 
   static const Color loadingIndicatorColorPrimary = primary;
+
+  static const Color documentDocxBackgroundColor = _BaseColors.blue100;
+  static const Color documentPdfBackgroundColor = _BaseColors.red100;
+  static const Color documentPdfIconColor = _BaseColors.red700;
+  static const Color documentDocxIconColor = _BaseColors.blue500;
 }

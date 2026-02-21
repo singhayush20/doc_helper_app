@@ -8,14 +8,9 @@ sealed class DocSummarizerState extends BaseState with _$DocSummarizerState {
     required DocSummarizerStateStore store,
   }) = Initial;
 
-  const factory DocSummarizerState.invalidateLoader({
+  const factory DocSummarizerState.onDocumentDataFetch({
     required DocSummarizerStateStore store,
-  }) = InvalidateLoader;
-
-  const factory DocSummarizerState.onException({
-    required DocSummarizerStateStore store,
-    required Exception exception,
-  }) = OnException;
+  }) = OnDocumentDataFetch;
 
   const factory DocSummarizerState.onUploadProgress({
     required DocSummarizerStateStore store,
@@ -28,6 +23,23 @@ sealed class DocSummarizerState extends BaseState with _$DocSummarizerState {
   const factory DocSummarizerState.onValidationError({
     required DocSummarizerStateStore store,
   }) = OnValidationError;
+
+  const factory DocSummarizerState.onViewAllPress({
+    required DocSummarizerStateStore store,
+  }) = OnViewAllPress;
+
+  const factory DocSummarizerState.invalidateLoader({
+    required DocSummarizerStateStore store,
+  }) = InvalidateLoader;
+
+  const factory DocSummarizerState.onException({
+    required DocSummarizerStateStore store,
+    required Exception exception,
+  }) = OnException;
+
+  const factory DocSummarizerState.onPreferenceChanged({
+    required DocSummarizerStateStore store,
+  }) = OnPreferenceChanged;
 
   @override
   BaseState getExceptionState(Exception exception) =>
@@ -50,6 +62,8 @@ sealed class DocSummarizerStateStore with _$DocSummarizerStateStore {
     @Default(false) bool uploading,
     String? uploadProgressMessage,
     String? validationErrorMessage,
-    DocumentUploadResponse? uploadResponse,
+    DocumentListResponse? documentsInfo,
+    @Default(SummaryTone.professional) SummaryTone selectedTone,
+    @Default(SummaryLength.medium) SummaryLength selectedLength,
   }) = _DocSummarizerStateStore;
 }

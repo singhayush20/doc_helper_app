@@ -116,7 +116,7 @@ abstract class RetrofitApiClient {
     @Query('componentType') String componentType,
   );
 
-  @POST('/api/v1/document/upload')
+  @POST('/api/v1/documents/upload')
   @MultiPart()
   Future<HttpResponse> uploadDocument(@Part() MultipartFile file);
 
@@ -125,4 +125,7 @@ abstract class RetrofitApiClient {
 
   @GET('/api/v1/summarizer/documents/{documentId}')
   Future<HttpResponse> getDocumentSummaries(@Path('documentId') int documentId);
+
+  @GET('/api/v1/documents/')
+  Future<HttpResponse> getDocuments();
 }

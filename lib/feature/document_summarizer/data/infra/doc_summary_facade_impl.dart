@@ -4,7 +4,7 @@ import 'package:doc_helper_app/core/exception_handling/server_exception.dart';
 import 'package:doc_helper_app/core/network/api_call_handler.dart';
 import 'package:doc_helper_app/core/network/retrofit_api_client.dart';
 import 'package:doc_helper_app/feature/document_summarizer/data/models/doc_summary_dto.dart';
-import 'package:doc_helper_app/feature/document_summarizer/data/models/dto_to_entity_mapper.dart';
+import 'package:doc_helper_app/feature/document_summarizer/data/models/doc_summary_dto_to_entity_mapper.dart';
 import 'package:doc_helper_app/feature/document_summarizer/domain/entities/doc_summary_entity.dart';
 import 'package:doc_helper_app/feature/document_summarizer/domain/interface/i_doc_summary_facade.dart';
 import 'package:injectable/injectable.dart';
@@ -17,18 +17,18 @@ class DocSummaryFacadeImpl implements IDocSummaryFacade {
   final ApiCallHandler _apiCallHandler;
 
   @override
-  Future<Either<ServerException, DocumentUploadResponse>> uploadDocument(
+  Future<Either<ServerException, DocumentDetails>> uploadDocument(
     MultipartFile file,
   ) async {
     final responseOrError = await _apiCallHandler.handleApi(
-      _apiClient.uploadDoc,
+      _apiClient.uploadDocument,
       [file],
     );
 
     return responseOrError.fold(
       (error) => left(error),
       (response) => right(
-        DocumentUploadResponseDto.fromJson(
+        DocumentDetailsDto.fromJson(
           response.data as Map<String, dynamic>,
         ).toDomain(),
       ),
@@ -67,6 +67,22 @@ class DocSummaryFacadeImpl implements IDocSummaryFacade {
       (error) => left(error),
       (response) => right(
         SummaryListResponseDto.fromJson(
+          response.data as Map<String, dynamic>,
+        ).toDomain(),
+      ),
+    );
+  }
+
+  @override
+  Future<Either<ServerException, DocumentListResponse>> getDocuments() async {
+    final responseOrError = await _apiCallHandler.handleApi(
+      _apiClient.getDocuments,
+    );
+
+    return responseOrError.fold(
+      (error) => left(error),
+      (response) => right(
+        DocumentListResponseDto.fromJson(
           response.data as Map<String, dynamic>,
         ).toDomain(),
       ),

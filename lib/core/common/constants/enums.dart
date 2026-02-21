@@ -6,5 +6,13 @@ enum ServerExceptionType {
   badRequest,
   connectionTimeout,
   signInFailure,
-  sseError, fileUploadError,
+  sseError,
+  fileUploadError,
+}
+
+enum FileType {
+  pdf,
+  doc,
+  txt,
+  unknown,
 }

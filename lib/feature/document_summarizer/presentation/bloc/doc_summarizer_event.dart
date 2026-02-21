@@ -7,4 +7,12 @@ sealed class DocSummarizerEvent extends BaseEvent with _$DocSummarizerEvent {
   const factory DocSummarizerEvent.started() = _Started;
 
   const factory DocSummarizerEvent.uploadDocument() = _UploadDocument;
+
+  const factory DocSummarizerEvent.onViewAllPressed() = _OnViewAllPressed;
+
+  const factory DocSummarizerEvent.summaryToneChanged(SummaryTone tone) =
+      _SummaryToneChanged;
+
+  const factory DocSummarizerEvent.summaryLengthChanged(SummaryLength length) =
+      _SummaryLengthChanged;
 }

@@ -1,3 +1,4 @@
+import 'package:doc_helper_app/core/common/constants/enums.dart';
 import 'package:doc_helper_app/core/router/router.dart';
 import 'package:doc_helper_app/design/molecules/bottomsheet/ds_bottom_sheet.dart';
 import 'package:doc_helper_app/design/molecules/dialog/ds_dialog.dart';
@@ -97,4 +98,21 @@ Future<void> handleComponentAction({
   } else {
     return Future.value();
   }
+}
+
+FileType getFileType({
+  required String? fileName,
+}) {
+  if (fileName == null || fileName.isEmpty) {
+    return FileType.unknown;
+  }
+
+  final extension = fileName.split('.').last.toLowerCase();
+
+  return switch (extension) {
+    'pdf' => FileType.pdf,
+    'doc' || 'docx' => FileType.doc,
+    'txt' => FileType.txt,
+    _ => FileType.unknown,
+  };
 }

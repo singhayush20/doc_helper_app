@@ -5,12 +5,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'doc_summary_entity.freezed.dart';
 
 @liteFreezed
-abstract class DocumentUploadResponse with _$DocumentUploadResponse {
-  const factory DocumentUploadResponse({final int? documentId}) =
-      _DocumentUploadResponse;
-}
-
-@liteFreezed
 abstract class SummaryCreateResponse with _$SummaryCreateResponse {
   const factory SummaryCreateResponse({
     final int? summaryId,
@@ -39,4 +33,20 @@ abstract class SummaryMetadata with _$SummaryMetadata {
     final String? content,
     final DateTime? createdAt,
   }) = _SummaryMetadata;
+}
+
+@liteFreezed
+abstract class DocumentListResponse with _$DocumentListResponse {
+  const factory DocumentListResponse({final List<DocumentDetails>? documents}) =
+      _DocumentListResponse;
+}
+
+@liteFreezed
+abstract class DocumentDetails with _$DocumentDetails {
+  const factory DocumentDetails({
+    final int? documentId,
+    final String? fileName,
+    final String? originalFilename,
+    final DateTime? createdAt,
+  }) = _DocumentDetails;
 }

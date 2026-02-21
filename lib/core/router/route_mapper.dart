@@ -10,6 +10,7 @@ abstract class Routes {
   static const String payment = 'payment_gateway';
   static const String docSummarizer = 'summarizer';
   static const String summary = 'summary';
+  static const String summaryHistory = 'summary_history';
 
   // Shell routes
   static const String shell = 'shell';
