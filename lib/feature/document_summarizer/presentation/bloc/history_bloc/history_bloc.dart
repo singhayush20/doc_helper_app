@@ -11,13 +11,15 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
 part 'history_event.dart';
+
 part 'history_state.dart';
+
 part 'history_bloc.freezed.dart';
 
 @injectable
 class HistoryBloc extends BaseBloc<HistoryEvent, HistoryState> {
   HistoryBloc(this._docSummaryFacade)
-      : super(const HistoryState.initial(store: HistoryStateStore()));
+    : super(const HistoryState.initial(store: HistoryStateStore()));
 
   final IDocSummaryFacade _docSummaryFacade;
 
@@ -26,6 +28,7 @@ class HistoryBloc extends BaseBloc<HistoryEvent, HistoryState> {
     on<_Started>(_onStarted);
     on<_SearchQueryChanged>(_onSearchQueryChanged);
     on<_OnPageRefreshed>(_onPageRefreshed);
+    on<_OnDocumentPressed>(_onDocumentPressed);
   }
 
   Future<void> _onStarted(_Started event, Emitter<HistoryState> emit) async {
@@ -80,6 +83,20 @@ class HistoryBloc extends BaseBloc<HistoryEvent, HistoryState> {
     );
   }
 
+  void _onDocumentPressed(
+    _OnDocumentPressed event,
+    Emitter<HistoryState> emit,
+  ) {
+    final documentId = event.documentId;
+    invalidateLoader(emit, loading: true);
+    emit(
+      HistoryState.onDocumentPress(
+        store: state.store.copyWith(loading: false),
+        documentId: documentId,
+      ),
+    );
+  }
+
   @override
   void started({Map<String, dynamic>? args}) {
     add(const HistoryEvent.started());
@@ -91,5 +108,9 @@ class HistoryBloc extends BaseBloc<HistoryEvent, HistoryState> {
 
   void onPageRefreshed() {
     add(const HistoryEvent.onPageRefreshed());
+  }
+
+  void onDocumentPressed({required int? documentId}) {
+    add(HistoryEvent.onDocumentPressed(documentId: documentId));
   }
 }

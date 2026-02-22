@@ -19,10 +19,13 @@ class DsDialog extends StatelessWidget {
     this.title,
     this.description,
     this.onPrimaryButtonTap,
+    this.primaryButtonLeadingIcon,
     this.secondaryButtonText,
     this.onSecondaryButtonTap,
     this.showCloseButton = true,
     this.dismissible = true,
+    this.content,
+    this.secondaryAction,
   });
 
   final String? imageKey;
@@ -32,13 +35,16 @@ class DsDialog extends StatelessWidget {
   final String? title;
   final String? description;
   final String primaryButtonText;
+  final IconData? primaryButtonLeadingIcon;
   final VoidCallback? onPrimaryButtonTap;
   final String? secondaryButtonText;
   final VoidCallback? onSecondaryButtonTap;
   final bool showCloseButton;
   final bool dismissible;
+  final Widget? content;
+  final Widget? secondaryAction;
 
-  static Future<void> showDialog({
+  static Future<T?> showDialog<T>({
     required BuildContext context,
     required String primaryButtonText,
     String? imageKey,
@@ -48,98 +54,128 @@ class DsDialog extends StatelessWidget {
     String? title,
     String? description,
     VoidCallback? onPrimaryButtonTap,
+    IconData? primaryButtonLeadingIcon,
     String? secondaryButtonText,
     VoidCallback? onSecondaryButtonTap,
     bool showCloseButton = true,
     bool dismissible = true,
-  }) => showGeneralDialog(
-    context: context,
-    barrierDismissible: dismissible,
-    barrierLabel: '',
-    pageBuilder: (context, animation, secondaryAnimation) => DsDialog(
-      imageKey: imageKey,
-      icon: icon,
-      iconColor: iconColor,
-      showDefaultIcon: showDefaultIcon,
-      title: title,
-      description: description,
-      primaryButtonText: primaryButtonText,
-      onPrimaryButtonTap: onPrimaryButtonTap,
-      secondaryButtonText: secondaryButtonText,
-      onSecondaryButtonTap: onSecondaryButtonTap,
-      showCloseButton: showCloseButton,
-      dismissible: dismissible,
-    ),
-  );
+    Widget? content,
+    Widget? secondaryAction,
+  }) =>
+      showGeneralDialog<T>(
+        context: context,
+        barrierDismissible: dismissible,
+        barrierLabel: '',
+        pageBuilder: (context, animation, secondaryAnimation) => DsDialog(
+          imageKey: imageKey,
+          icon: icon,
+          iconColor: iconColor,
+          showDefaultIcon: showDefaultIcon,
+          title: title,
+          description: description,
+          primaryButtonText: primaryButtonText,
+          primaryButtonLeadingIcon: primaryButtonLeadingIcon,
+          onPrimaryButtonTap: onPrimaryButtonTap,
+          secondaryButtonText: secondaryButtonText,
+          onSecondaryButtonTap: onSecondaryButtonTap,
+          showCloseButton: showCloseButton,
+          dismissible: dismissible,
+          content: content,
+          secondaryAction: secondaryAction,
+        ),
+      );
 
   @override
   Widget build(BuildContext context) => PopScope(
-    canPop: dismissible,
-    child: Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(DsBorderRadius.borderRadius12),
-      ),
-      backgroundColor: DsColors.backgroundPrimary,
-      child: Stack(
-        children: [
-          Padding(
-            padding: EdgeInsets.all(DsSpacing.radialSpace24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (showDefaultIcon) ...[
-                  Icon(Icons.info_outline_sharp, size: DsSizing.size24),
-                  DsSpacing.verticalSpaceSizedBox24,
-                ] else if (icon != null) ...[
-                  Icon(icon, size: DsSizing.size24),
-                  DsSpacing.verticalSpaceSizedBox24,
-                ] else if (imageKey != null) ...[
-                  DsImage(mediaUrl: imageKey!),
-                  DsSpacing.verticalSpaceSizedBox24,
-                ],
-                if (title != null) ...[
-                  DsText.titleLarge(data: title!),
-                  DsSpacing.verticalSpaceSizedBox8,
-                ],
-                if (description != null) ...[
-                  DsText.bodyMedium(
-                    data: description!,
-                    textAlign: TextAlign.center,
-                  ),
-                  DsSpacing.verticalSpaceSizedBox24,
-                ],
-                DsButton.primary(
-                  data: primaryButtonText,
-                  onTap: () {
-                    onPrimaryButtonTap?.call();
-                    GoRouter.of(context).pop();
-                  },
-                ),
-                if (secondaryButtonText != null &&
-                    onSecondaryButtonTap != null) ...[
-                  DsSpacing.verticalSpaceSizedBox12,
-                  DsButton.secondary(
-                    data: secondaryButtonText!,
-                    onTap: () {
-                      onSecondaryButtonTap?.call();
-                      GoRouter.of(context).pop();
-                    },
-                  ),
-                ],
-              ],
-            ),
+        canPop: dismissible,
+        child: Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(DsBorderRadius.borderRadius12),
           ),
-          if (showCloseButton)
-            Positioned(
-              top: DsSpacing.radialSpace8,
-              right: DsSpacing.radialSpace8,
-              child: IconButton(
-                icon: const Icon(Icons.close),
-                onPressed: () => GoRouter.of(context).pop(),
+          backgroundColor: DsColors.backgroundPrimary,
+          child: Stack(
+            children: [
+              Padding(
+                padding: EdgeInsets.all(DsSpacing.radialSpace24),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (showDefaultIcon) ...[
+                      Icon(Icons.info_outline_sharp, size: DsSizing.size24),
+                      DsSpacing.verticalSpaceSizedBox24,
+                    ] else if (icon != null) ...[
+                      Icon(icon, size: DsSizing.size24),
+                      DsSpacing.verticalSpaceSizedBox24,
+                    ] else if (imageKey != null) ...[
+                      DsImage(mediaUrl: imageKey!),
+                      DsSpacing.verticalSpaceSizedBox24,
+                    ],
+                    if (title != null) ...[
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: DsText.titleLarge(data: title!),
+                      ),
+                      DsSpacing.verticalSpaceSizedBox8,
+                    ],
+                    if (description != null) ...[
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: DsText.bodyMedium(
+                          data: description!,
+                          color: DsColors.textTertiary,
+                        ),
+                      ),
+                      DsSpacing.verticalSpaceSizedBox24,
+                    ],
+                    if (content != null) ...[
+                      content!,
+                      DsSpacing.verticalSpaceSizedBox24,
+                    ],
+                    SizedBox(
+                      width: double.infinity,
+                      child: DsButton.primary(
+                        data: primaryButtonText,
+                        leadingIcon: primaryButtonLeadingIcon,
+                        onTap: () {
+                          onPrimaryButtonTap?.call();
+                          GoRouter.of(context).pop();
+                        },
+                      ),
+                    ),
+                    if (secondaryAction != null) ...[
+                      DsSpacing.verticalSpaceSizedBox12,
+                      secondaryAction!,
+                    ] else if (secondaryButtonText != null &&
+                        onSecondaryButtonTap != null) ...[
+                      DsSpacing.verticalSpaceSizedBox12,
+                      SizedBox(
+                        width: double.infinity,
+                        child: DsButton.secondary(
+                          data: secondaryButtonText!,
+                          onTap: () {
+                            onSecondaryButtonTap?.call();
+                            GoRouter.of(context).pop();
+                          },
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
               ),
-            ),
-        ],
-      ),
-    ),
-  );
+              if (showCloseButton)
+                Positioned(
+                  top: DsSpacing.radialSpace8,
+                  right: DsSpacing.radialSpace8,
+                  child: IconButton(
+                    icon: const Icon(
+                      Icons.close,
+                      color: DsColors.iconSecondary,
+                    ),
+                    onPressed: () => GoRouter.of(context).pop(),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      );
 }

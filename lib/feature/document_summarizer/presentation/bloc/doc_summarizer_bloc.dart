@@ -4,7 +4,6 @@ import 'package:dio/dio.dart';
 import 'package:doc_helper_app/core/common/base_bloc/base_bloc.dart';
 import 'package:doc_helper_app/core/common/base_bloc/base_event.dart';
 import 'package:doc_helper_app/core/common/base_bloc/base_state.dart';
-import 'package:doc_helper_app/core/common/constants/app_constants.dart';
 import 'package:doc_helper_app/core/common/utils/app_utils.dart';
 import 'package:doc_helper_app/feature/document_summarizer/domain/entities/doc_summary_entity.dart';
 import 'package:doc_helper_app/feature/document_summarizer/domain/entities/doc_summary_enums.dart';
@@ -36,6 +35,7 @@ class DocSummarizerBloc
     on<_OnViewAllPressed>(_onViewAllPressed);
     on<_SummaryToneChanged>(_onSummaryToneChanged);
     on<_SummaryLengthChanged>(_onSummaryLengthChanged);
+    on<_OnDocumentPressed>(_onDocumentPressed);
   }
 
   Future<void> _onStarted(
@@ -143,6 +143,20 @@ class DocSummarizerBloc
     );
   }
 
+  void _onDocumentPressed(
+    _OnDocumentPressed event,
+    Emitter<DocSummarizerState> emit,
+  ) {
+    invalidateLoader(emit, loading: true);
+    final documentId = event.documentId;
+    emit(
+      DocSummarizerState.onDocumentPress(
+        store: state.store.copyWith(loading: false),
+        documentId: documentId,
+      ),
+    );
+  }
+
   @override
   void started({Map<String, dynamic>? args}) {
     add(const DocSummarizerEvent.started());
@@ -158,5 +172,9 @@ class DocSummarizerBloc
 
   void onSummaryLengthChanged(SummaryLength length) {
     add(DocSummarizerEvent.summaryLengthChanged(length));
+  }
+
+  void onDocumentPressed({required int? documentId}) {
+    add(DocSummarizerEvent.onDocumentPressed(documentId: documentId));
   }
 }

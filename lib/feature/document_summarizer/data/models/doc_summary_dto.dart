@@ -3,42 +3,18 @@ import 'package:json_annotation/json_annotation.dart';
 part 'doc_summary_dto.g.dart';
 
 @JsonSerializable()
-class SummaryCreateResponseDto {
-  const SummaryCreateResponseDto({
-    this.summaryId,
-    this.version,
-    this.tokensUsed,
-    this.content,
-    this.wordCount,
-  });
-
-  factory SummaryCreateResponseDto.fromJson(Map<String, dynamic> json) =>
-      _$SummaryCreateResponseDtoFromJson(json);
-
-  Map<String, dynamic> toJson() => _$SummaryCreateResponseDtoToJson(this);
-
-  final int? summaryId;
-  final int? version;
-  final int? tokensUsed;
-  final String? content;
-  final int? wordCount;
-}
-
-@JsonSerializable()
 class SummaryListResponseDto {
   const SummaryListResponseDto({this.summaries});
 
   factory SummaryListResponseDto.fromJson(Map<String, dynamic> json) =>
       _$SummaryListResponseDtoFromJson(json);
 
-  Map<String, dynamic> toJson() => _$SummaryListResponseDtoToJson(this);
-
-  final List<SummaryMetadataDto>? summaries;
+  final List<SummaryInfoDto>? summaries;
 }
 
 @JsonSerializable()
-class SummaryMetadataDto {
-  const SummaryMetadataDto({
+class SummaryInfoDto {
+  const SummaryInfoDto({
     this.summaryId,
     this.version,
     this.tone,
@@ -49,10 +25,8 @@ class SummaryMetadataDto {
     this.createdAt,
   });
 
-  factory SummaryMetadataDto.fromJson(Map<String, dynamic> json) =>
-      _$SummaryMetadataDtoFromJson(json);
-
-  Map<String, dynamic> toJson() => _$SummaryMetadataDtoToJson(this);
+  factory SummaryInfoDto.fromJson(Map<String, dynamic> json) =>
+      _$SummaryInfoDtoFromJson(json);
 
   final int? summaryId;
   final int? version;
@@ -71,8 +45,6 @@ class DocumentListResponseDto {
   factory DocumentListResponseDto.fromJson(Map<String, dynamic> json) =>
       _$DocumentListResponseDtoFromJson(json);
 
-  Map<String, dynamic> toJson() => _$DocumentListResponseDtoToJson(this);
-
   final List<DocumentDetailsDto>? documents;
 }
 
@@ -88,10 +60,26 @@ class DocumentDetailsDto {
   factory DocumentDetailsDto.fromJson(Map<String, dynamic> json) =>
       _$DocumentDetailsDtoFromJson(json);
 
-  Map<String, dynamic> toJson() => _$DocumentDetailsDtoToJson(this);
-
   final int? documentId;
   final String? fileName;
   final String? originalFilename;
   final DateTime? createdAt;
+}
+
+@JsonSerializable()
+class DocumentSummaryRequestDto {
+  const DocumentSummaryRequestDto({
+    this.documentId,
+    this.tone,
+    this.length,
+  });
+
+  factory DocumentSummaryRequestDto.fromJson(Map<String, dynamic> json) =>
+      _$DocumentSummaryRequestDtoFromJson(json);
+
+  Map<String, dynamic> toJson() => _$DocumentSummaryRequestDtoToJson(this);
+
+  final int? documentId;
+  final String? tone;
+  final String? length;
 }

@@ -20,6 +20,11 @@ sealed class DocSummarizerState extends BaseState with _$DocSummarizerState {
     required DocSummarizerStateStore store,
   }) = OnUploadSuccess;
 
+  const factory DocSummarizerState.onDocumentPress({
+    required DocSummarizerStateStore store,
+    required int? documentId,
+  }) = OnDocumentPress;
+
   const factory DocSummarizerState.onValidationError({
     required DocSummarizerStateStore store,
   }) = OnValidationError;

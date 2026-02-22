@@ -44,11 +44,15 @@ class DocSummarizerPage extends StatelessWidget {
         OnUploadSuccess(:final store) => context.pushNamed(
           Routes.summary,
           queryParameters: {
-            AppConstants.summaryLength: store.selectedLength,
-            AppConstants.summaryTone: store.selectedTone,
+            AppConstants.summaryLength: store.selectedLength.name,
+            AppConstants.summaryTone: store.selectedTone.name,
             AppConstants.documentId:
-                store.documentsInfo?.documents?[0].documentId,
+                store.documentsInfo?.documents?[0].documentId?.toString(),
           },
+        ),
+        OnDocumentPress(:final documentId) => context.pushNamed(
+          Routes.summary,
+          queryParameters: {AppConstants.documentId: documentId?.toString()},
         ),
         OnViewAllPress _ => context.pushNamed(Routes.summaryHistory),
         OnException(:final exception) => handleException(exception, context),

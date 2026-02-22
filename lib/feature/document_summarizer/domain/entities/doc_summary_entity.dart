@@ -5,25 +5,13 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'doc_summary_entity.freezed.dart';
 
 @liteFreezed
-abstract class SummaryCreateResponse with _$SummaryCreateResponse {
-  const factory SummaryCreateResponse({
-    final int? summaryId,
-    final int? version,
-    final int? tokensUsed,
-    final String? content,
-    final int? wordCount,
-  }) = _SummaryCreateResponse;
-}
-
-@liteFreezed
 abstract class SummaryListResponse with _$SummaryListResponse {
-  const factory SummaryListResponse({final List<SummaryMetadata>? summaries}) =
+  const factory SummaryListResponse({final List<SummaryInfo>? summaries}) =
       _SummaryListResponse;
 }
-
 @liteFreezed
-abstract class SummaryMetadata with _$SummaryMetadata {
-  const factory SummaryMetadata({
+abstract class SummaryInfo with _$SummaryInfo {
+  const factory SummaryInfo({
     final int? summaryId,
     final int? version,
     final SummaryTone? tone,
@@ -32,7 +20,7 @@ abstract class SummaryMetadata with _$SummaryMetadata {
     final int? wordCount,
     final String? content,
     final DateTime? createdAt,
-  }) = _SummaryMetadata;
+  }) = _SummaryInfo;
 }
 
 @liteFreezed

@@ -3,18 +3,8 @@ import 'package:doc_helper_app/feature/document_summarizer/data/models/doc_summa
 import 'package:doc_helper_app/feature/document_summarizer/domain/entities/doc_summary_entity.dart';
 import 'package:doc_helper_app/feature/document_summarizer/domain/entities/doc_summary_enums.dart';
 
-extension SummaryCreateResponseDtoX on SummaryCreateResponseDto {
-  SummaryCreateResponse toDomain() => SummaryCreateResponse(
-    summaryId: summaryId,
-    version: version,
-    tokensUsed: tokensUsed,
-    content: content,
-    wordCount: wordCount,
-  );
-}
-
-extension SummaryMetadataDtoX on SummaryMetadataDto {
-  SummaryMetadata toDomain() => SummaryMetadata(
+extension SummaryMetadataDtoX on SummaryInfoDto {
+  SummaryInfo toDomain() => SummaryInfo(
     summaryId: summaryId,
     version: version,
     tone: SummaryTone.values.by(tone),

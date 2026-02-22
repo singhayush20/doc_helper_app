@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:doc_helper_app/feature/auth/data/models/auth_dto.dart';
 import 'package:doc_helper_app/feature/billing/data/models/billing_dto.dart';
 import 'package:doc_helper_app/feature/chat/data/models/chat_dto.dart';
+import 'package:doc_helper_app/feature/document_summarizer/data/models/doc_summary_dto.dart';
 import 'package:doc_helper_app/feature/user/data/models/user_dto.dart';
 import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';
@@ -120,8 +121,10 @@ abstract class RetrofitApiClient {
   @MultiPart()
   Future<HttpResponse> uploadDocument(@Part() MultipartFile file);
 
-  @POST('/api/v1/summarizer/documents/{documentId}')
-  Future<HttpResponse> summarizeDocument(@Path('documentId') int documentId);
+  @POST('/api/v1/summarizer/documents')
+  Future<HttpResponse> summarizeDocument(
+    @Body() DocumentSummaryRequestDto documentSummaryRequestDto,
+  );
 
   @GET('/api/v1/summarizer/documents/{documentId}')
   Future<HttpResponse> getDocumentSummaries(@Path('documentId') int documentId);

@@ -15,4 +15,8 @@ sealed class DocSummarizerEvent extends BaseEvent with _$DocSummarizerEvent {
 
   const factory DocSummarizerEvent.summaryLengthChanged(SummaryLength length) =
       _SummaryLengthChanged;
+
+  const factory DocSummarizerEvent.onDocumentPressed({
+    required int? documentId,
+  }) = _OnDocumentPressed;
 }

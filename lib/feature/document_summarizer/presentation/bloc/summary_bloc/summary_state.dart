@@ -11,6 +11,10 @@ sealed class SummaryState extends BaseState with _$SummaryState {
     required SummaryStateStore store,
   }) = OnSummaryDataFetch;
 
+  const factory SummaryState.onSummaryIndexChanged({
+    required SummaryStateStore store,
+  }) = OnSummaryIndexChanged;
+
   const factory SummaryState.invalidateLoader({
     required SummaryStateStore store,
   }) = InvalidateLoader;
@@ -23,6 +27,10 @@ sealed class SummaryState extends BaseState with _$SummaryState {
   const factory SummaryState.onValidationError({
     required SummaryStateStore store,
   }) = OnValidationError;
+
+  const factory SummaryState.onShowSummarySettingsDialog({
+    required SummaryStateStore store,
+  }) = OnShowSummarySettingsDialog;
 
   @override
   BaseState getExceptionState(Exception exception) => SummaryState.onException(
@@ -38,7 +46,9 @@ sealed class SummaryState extends BaseState with _$SummaryState {
 @liteFreezed
 sealed class SummaryStateStore with _$SummaryStateStore {
   const factory SummaryStateStore({
-    final SummaryListResponse? docSummaries,
-    @Default(false) bool loading}) =
-      _SummaryStateStore;
+    int? documentId,
+    int? currentSummaryIndex,
+    final List<SummaryInfo>? docSummaries,
+    @Default(false) bool loading,
+  }) = _SummaryStateStore;
 }

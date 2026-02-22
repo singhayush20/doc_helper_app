@@ -190,8 +190,7 @@ class _PreferencesSection extends StatelessWidget {
           PreferenceToggleGroup<SummaryTone>(
             label: 'SUMMARY TONE',
             options: SummaryTone.values,
-            selectedOption:
-                state.store.selectedTone,
+            selectedOption: state.store.selectedTone,
             onSelected: (tone) => bloc.onSummaryToneChanged(tone),
           ),
           PreferenceToggleGroup<SummaryLength>(
@@ -269,6 +268,7 @@ class _RecentSummariesSection extends StatelessWidget {
                       itemBuilder: (context, index) {
                         final doc = documents[index];
                         return _SummaryCard(
+                          id: doc.documentId,
                           fileName: doc.originalFilename ?? 'Unknown',
                           fileType: getFileType(fileName: doc.fileName),
                           date: getTimeAgo(doc.createdAt),
@@ -331,18 +331,21 @@ class _RecentSummariesShimmer extends StatelessWidget {
 
 class _SummaryCard extends StatelessWidget {
   const _SummaryCard({
+    required this.id,
     required this.fileName,
     required this.date,
     required this.fileType,
   });
 
+  final int? id;
   final String fileName;
   final String date;
   final FileType fileType;
 
   @override
   Widget build(BuildContext context) => DsListTile(
-    onTap: () {},
+    onTap: () =>
+        getBloc<DocSummarizerBloc>(context).onDocumentPressed(documentId: id),
     backgroundColor: DsColors.backgroundPrimary,
     borderRadius: BorderRadius.circular(DsBorderRadius.borderRadius20),
     borderColor: DsColors.borderSubtle,

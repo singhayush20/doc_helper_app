@@ -10,4 +10,7 @@ sealed class HistoryEvent extends BaseEvent with _$HistoryEvent {
       _SearchQueryChanged;
 
   const factory HistoryEvent.onPageRefreshed() = _OnPageRefreshed;
+
+  const factory HistoryEvent.onDocumentPressed({required int? documentId}) =
+      _OnDocumentPressed;
 }

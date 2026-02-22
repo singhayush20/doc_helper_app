@@ -4,9 +4,8 @@ part of 'history_bloc.dart';
 sealed class HistoryState extends BaseState with _$HistoryState {
   const HistoryState._();
 
-  const factory HistoryState.initial({
-    required HistoryStateStore store,
-  }) = Initial;
+  const factory HistoryState.initial({required HistoryStateStore store}) =
+      Initial;
 
   const factory HistoryState.invalidateLoader({
     required HistoryStateStore store,
@@ -21,15 +20,19 @@ sealed class HistoryState extends BaseState with _$HistoryState {
     required HistoryStateStore store,
   }) = OnHistoryDataFetch;
 
-  const factory HistoryState.onSearch({
+  const factory HistoryState.onSearch({required HistoryStateStore store}) =
+      OnSearch;
+
+  const factory HistoryState.onDocumentPress({
     required HistoryStateStore store,
-  }) = OnSearch;
+    required int? documentId,
+  }) = OnDocumentPress;
 
   @override
   BaseState getExceptionState(Exception exception) => HistoryState.onException(
-        store: store.copyWith(loading: false),
-        exception: exception,
-      );
+    store: store.copyWith(loading: false),
+    exception: exception,
+  );
 
   @override
   BaseState getLoaderState({required bool loading}) =>

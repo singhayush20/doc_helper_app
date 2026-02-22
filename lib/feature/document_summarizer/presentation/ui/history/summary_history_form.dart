@@ -29,6 +29,7 @@ class _SummaryHistoryForm extends StatelessWidget {
                             final doc = state.store.filteredDocuments?[index];
 
                             return _HistoryCard(
+                              documentId: doc?.documentId,
                               fileName: doc?.originalFilename ?? 'Unknown',
                               date: getTimeAgo(doc?.createdAt),
                               fileType: getFileType(fileName: doc?.fileName),
@@ -47,18 +48,22 @@ class _SummaryHistoryForm extends StatelessWidget {
 
 class _HistoryCard extends StatelessWidget {
   const _HistoryCard({
+    required this.documentId,
     required this.fileName,
     required this.date,
     required this.fileType,
   });
 
+  final int? documentId;
   final String fileName;
   final String date;
   final FileType fileType;
 
   @override
   Widget build(BuildContext context) => DsListTile(
-    onTap: () {},
+    onTap: () => getBloc<HistoryBloc>(context).onDocumentPressed(
+      documentId: documentId,
+    ),
     backgroundColor: DsColors.backgroundPrimary,
     borderRadius: BorderRadius.circular(DsBorderRadius.borderRadius16),
     borderColor: DsColors.borderSubtle,
