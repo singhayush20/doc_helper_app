@@ -8,4 +8,6 @@ abstract class AppConstants {
   static final String product = 'product';
   static final String rupeeSymbol = '\u20B9';
   static final String refreshRequired = 'refreshRequired';
+  static final String summaryTone = 'summaryTone';
+  static final String summaryLength = 'summaryLength';
 }

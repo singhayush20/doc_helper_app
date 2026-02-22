@@ -6,6 +6,9 @@ import 'package:doc_helper_app/feature/auth/presentation/ui/sign_in_page.dart';
 import 'package:doc_helper_app/feature/auth/presentation/ui/sign_up/signup_page.dart';
 import 'package:doc_helper_app/feature/billing/presentation/ui/payment_page.dart';
 import 'package:doc_helper_app/feature/chat/presentation/ui/chat_page.dart';
+import 'package:doc_helper_app/feature/document_summarizer/presentation/ui/doc_summarizer_page.dart';
+import 'package:doc_helper_app/feature/document_summarizer/presentation/ui/history/summary_history_page.dart';
+import 'package:doc_helper_app/feature/document_summarizer/presentation/ui/summary/summary_page.dart';
 import 'package:doc_helper_app/feature/features_page/presentation/ui/features_page.dart';
 import 'package:doc_helper_app/feature/main/presentation/ui/landing_page.dart';
 import 'package:doc_helper_app/feature/plan/presentation/ui/plans_page.dart';
@@ -95,6 +98,23 @@ GoRouter buildRouter(AuthNotifier authNotifier) => GoRouter(
           const NoTransitionPage(child: PaymentPage()),
         ),
       ]
+    ),
+    GoRoute(
+      name: Routes.docSummarizer,
+      path: '/doc-summarizer',
+      builder: (context, state) => const DocSummarizerPage(),
+      routes: [
+        GoRoute(
+          name: Routes.summary,
+          path: '/summary',
+          builder: (context,state) => const SummaryPage(),
+        ),
+        GoRoute(
+          name: Routes.summaryHistory,
+          path: '/history',
+          builder: (context,state) => const SummaryHistoryPage(),
+        ),
+      ],
     ),
     GoRoute(
       name: Routes.chat,

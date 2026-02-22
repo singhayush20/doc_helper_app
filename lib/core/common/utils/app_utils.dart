@@ -1,6 +1,8 @@
+import 'package:doc_helper_app/core/common/constants/enums.dart';
 import 'package:doc_helper_app/core/router/router.dart';
 import 'package:doc_helper_app/design/molecules/bottomsheet/ds_bottom_sheet.dart';
 import 'package:doc_helper_app/design/molecules/dialog/ds_dialog.dart';
+import 'package:doc_helper_app/env/config_options.dart';
 import 'package:doc_helper_app/feature/ui_component/domain/entities/ui_config_entities.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -97,4 +99,28 @@ Future<void> handleComponentAction({
   } else {
     return Future.value();
   }
+}
+
+FileType getFileType({
+  required String? fileName,
+}) {
+  if (fileName == null || fileName.isEmpty) {
+    return FileType.unknown;
+  }
+
+  final extension = fileName.split('.').last.toLowerCase();
+
+  return switch (extension) {
+    'pdf' => FileType.pdf,
+    'doc' || 'docx' => FileType.doc,
+    'txt' => FileType.txt,
+    _ => FileType.unknown,
+  };
+}
+
+String getAssetUrlForImageKey({required String? imageKey}) {
+  if (imageKey?.isEmpty ?? true) {
+    return '';
+  }
+  return '${configOptions.cdnUrl}/$imageKey';
 }

@@ -3,6 +3,7 @@ import 'package:doc_helper_app/env/env_config.dart';
 abstract class IConfigOptions {
   String get baseUrl;
   String get env;
+  String get cdnUrl;
 }
 
 class DevConfigOptions implements IConfigOptions {
@@ -11,6 +12,11 @@ class DevConfigOptions implements IConfigOptions {
 
   @override
   String get env => Env.dev;
+
+  @override
+  // TODO: implement cdnUrl
+  String get cdnUrl =>
+      'https://res.cloudinary.com/dollqnkui/image/upload/v1771701798/';
 }
 
 class ProdConfigOptions implements IConfigOptions {
@@ -19,6 +25,11 @@ class ProdConfigOptions implements IConfigOptions {
 
   @override
   String get env => Env.prod;
+
+  @override
+  // TODO: implement cdnUrl
+  String get cdnUrl =>
+      'https://res.cloudinary.com/dollqnkui/image/upload/v1771701798/';
 }
 
 IConfigOptions configOptions = DevConfigOptions();

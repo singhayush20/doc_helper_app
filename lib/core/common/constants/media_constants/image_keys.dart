@@ -8,4 +8,5 @@ final class ImageKeys {
       'assets/vectors/password_reset_illustration.svg';
   static const String docFetchErrorIllustration = 'assets/vectors/data-fetch-error.svg';
   static const String noDataIllustration = 'assets/vectors/no-data.svg';
+  static const String errorIcon = 'assets/vectors/error_icon.svg';
 }
