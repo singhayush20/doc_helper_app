@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:doc_helper_app/core/common/base_bloc/base_bloc.dart';
 import 'package:doc_helper_app/core/common/base_widget/base_widget_utils.dart';
 import 'package:doc_helper_app/core/common/constants/media_constants/image_keys.dart';
@@ -6,11 +8,14 @@ import 'package:doc_helper_app/design/design.dart';
 import 'package:doc_helper_app/di/injection.dart';
 import 'package:doc_helper_app/feature/document_summarizer/domain/entities/doc_summary_enums.dart';
 import 'package:doc_helper_app/feature/document_summarizer/presentation/bloc/summary_bloc/summary_bloc.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pdf/widgets.dart' as pw;
 import 'package:gpt_markdown/gpt_markdown.dart';
+import 'package:share_plus/share_plus.dart';
 
 part 'summary_form.dart';
 
