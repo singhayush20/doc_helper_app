@@ -327,14 +327,18 @@ class _SummaryActionBottomBar extends StatelessWidget {
               Expanded(
                 child: DsButton.primary(
                   data: 'Save',
-                  onTap: () {},
+                  onTap: state.store.loading
+                      ? null
+                      : () => _handleSave(context, state.store),
                   leadingIcon: Icons.bookmark_rounded,
                 ),
               ),
               Expanded(
                 child: DsButton.primary(
                   data: 'Share',
-                  onTap: () {},
+                  onTap: state.store.loading
+                      ? null
+                      : () => _handleShare(context, state.store),
                   leadingIcon: Icons.share_rounded,
                 ),
               ),
@@ -344,6 +348,57 @@ class _SummaryActionBottomBar extends StatelessWidget {
       ),
     ),
   );
+}
+
+void _handleShare(BuildContext context, SummaryStateStore store) {
+  final summary = _getCurrentSummary(store);
+  if (summary == null || (summary.content?.trim().isEmpty ?? true)) {
+    showSnackBar(
+      context: context,
+      message: 'No summary content available to share.',
+      type: SnackbarMessageType.alert,
+    );
+    return;
+  }
+
+  getBloc<SummaryBloc>(context).onShareSummaryRequested(
+    content: summary.content ?? '',
+    subject:
+        '''Document Summary - Version ${(store.currentSummaryIndex ?? 0) + 1}''',
+  );
+}
+
+void _handleSave(BuildContext context, SummaryStateStore store) {
+  final summary = _getCurrentSummary(store);
+  if (summary == null || (summary.content?.trim().isEmpty ?? true)) {
+    showSnackBar(
+      context: context,
+      message: 'No summary content available to save.',
+      type: SnackbarMessageType.alert,
+    );
+    return;
+  }
+
+  getBloc<SummaryBloc>(context).onSaveSummaryRequested(
+    content: summary.content ?? '',
+    fileName: _buildDefaultSummaryFileName(store.currentSummaryIndex),
+  );
+}
+
+SummaryInfo? _getCurrentSummary(SummaryStateStore store) {
+  final summaries = store.docSummaries;
+  final currentIndex = store.currentSummaryIndex ?? 0;
+
+  if (summaries == null || summaries.isEmpty) {
+    return null;
+  }
+
+  return summaries.elementAtOrNull(currentIndex);
+}
+
+String _buildDefaultSummaryFileName(int? currentSummaryIndex) {
+  final summaryNumber = (currentSummaryIndex ?? 0) + 1;
+  return 'summary_v$summaryNumber.pdf';
 }
 
 void _showSummarySettingsDialog(BuildContext context, SummaryStateStore store) {

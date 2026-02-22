@@ -3,7 +3,9 @@ import 'package:doc_helper_app/core/common/base_widget/base_widget_utils.dart';
 import 'package:doc_helper_app/core/common/constants/media_constants/image_keys.dart';
 import 'package:doc_helper_app/core/common/utils/app_utils.dart';
 import 'package:doc_helper_app/design/design.dart';
+import 'package:doc_helper_app/design/molecules/snackbar/ds_snackbar.dart';
 import 'package:doc_helper_app/di/injection.dart';
+import 'package:doc_helper_app/feature/document_summarizer/domain/entities/doc_summary_entity.dart';
 import 'package:doc_helper_app/feature/document_summarizer/domain/entities/doc_summary_enums.dart';
 import 'package:doc_helper_app/feature/document_summarizer/presentation/bloc/summary_bloc/summary_bloc.dart';
 import 'package:flutter/material.dart';
@@ -35,6 +37,16 @@ class SummaryPage extends StatelessWidget {
               handleException(exception, context),
             OnShowSummarySettingsDialog(:final store) =>
               _showSummarySettingsDialog(context, store),
+            OnSummarySaveSuccess(:final path) => showSnackBar(
+                context: context,
+                message: 'Summary saved to $path',
+                type: SnackbarMessageType.success,
+              ),
+            OnSummaryShareSuccess() => showSnackBar(
+                context: context,
+                message: 'Summary shared successfully!',
+                type: SnackbarMessageType.success,
+              ),
             _ => null,
           },
         ),
