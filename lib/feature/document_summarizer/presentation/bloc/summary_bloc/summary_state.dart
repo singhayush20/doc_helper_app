@@ -15,6 +15,10 @@ sealed class SummaryState extends BaseState with _$SummaryState {
     required SummaryStateStore store,
   }) = OnSummaryIndexChanged;
 
+  const factory SummaryState.initSummaryDataFetch({
+    required SummaryStateStore store,
+  }) = InitSummaryDataFetch;
+
   const factory SummaryState.invalidateLoader({
     required SummaryStateStore store,
   }) = InvalidateLoader;

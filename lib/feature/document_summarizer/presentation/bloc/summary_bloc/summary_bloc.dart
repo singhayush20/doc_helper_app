@@ -37,7 +37,14 @@ class SummaryBloc extends BaseBloc<SummaryEvent, SummaryState> {
 
     // considering that upload flow always requires tone and length
     if (event.tone != null && event.length != null) {
-      invalidateLoader(emit, loading: true);
+      emit(
+        SummaryState.initSummaryDataFetch(
+          store: state.store.copyWith(
+            loading: true,
+            currentSummaryIndex: state.store.docSummaries?.length ?? 0,
+          ),
+        ),
+      );
       final documentSummaryOrFailure = await _docSummaryFacade
           .summarizeDocument(
             documentId: documentId ?? -1,
@@ -65,7 +72,11 @@ class SummaryBloc extends BaseBloc<SummaryEvent, SummaryState> {
       );
     } else {
       // else just show the summaries
-      invalidateLoader(emit, loading: true);
+      emit(
+        SummaryState.initSummaryDataFetch(
+          store: state.store.copyWith(loading: true, currentSummaryIndex: 0),
+        ),
+      );
 
       final documentSummariesOrFailure = await _docSummaryFacade
           .getDocumentSummaries(event.documentId ?? -1);

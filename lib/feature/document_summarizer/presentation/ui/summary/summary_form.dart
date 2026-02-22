@@ -5,81 +5,86 @@ class _SummaryForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => BlocBuilder<SummaryBloc, SummaryState>(
-    builder: (context, state) => DsShimmer(
-      enabled: state.store.loading,
-      child: Visibility(
-        visible: !state.store.loading,
-        replacement: const _SummaryShimmer(),
-        child: (state.store.docSummaries == null)
-            ? Center(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    vertical: DsSpacing.radialSpace24,
-                    horizontal: DsSpacing.radialSpace12,
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    spacing: DsSpacing.verticalSpace8,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      DsImage(
-                        mediaUrl: getAssetUrlForImageKey(
-                          imageKey: ImageKeys.errorIcon,
+    builder: (context, state) {
+      final isLoading = state.store.loading;
+      final hasData = state.store.docSummaries != null;
+
+      return DsShimmer(
+        enabled: isLoading && !hasData,
+        child: Visibility(
+          visible: !isLoading || hasData,
+          replacement: const _SummaryShimmer(),
+          child: (state.store.docSummaries == null)
+              ? Center(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      vertical: DsSpacing.radialSpace24,
+                      horizontal: DsSpacing.radialSpace12,
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      spacing: DsSpacing.verticalSpace8,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        DsImage(
+                          mediaUrl: getAssetUrlForImageKey(
+                            imageKey: ImageKeys.errorIcon,
+                          ),
+                          height: 48.h,
                         ),
-                        height: 48.h,
-                      ),
-                      const DsText.headlineSmall(
-                        data: 'Something went wrong. Please try again!',
-                        color: DsColors.textSecondary,
-                        textAlign: TextAlign.center,
-                      ),
-                      SizedBox(
-                        width: double.infinity,
-                        child: DsButton.primary(
-                          data: 'Try Again',
-                          onTap: () {
-                            final args = GoRouterState.of(
-                              context,
-                            ).uri.queryParameters;
-                            getBloc<SummaryBloc>(context).started(args: args);
-                          },
+                        const DsText.headlineSmall(
+                          data: 'Something went wrong. Please try again!',
+                          color: DsColors.textSecondary,
+                          textAlign: TextAlign.center,
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-              )
-            : Column(
-                children: [
-                  Expanded(
-                    child: SingleChildScrollView(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: DsSpacing.radialSpace16,
-                        vertical: DsSpacing.radialSpace20,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        spacing: DsSpacing.verticalSpace24,
-                        children: [
-                          if (state.store.docSummaries?.isNotEmpty ??
-                              false) ...[
-                            const _VersionSelector(),
-                            const _SectionHeader(
-                              title: 'Summary',
-                              icon: Icons.auto_awesome_rounded,
-                            ),
-                            const _SummaryCard(),
-                          ],
-                          DsSpacing.verticalSpaceSizedBox8,
-                        ],
-                      ),
+                        SizedBox(
+                          width: double.infinity,
+                          child: DsButton.primary(
+                            data: 'Try Again',
+                            onTap: () {
+                              final args = GoRouterState.of(
+                                context,
+                              ).uri.queryParameters;
+                              getBloc<SummaryBloc>(context).started(args: args);
+                            },
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  const _SummaryActionBottomBar(),
-                ],
-              ),
-      ),
-    ),
+                )
+              : Column(
+                  children: [
+                    Expanded(
+                      child: SingleChildScrollView(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: DsSpacing.radialSpace16,
+                          vertical: DsSpacing.radialSpace20,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          spacing: DsSpacing.verticalSpace24,
+                          children: [
+                            if (state.store.docSummaries?.isNotEmpty ??
+                                false) ...[
+                              const _VersionSelector(),
+                              const _SectionHeader(
+                                title: 'Summary',
+                                icon: Icons.auto_awesome_rounded,
+                              ),
+                              const _SummaryCard(),
+                            ],
+                            DsSpacing.verticalSpaceSizedBox8,
+                          ],
+                        ),
+                      ),
+                    ),
+                    const _SummaryActionBottomBar(),
+                  ],
+                ),
+        ),
+      );
+    },
   );
 }
 
@@ -91,8 +96,16 @@ class _VersionSelector extends StatelessWidget {
     builder: (context, state) {
       final summaries = state.store.docSummaries;
       final currentIndex = state.store.currentSummaryIndex;
-      final summaryInfo = summaries?.elementAtOrNull(currentIndex ?? 0);
-      if ((summaries?.length ?? 0) != 0) {
+      final isLoading = state.store.loading;
+      final totalVersions = (summaries?.length ?? 0) + (isLoading ? 1 : 0);
+
+      if (totalVersions != 0) {
+        final isShowingLoadingVersion =
+            isLoading && currentIndex == (summaries?.length ?? 0);
+        final summaryInfo = isShowingLoadingVersion
+            ? null
+            : summaries?.elementAtOrNull(currentIndex ?? 0);
+
         return DecoratedBox(
           decoration: BoxDecoration(
             color: DsColors.backgroundSurface,
@@ -119,35 +132,41 @@ class _VersionSelector extends StatelessWidget {
                     children: [
                       DsText.titleSmall(
                         data:
-                            '''Version ${(currentIndex ?? 0) + 1} of ${summaries?.length ?? 0}''',
+                            '''Version ${(currentIndex ?? 0) + 1} of $totalVersions''',
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        spacing: DsSpacing.horizontalSpace4,
-                        children: [
-                          Flexible(
-                            child: DsText.labelSmall(
-                              data:
-                                  '''Tone: ${summaryInfo?.tone?.name.toString().toUpperCase()}''',
-                              color: DsColors.textTertiary,
+                      if (isShowingLoadingVersion) ...[
+                        const DsText.labelSmall(
+                          data: 'Generating new summary...',
+                          color: DsColors.textTertiary,
+                        ),
+                      ] else ...[
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          spacing: DsSpacing.horizontalSpace4,
+                          children: [
+                            Flexible(
+                              child: DsText.labelSmall(
+                                data:
+                                    '''Tone: ${summaryInfo?.tone?.name.toString().toUpperCase()}''',
+                                color: DsColors.textTertiary,
+                              ),
                             ),
-                          ),
-                          Flexible(
-                            child: DsText.labelSmall(
-                              data:
-                                  '''Length: ${summaryInfo?.length?.name.toString().toUpperCase()}''',
-                              color: DsColors.textTertiary,
+                            Flexible(
+                              child: DsText.labelSmall(
+                                data:
+                                    '''Length: ${summaryInfo?.length?.name.toString().toUpperCase()}''',
+                                color: DsColors.textTertiary,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
+                          ],
+                        ),
+                      ],
                     ],
                   ),
                 ),
                 IconButton(
                   onPressed:
-                      (currentIndex != null &&
-                          currentIndex < (summaries?.length ?? 0) - 1)
+                      (currentIndex != null && currentIndex < totalVersions - 1)
                       ? () => getBloc<SummaryBloc>(
                           context,
                         ).onSummaryIndexChanged(index: currentIndex + 1)
@@ -192,7 +211,10 @@ class _SummaryCard extends StatelessWidget {
     builder: (context, state) {
       final summaries = state.store.docSummaries;
       final currentIndex = state.store.currentSummaryIndex;
-      final summaryInfo = summaries?.elementAtOrNull(currentIndex ?? 0);
+      final isLoading = state.store.loading;
+      final isShowingLoadingVersion =
+          isLoading && currentIndex == (summaries?.length ?? 0);
+
       return DecoratedBox(
         decoration: BoxDecoration(
           color: DsColors.white,
@@ -208,13 +230,70 @@ class _SummaryCard extends StatelessWidget {
         ),
         child: Padding(
           padding: EdgeInsets.all(DsSpacing.radialSpace20),
-          child: GptMarkdown(
-            summaryInfo?.content ?? '',
-            style: TextStyle(fontSize: DsSizing.size16),
-          ),
+          child: isShowingLoadingVersion
+              ? const _TextShimmer()
+              : GptMarkdown(
+                  summaries?.elementAtOrNull(currentIndex ?? 0)?.content ?? '',
+                  style: TextStyle(fontSize: DsSizing.size16),
+                ),
         ),
       );
     },
+  );
+}
+
+class _TextShimmer extends StatelessWidget {
+  const _TextShimmer();
+
+  @override
+  Widget build(BuildContext context) => DsShimmer(
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: DsSpacing.verticalSpace12,
+      children: [
+        Container(
+          height: 14.h,
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: DsColors.backgroundDisabled,
+            borderRadius: BorderRadius.circular(DsBorderRadius.borderRadius4),
+          ),
+        ),
+        Container(
+          height: 14.h,
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: DsColors.backgroundDisabled,
+            borderRadius: BorderRadius.circular(DsBorderRadius.borderRadius4),
+          ),
+        ),
+        Container(
+          height: 14.h,
+          width: 0.7.w,
+          decoration: BoxDecoration(
+            color: DsColors.backgroundDisabled,
+            borderRadius: BorderRadius.circular(DsBorderRadius.borderRadius4),
+          ),
+        ),
+        DsSpacing.verticalSpaceSizedBox12,
+        Container(
+          height: 14.h,
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: DsColors.backgroundDisabled,
+            borderRadius: BorderRadius.circular(DsBorderRadius.borderRadius4),
+          ),
+        ),
+        Container(
+          height: 14.h,
+          width: 0.4.w,
+          decoration: BoxDecoration(
+            color: DsColors.backgroundDisabled,
+            borderRadius: BorderRadius.circular(DsBorderRadius.borderRadius4),
+          ),
+        ),
+      ],
+    ),
   );
 }
 
@@ -235,9 +314,11 @@ class _SummaryActionBottomBar extends StatelessWidget {
         children: [
           DsButton.secondary(
             data: 'Regenerate Summary',
-            onTap: () => getBloc<SummaryBloc>(
-              context,
-            ).onSummarySettingsDialogRequested(),
+            onTap: state.store.loading
+                ? null
+                : () => getBloc<SummaryBloc>(
+                    context,
+                  ).onSummarySettingsDialogRequested(),
             leadingIcon: Icons.refresh_rounded,
           ),
           Row(
@@ -329,34 +410,28 @@ class _SummaryShimmer extends StatelessWidget {
           height: 56.h,
           decoration: BoxDecoration(
             color: DsColors.backgroundDisabled,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(DsBorderRadius.borderRadius12),
           ),
         ),
         Row(
-          spacing: 12,
+          spacing: DsSpacing.horizontalSpace12,
           children: [
             Container(
-              width: 24,
-              height: 24,
+              width: 24.w,
+              height: 24.h,
               decoration: const BoxDecoration(
                 color: DsColors.backgroundDisabled,
                 shape: BoxShape.circle,
               ),
             ),
             Container(
-              width: 150,
-              height: 24,
+              width: 150.w,
+              height: 24.h,
               color: DsColors.backgroundDisabled,
             ),
           ],
         ),
-        Container(
-          height: 100.h,
-          decoration: BoxDecoration(
-            color: DsColors.backgroundDisabled,
-            borderRadius: BorderRadius.circular(16),
-          ),
-        ),
+        const _TextShimmer(),
       ],
     ),
   );
