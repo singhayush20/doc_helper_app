@@ -7,6 +7,7 @@ import 'package:doc_helper_app/core/common/constants/app_constants.dart';
 import 'package:doc_helper_app/core/common/utils/app_utils.dart';
 import 'package:doc_helper_app/feature/document_summarizer/domain/entities/doc_summary_entity.dart';
 import 'package:doc_helper_app/feature/document_summarizer/domain/entities/doc_summary_enums.dart';
+import 'package:doc_helper_app/feature/document_summarizer/domain/interface/i_doc_action_facade.dart';
 import 'package:doc_helper_app/feature/document_summarizer/domain/interface/i_doc_summary_facade.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -20,16 +21,19 @@ part 'summary_bloc.freezed.dart';
 
 @injectable
 class SummaryBloc extends BaseBloc<SummaryEvent, SummaryState> {
-  SummaryBloc(this._docSummaryFacade)
+  SummaryBloc(this._docSummaryFacade, this._docActionFacade)
     : super(const SummaryState.initial(store: SummaryStateStore()));
 
   final IDocSummaryFacade _docSummaryFacade;
+  final IDocActionFacade _docActionFacade;
 
   @override
   void handleEvents() {
     on<_Started>(_onStarted);
     on<_OnSummaryIndexChanged>(_onSummaryIndexChanged);
     on<_OnSummarySettingsDialogRequested>(_onSummarySettingsDialogRequested);
+    on<_OnSaveSummaryRequested>(_onSaveSummaryRequested);
+    on<_OnShareSummaryRequested>(_onShareSummaryRequested);
   }
 
   Future<void> _onStarted(_Started event, Emitter<SummaryState> emit) async {
@@ -38,7 +42,7 @@ class SummaryBloc extends BaseBloc<SummaryEvent, SummaryState> {
     // considering that upload flow always requires tone and length
     if (event.tone != null && event.length != null) {
       emit(
-        SummaryState.initSummaryDataFetch(
+        SummaryState.invalidateLoader(
           store: state.store.copyWith(
             loading: true,
             currentSummaryIndex: state.store.docSummaries?.length ?? 0,
@@ -73,7 +77,7 @@ class SummaryBloc extends BaseBloc<SummaryEvent, SummaryState> {
     } else {
       // else just show the summaries
       emit(
-        SummaryState.initSummaryDataFetch(
+        SummaryState.invalidateLoader(
           store: state.store.copyWith(loading: true, currentSummaryIndex: 0),
         ),
       );
@@ -103,6 +107,7 @@ class SummaryBloc extends BaseBloc<SummaryEvent, SummaryState> {
   ) {
     emit(
       SummaryState.onSummaryIndexChanged(
+        index: event.index,
         store: state.store.copyWith(currentSummaryIndex: event.index),
       ),
     );
@@ -116,6 +121,54 @@ class SummaryBloc extends BaseBloc<SummaryEvent, SummaryState> {
     emit(
       SummaryState.onShowSummarySettingsDialog(
         store: state.store.copyWith(loading: false),
+      ),
+    );
+  }
+
+  Future<void> _onSaveSummaryRequested(
+    _OnSaveSummaryRequested event,
+    Emitter<SummaryState> emit,
+  ) async {
+    invalidateLoader(emit, loading: true);
+    final result = await _docActionFacade.saveSummaryAsPdf(
+      content: event.content,
+      fileName: event.fileName,
+    );
+
+    result.fold((exception) => handleException(emit, exception), (path) {
+      if (path != null) {
+        emit(
+          SummaryState.onSummarySaveSuccess(
+            store: state.store.copyWith(loading: false),
+            path: path,
+          ),
+        );
+      } else {
+        emit(
+          SummaryState.invalidateLoader(
+            store: state.store.copyWith(loading: false),
+          ),
+        );
+      }
+    });
+  }
+
+  Future<void> _onShareSummaryRequested(
+    _OnShareSummaryRequested event,
+    Emitter<SummaryState> emit,
+  ) async {
+    invalidateLoader(emit, loading: true);
+    final result = await _docActionFacade.shareSummaryAsText(
+      content: event.content,
+      subject: event.subject,
+    );
+
+    result.fold(
+      (exception) => handleException(emit, exception),
+      (_) => emit(
+        SummaryState.onSummaryShareSuccess(
+          store: state.store.copyWith(loading: false),
+        ),
       ),
     );
   }
@@ -150,6 +203,24 @@ class SummaryBloc extends BaseBloc<SummaryEvent, SummaryState> {
   }) {
     add(
       SummaryEvent.started(documentId: documentId, tone: tone, length: length),
+    );
+  }
+
+  void onSaveSummaryRequested({
+    required String content,
+    required String fileName,
+  }) {
+    add(
+      SummaryEvent.onSaveSummaryRequested(content: content, fileName: fileName),
+    );
+  }
+
+  void onShareSummaryRequested({
+    required String content,
+    required String subject,
+  }) {
+    add(
+      SummaryEvent.onShareSummaryRequested(content: content, subject: subject),
     );
   }
 }

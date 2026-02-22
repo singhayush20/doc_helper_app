@@ -329,7 +329,7 @@ class _SummaryActionBottomBar extends StatelessWidget {
                   data: 'Save',
                   onTap: state.store.loading
                       ? null
-                      : () => _saveCurrentSummary(context, state.store),
+                      : () => _handleSave(context, state.store),
                   leadingIcon: Icons.bookmark_rounded,
                 ),
               ),
@@ -338,7 +338,7 @@ class _SummaryActionBottomBar extends StatelessWidget {
                   data: 'Share',
                   onTap: state.store.loading
                       ? null
-                      : () => _shareCurrentSummary(context, state.store),
+                      : () => _handleShare(context, state.store),
                   leadingIcon: Icons.share_rounded,
                 ),
               ),
@@ -350,105 +350,39 @@ class _SummaryActionBottomBar extends StatelessWidget {
   );
 }
 
-
-Future<void> _shareCurrentSummary(
-  BuildContext context,
-  SummaryStateStore store,
-) async {
-  try {
-    final summary = _getCurrentSummary(store);
-
-    if (summary == null || summary.content.trim().isEmpty) {
-      showSnackBar(
-        context: context,
-        message: 'No summary content available to share.',
-        type: SnackbarMessageType.alert,
-      );
-      return;
-    }
-
-    await SharePlus.instance.share(
-      ShareParams(
-        text: summary.content,
-        subject: 'Document Summary',
-      ),
-    );
-  } catch (_) {
-    if (!context.mounted) {
-      return;
-    }
-
+void _handleShare(BuildContext context, SummaryStateStore store) {
+  final summary = _getCurrentSummary(store);
+  if (summary == null || (summary.content?.trim().isEmpty ?? true)) {
     showSnackBar(
       context: context,
-      message: 'Unable to share summary right now. Please try again.',
-      type: SnackbarMessageType.error,
+      message: 'No summary content available to share.',
+      type: SnackbarMessageType.alert,
     );
+    return;
   }
+
+  getBloc<SummaryBloc>(context).onShareSummaryRequested(
+    content: summary.content ?? '',
+    subject:
+        '''Document Summary - Version ${(store.currentSummaryIndex ?? 0) + 1}''',
+  );
 }
 
-Future<void> _saveCurrentSummary(
-  BuildContext context,
-  SummaryStateStore store,
-) async {
-  try {
-    final summary = _getCurrentSummary(store);
-
-    if (summary == null || summary.content.trim().isEmpty) {
-      showSnackBar(
-        context: context,
-        message: 'No summary content available to save.',
-        type: SnackbarMessageType.alert,
-      );
-      return;
-    }
-
-    final filePath = await FilePicker.platform.saveFile(
-      dialogTitle: 'Save summary as PDF',
-      fileName: _buildDefaultSummaryFileName(store.currentSummaryIndex),
-      type: FileType.custom,
-      allowedExtensions: const ['pdf'],
-    );
-
-    if (filePath == null) {
-      return;
-    }
-
-    final normalizedPath =
-        filePath.toLowerCase().endsWith('.pdf') ? filePath : '$filePath.pdf';
-
-    final pdf = pw.Document();
-    pdf.addPage(
-      pw.MultiPage(
-        build: (pw.Context context) => [
-          pw.Text('Document Summary', style: pw.TextStyle(fontSize: 22)),
-          pw.SizedBox(height: 12),
-          pw.Text(summary.content),
-        ],
-      ),
-    );
-
-    await File(normalizedPath).writeAsBytes(await pdf.save());
-
-    if (!context.mounted) {
-      return;
-    }
-
+void _handleSave(BuildContext context, SummaryStateStore store) {
+  final summary = _getCurrentSummary(store);
+  if (summary == null || (summary.content?.trim().isEmpty ?? true)) {
     showSnackBar(
       context: context,
-      message: 'Summary saved to $normalizedPath',
-      type: SnackbarMessageType.success,
+      message: 'No summary content available to save.',
+      type: SnackbarMessageType.alert,
     );
-  } catch (_) {
-    if (!context.mounted) {
-      return;
-    }
-
-    showSnackBar(
-      context: context,
-      message: 'Unable to save summary right now. Please try again.',
-      type: SnackbarMessageType.error,
-    );
+    return;
   }
+
+  getBloc<SummaryBloc>(context).onSaveSummaryRequested(
+    content: summary.content ?? '',
+    fileName: _buildDefaultSummaryFileName(store.currentSummaryIndex),
+  );
 }
 
 SummaryInfo? _getCurrentSummary(SummaryStateStore store) {

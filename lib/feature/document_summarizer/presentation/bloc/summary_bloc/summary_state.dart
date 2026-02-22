@@ -12,12 +12,9 @@ sealed class SummaryState extends BaseState with _$SummaryState {
   }) = OnSummaryDataFetch;
 
   const factory SummaryState.onSummaryIndexChanged({
+    required int index,
     required SummaryStateStore store,
   }) = OnSummaryIndexChanged;
-
-  const factory SummaryState.initSummaryDataFetch({
-    required SummaryStateStore store,
-  }) = InitSummaryDataFetch;
 
   const factory SummaryState.invalidateLoader({
     required SummaryStateStore store,
@@ -35,6 +32,15 @@ sealed class SummaryState extends BaseState with _$SummaryState {
   const factory SummaryState.onShowSummarySettingsDialog({
     required SummaryStateStore store,
   }) = OnShowSummarySettingsDialog;
+
+  const factory SummaryState.onSummarySaveSuccess({
+    required SummaryStateStore store,
+    required String path,
+  }) = OnSummarySaveSuccess;
+
+  const factory SummaryState.onSummaryShareSuccess({
+    required SummaryStateStore store,
+  }) = OnSummaryShareSuccess;
 
   @override
   BaseState getExceptionState(Exception exception) => SummaryState.onException(

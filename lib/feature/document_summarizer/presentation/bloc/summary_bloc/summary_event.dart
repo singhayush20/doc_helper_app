@@ -16,4 +16,14 @@ sealed class SummaryEvent extends BaseEvent with _$SummaryEvent {
 
   const factory SummaryEvent.onSummarySettingsDialogRequested() =
       _OnSummarySettingsDialogRequested;
+
+  const factory SummaryEvent.onSaveSummaryRequested({
+    required String content,
+    required String fileName,
+  }) = _OnSaveSummaryRequested;
+
+  const factory SummaryEvent.onShareSummaryRequested({
+    required String content,
+    required String subject,
+  }) = _OnShareSummaryRequested;
 }
