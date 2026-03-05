@@ -23,7 +23,8 @@ part 'doc_summarizer_state.dart';
 class DocSummarizerBloc
     extends BaseBloc<DocSummarizerEvent, DocSummarizerState> {
   DocSummarizerBloc(this._docSummaryFacade)
-    : super(const DocSummarizerState.initial(store: DocSummarizerStateStore()));
+      : super(
+      const DocSummarizerState.initial(store: DocSummarizerStateStore()));
 
   final IDocSummaryFacade _docSummaryFacade;
   static const int _maxFileSizeBytes = 5 * 1024 * 1024; // 5MB
@@ -38,27 +39,25 @@ class DocSummarizerBloc
     on<_OnDocumentPressed>(_onDocumentPressed);
   }
 
-  Future<void> _onStarted(
-    _Started event,
-    Emitter<DocSummarizerState> emit,
-  ) async {
+  Future<void> _onStarted(_Started event,
+      Emitter<DocSummarizerState> emit,) async {
     invalidateLoader(emit, loading: true);
     final documentsResponseOrFailure = await _docSummaryFacade.getDocuments();
 
     documentsResponseOrFailure.fold(
-      (exception) => handleException(emit, exception),
-      (documents) => emit(
-        DocSummarizerState.onDocumentDataFetch(
-          store: state.store.copyWith(loading: false, documentsInfo: documents),
-        ),
-      ),
+          (exception) => handleException(emit, exception),
+          (documents) =>
+          emit(
+            DocSummarizerState.onDocumentDataFetch(
+              store: state.store.copyWith(
+                  loading: false, documentsInfo: documents),
+            ),
+          ),
     );
   }
 
-  Future<void> _onUploadDocument(
-    _UploadDocument event,
-    Emitter<DocSummarizerState> emit,
-  ) async {
+  Future<void> _onUploadDocument(_UploadDocument event,
+      Emitter<DocSummarizerState> emit,) async {
     final result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['pdf'],
@@ -98,8 +97,7 @@ class DocSummarizerBloc
       final response = await _docSummaryFacade.uploadDocument(multipartFile);
 
       response.fold((exception) => handleException(emit, exception), (
-        documentDetails,
-      ) {
+          documentDetails,) {
         final currentDocuments = state.store.documentsInfo?.documents ?? [];
         final updatedDocumentsList = [documentDetails, ...currentDocuments];
 
@@ -118,13 +116,13 @@ class DocSummarizerBloc
   }
 
   void _onViewAllPressed(_, Emitter<DocSummarizerState> emit) {
-    emit(DocSummarizerState.onViewAllPress(store: state.store));
+    invalidateLoader(emit, loading: true);
+    emit(DocSummarizerState.onViewAllPress(
+        store: state.store.copyWith(loading: false)));
   }
 
-  void _onSummaryToneChanged(
-    _SummaryToneChanged event,
-    Emitter<DocSummarizerState> emit,
-  ) {
+  void _onSummaryToneChanged(_SummaryToneChanged event,
+      Emitter<DocSummarizerState> emit,) {
     emit(
       DocSummarizerState.onPreferenceChanged(
         store: state.store.copyWith(selectedTone: event.tone),
@@ -132,10 +130,8 @@ class DocSummarizerBloc
     );
   }
 
-  void _onSummaryLengthChanged(
-    _SummaryLengthChanged event,
-    Emitter<DocSummarizerState> emit,
-  ) {
+  void _onSummaryLengthChanged(_SummaryLengthChanged event,
+      Emitter<DocSummarizerState> emit,) {
     emit(
       DocSummarizerState.onPreferenceChanged(
         store: state.store.copyWith(selectedLength: event.length),
@@ -143,10 +139,8 @@ class DocSummarizerBloc
     );
   }
 
-  void _onDocumentPressed(
-    _OnDocumentPressed event,
-    Emitter<DocSummarizerState> emit,
-  ) {
+  void _onDocumentPressed(_OnDocumentPressed event,
+      Emitter<DocSummarizerState> emit,) {
     invalidateLoader(emit, loading: true);
     final documentId = event.documentId;
     emit(

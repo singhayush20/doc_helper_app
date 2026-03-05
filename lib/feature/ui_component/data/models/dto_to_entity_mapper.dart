@@ -20,9 +20,10 @@ extension ComponentActionDtoX on ComponentActionDto {
 
 extension ButtonInfoDtoX on ButtonInfoDto {
   ButtonInfo toDomain() => ButtonInfo(
-    text: text,
+    buttonData: buttonData?.toDomain(),
     leadingIcon: leadingIcon,
     trailingIcon: trailingIcon,
+    buttonColor: getColorFromCode(colorCode: buttonColor),
     onClick: onClick?.toDomain(),
   );
 }
@@ -66,6 +67,7 @@ extension BannerDtoX on BannerDto {
     leadingImageUrl: leadingImageUrl,
     buttonInfo: buttonInfo?.toDomain(),
     onClick: onClick?.toDomain(),
+    backgroundColor: getColorFromCode(colorCode: backgroundColor)
   );
 }
 

@@ -49,10 +49,7 @@ Future<void> handleComponentAction({
     final branchIndex = branchIndexForRoute(routeName);
 
     if (branchIndex != null) {
-      shell.goBranch(
-        branchIndex,
-        initialLocation: true,
-      );
+      shell.goBranch(branchIndex, initialLocation: true);
       return Future.value();
     }
 
@@ -60,7 +57,8 @@ Future<void> handleComponentAction({
   } else if (action.bottomSheet != null) {
     return DsBottomSheet.showBottomSheet(
       context: context,
-      primaryButtonText: action.bottomSheet?.primaryButton?.text ?? '',
+      primaryButtonText:
+          action.bottomSheet?.primaryButton?.buttonData?.data ?? '',
       onPrimaryButtonTap: () => handleComponentAction(
         context: context,
         action: action.bottomSheet?.primaryButton?.onClick,
@@ -71,7 +69,8 @@ Future<void> handleComponentAction({
       showDefaultIcon: false,
       imageKey: action.bottomSheet?.iconUrl,
       isDismissible: action.bottomSheet?.isClosable ?? true,
-      secondaryButtonText: action.bottomSheet?.secondaryButton?.text,
+      secondaryButtonText:
+          action.bottomSheet?.secondaryButton?.buttonData?.data,
       onSecondaryButtonTap: () => handleComponentAction(
         context: context,
         action: action.bottomSheet?.secondaryButton?.onClick,
@@ -80,7 +79,7 @@ Future<void> handleComponentAction({
   } else if (action.modal != null) {
     return DsDialog.showDialog(
       context: context,
-      primaryButtonText: action.modal?.primaryButton?.text ?? '',
+      primaryButtonText: action.modal?.primaryButton?.buttonData?.data ?? '',
       onPrimaryButtonTap: () => handleComponentAction(
         context: context,
         action: action.modal?.primaryButton?.onClick,
@@ -90,7 +89,7 @@ Future<void> handleComponentAction({
       showCloseButton: action.modal?.isClosable ?? true,
       showDefaultIcon: false,
       imageKey: action.modal?.iconUrl,
-      secondaryButtonText: action.modal?.secondaryButton?.text,
+      secondaryButtonText: action.modal?.secondaryButton?.buttonData?.data,
       onSecondaryButtonTap: () => handleComponentAction(
         context: context,
         action: action.modal?.secondaryButton?.onClick,
@@ -101,9 +100,7 @@ Future<void> handleComponentAction({
   }
 }
 
-FileType getFileType({
-  required String? fileName,
-}) {
+FileType getFileType({required String? fileName}) {
   if (fileName == null || fileName.isEmpty) {
     return FileType.unknown;
   }

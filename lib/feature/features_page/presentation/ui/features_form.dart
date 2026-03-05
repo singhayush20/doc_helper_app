@@ -24,19 +24,21 @@ class _FeaturesForm extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   spacing: DsSpacing.verticalSpace12,
                   children: [
-                    DsText.headlineLarge(
+                    DsText.headlineMedium(
                       data:
                           'Hi ${globalState.store.userInfo?.firstName?.input},',
                     ),
-                    if (globalState
-                            .store
-                            .subscriptionResponse
-                            ?.planCode
-                            ?.isEmpty ??
-                        true) ...[
+                    if (state.store.banners?.features?.isNotEmpty ?? false) ...[
                       const _UpgradeToProCard(),
                     ],
-                    const _RecentActivitiesSection(),
+                    if (state
+                            .store
+                            .userActivityInfo
+                            ?.userActivities
+                            ?.isNotEmpty ??
+                        false) ...[
+                      const _RecentActivitiesSection(),
+                    ],
                     if (state.store.featureCards?.features?.isNotEmpty ??
                         false) ...[
                       const _ProductSection(),
@@ -56,69 +58,74 @@ class _UpgradeToProCard extends StatelessWidget {
   const _UpgradeToProCard();
 
   @override
-  Widget build(BuildContext context) => InkWell(
-    child: DecoratedBox(
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [DsColors.primaryDark, DsColors.primaryLight],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+  Widget build(
+    BuildContext context,
+  ) => BlocBuilder<ProductFeaturesBloc, ProductFeaturesState>(
+    builder: (context, state) {
+      final bannerInfo = state.store.banners?.features?.first?.ui?.banner;
+      return DecoratedBox(
+        decoration: BoxDecoration(
+          color: bannerInfo?.backgroundColor,
+          borderRadius: BorderRadius.circular(DsBorderRadius.borderRadius12),
         ),
-        borderRadius: BorderRadius.circular(DsBorderRadius.borderRadius22),
-      ),
-      child: Padding(
-        padding: EdgeInsets.all(DsSpacing.radialSpace16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            DecoratedBox(
-              decoration: BoxDecoration(
-                color: DsColors.white.withAlpha(50),
-                borderRadius: BorderRadius.circular(
-                  DsBorderRadius.borderRadius12,
+        child: Padding(
+          padding: EdgeInsets.all(DsSpacing.radialSpace16),
+          child: Row(
+            spacing: DsSpacing.horizontalSpace8,
+            children: [
+              if (bannerInfo?.leadingImageUrl?.isNotEmpty ?? false) ...[
+                DsImage(
+                  mediaUrl: bannerInfo?.leadingImageUrl ?? '',
+                  height: 60.h,
+                ),
+              ],
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    DsText.titleMedium(
+                      data: bannerInfo?.title?.data ?? '',
+                      color: bannerInfo?.title?.color,
+                    ),
+                    DsSpacing.verticalSpaceSizedBox4,
+                    DsText.bodyMedium(
+                      data: bannerInfo?.description?.data ?? '',
+                      color: bannerInfo?.description?.color,
+                    ),
+                    DsSpacing.verticalSpaceSizedBox12,
+                    InkWell(
+                      onTap: () => handleComponentAction(
+                        context: context,
+                        action: bannerInfo?.buttonInfo?.onClick,
+                      ),
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: DsColors.white,
+                          borderRadius: BorderRadius.circular(
+                            DsBorderRadius.borderRadius4,
+                          ),
+                        ),
+                        child: Center(
+                          child: Padding(
+                            padding: EdgeInsets.all(DsSpacing.radialSpace8),
+                            child: DsText.bodyMedium(
+                              data:
+                                  bannerInfo?.buttonInfo?.buttonData?.data ??
+                                  '',
+                              color: bannerInfo?.buttonInfo?.buttonData?.color,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: DsSpacing.radialSpace12,
-                  vertical: DsSpacing.radialSpace4,
-                ),
-                child: const DsText.labelSmall(
-                  data: 'Premium Plan',
-                  color: DsColors.white,
-                ),
-              ),
-            ),
-            DsSpacing.verticalSpaceSizedBox8,
-            const DsText.headlineSmall(
-              data: 'Upgrade today!',
-              color: DsColors.white,
-            ),
-            DsSpacing.verticalSpaceSizedBox8,
-            DsText.bodyMedium(
-              data: 'Unlock more features with premium plans. Subscribe today!',
-              color: DsColors.white.withAlpha(200),
-            ),
-            DsSpacing.verticalSpaceSizedBox12,
-            DecoratedBox(
-              decoration: BoxDecoration(
-                color: DsColors.white,
-                borderRadius: BorderRadius.circular(
-                  DsBorderRadius.borderRadius12,
-                ),
-              ),
-              child: Padding(
-                padding: EdgeInsets.all(DsSpacing.radialSpace12),
-                child: const DsText.bodySmall(
-                  data: 'Learn More',
-                  color: DsColors.textAccent,
-                ),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-    ),
+      );
+    },
   );
 }
 
@@ -132,9 +139,7 @@ class _RecentActivitiesSection extends StatelessWidget {
     builder: (context, state) {
       final activities = state.store.userActivityInfo?.userActivities ?? [];
       if (activities.isEmpty) {
-        return const DsText.bodySmall(
-          data: 'Interact with your docs to get started',
-        );
+        return const SizedBox();
       }
 
       return Column(

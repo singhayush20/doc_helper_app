@@ -96,4 +96,19 @@ class DocSummaryFacadeImpl implements IDocSummaryFacade {
       ),
     );
   }
+
+  @override
+  Future<Either<ServerException, Unit>> deleteDocument({
+    required int documentId,
+  }) async {
+    final responseOrError = await _apiCallHandler.handleApi(
+      _apiClient.deleteDocument,
+      [documentId],
+    );
+
+    return responseOrError.fold(
+      (error) => left(error),
+      (response) => right(unit),
+    );
+  }
 }

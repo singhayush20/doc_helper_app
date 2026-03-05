@@ -21,4 +21,8 @@ abstract class IDocSummaryFacade {
   );
 
   Future<Either<ServerException, DocumentListResponse>> getDocuments();
+
+  Future<Either<ServerException, Unit>> deleteDocument({
+    required int documentId,
+  });
 }

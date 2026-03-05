@@ -61,9 +61,8 @@ class _HistoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => DsListTile(
-    onTap: () => getBloc<HistoryBloc>(context).onDocumentPressed(
-      documentId: documentId,
-    ),
+    onTap: () =>
+        getBloc<HistoryBloc>(context).onDocumentPressed(documentId: documentId),
     backgroundColor: DsColors.backgroundPrimary,
     borderRadius: BorderRadius.circular(DsBorderRadius.borderRadius16),
     borderColor: DsColors.borderSubtle,
@@ -78,26 +77,15 @@ class _HistoryCard extends StatelessWidget {
         ),
       ),
     ),
-    trailing: Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        IconButton(
-          onPressed: () {},
-          icon: Icon(
-            Icons.share_outlined,
-            color: DsColors.iconSecondary,
-            size: DsSizing.size20,
-          ),
-        ),
-        IconButton(
-          onPressed: () {},
-          icon: Icon(
-            Icons.delete_outline_rounded,
-            color: DsColors.iconSecondary,
-            size: DsSizing.size20,
-          ),
-        ),
-      ],
+    trailing:  IconButton(
+      onPressed: () => getBloc<HistoryBloc>(
+        context,
+      ).onDocumentDeleted(documentId: documentId),
+      icon: Icon(
+        Icons.delete_outline_rounded,
+        color: DsColors.iconSecondary,
+        size: DsSizing.size20,
+      ),
     ),
   );
 }
@@ -149,7 +137,7 @@ class _NoHistoryFound extends StatelessWidget {
   @override
   Widget build(BuildContext context) => const Center(
     child: DsText.bodyMedium(
-      data: 'No history found matching your search.',
+      data: 'Nothing to show',
       color: DsColors.textSecondary,
     ),
   );

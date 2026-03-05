@@ -29,6 +29,7 @@ class HistoryBloc extends BaseBloc<HistoryEvent, HistoryState> {
     on<_SearchQueryChanged>(_onSearchQueryChanged);
     on<_OnPageRefreshed>(_onPageRefreshed);
     on<_OnDocumentPressed>(_onDocumentPressed);
+    on<_OnDocumentDeleted>(_onDocumentDeleted);
   }
 
   Future<void> _onStarted(_Started event, Emitter<HistoryState> emit) async {
@@ -97,6 +98,36 @@ class HistoryBloc extends BaseBloc<HistoryEvent, HistoryState> {
     );
   }
 
+  Future<void> _onDocumentDeleted(
+    _OnDocumentDeleted event,
+    Emitter<HistoryState> emit,
+  ) async {
+    final documentId = event.documentId;
+    invalidateLoader(emit, loading: true);
+    final documentDeletionOrFailure = await _docSummaryFacade.deleteDocument(
+      documentId: documentId ?? -1,
+    );
+
+    documentDeletionOrFailure.fold(
+      (exception) => handleException(emit, exception),
+      (_) => emit(
+        HistoryState.onDocumentDelete(
+          store: state.store.copyWith(
+            loading: false,
+            documentsInfo: state.store.documentsInfo?.copyWith(
+              documents: state.store.documentsInfo?.documents
+                  ?.where((doc) => doc.documentId != documentId)
+                  .toList(),
+            ),
+            filteredDocuments: state.store.filteredDocuments
+                ?.where((doc) => doc?.documentId != documentId)
+                .toList(),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   void started({Map<String, dynamic>? args}) {
     add(const HistoryEvent.started());
@@ -112,5 +143,9 @@ class HistoryBloc extends BaseBloc<HistoryEvent, HistoryState> {
 
   void onDocumentPressed({required int? documentId}) {
     add(HistoryEvent.onDocumentPressed(documentId: documentId));
+  }
+
+  void onDocumentDeleted({required int? documentId}) {
+    add(HistoryEvent.onDocumentDeleted(documentId: documentId));
   }
 }

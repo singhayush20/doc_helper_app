@@ -1,3 +1,4 @@
 enum UIComponentType {
   card,
+  banner
 }

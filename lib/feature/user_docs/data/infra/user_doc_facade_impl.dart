@@ -92,7 +92,7 @@ class UserDocFacadeImpl implements IUserDocFacade {
     required int? documentId,
   }) async {
     final responseOrError = await _apiCallHandler.handleApi(
-      _retrofitApiClient.deleteDocument,
+      _retrofitApiClient.deleteUserDoc,
       [documentId],
     );
 

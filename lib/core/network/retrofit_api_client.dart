@@ -54,7 +54,7 @@ abstract class RetrofitApiClient {
   );
 
   @DELETE('/api/v1/user-docs/{documentId}')
-  Future<HttpResponse> deleteDocument(@Path('documentId') int documentId);
+  Future<HttpResponse> deleteUserDoc(@Path('documentId') int documentId);
 
   @POST('/api/v1/chatbot/doc-question')
   Future<HttpResponse> getAnswerForDocQuestion(
@@ -129,6 +129,10 @@ abstract class RetrofitApiClient {
   @GET('/api/v1/summarizer/documents/{documentId}')
   Future<HttpResponse> getDocumentSummaries(@Path('documentId') int documentId);
 
-  @GET('/api/v1/documents/')
+  @GET('/api/v1/documents')
   Future<HttpResponse> getDocuments();
+
+  @DELETE('/api/v1/documents/{documentId}')
+  Future<HttpResponse> deleteDocument(@Path('documentId') int documentId);
+
 }

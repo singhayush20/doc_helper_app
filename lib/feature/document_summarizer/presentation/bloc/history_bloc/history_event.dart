@@ -13,4 +13,7 @@ sealed class HistoryEvent extends BaseEvent with _$HistoryEvent {
 
   const factory HistoryEvent.onDocumentPressed({required int? documentId}) =
       _OnDocumentPressed;
+
+  const factory HistoryEvent.onDocumentDeleted({required int? documentId}) =
+      _OnDocumentDeleted;
 }

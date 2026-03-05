@@ -16,9 +16,10 @@ abstract class TextInfo with _$TextInfo {
 @liteFreezed
 abstract class ButtonInfo with _$ButtonInfo {
   const factory ButtonInfo({
-    String? text,
+    TextInfo? buttonData,
     String? leadingIcon,
     String? trailingIcon,
+    Color? buttonColor,
     ComponentAction? onClick,
   }) = _ButtonInfo;
 }
@@ -76,6 +77,7 @@ abstract class Banner with _$Banner {
     String? leadingImageUrl,
     ButtonInfo? buttonInfo,
     ComponentAction? onClick,
+    Color? backgroundColor,
   }) = _Banner;
 }
 

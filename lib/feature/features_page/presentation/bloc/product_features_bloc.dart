@@ -50,6 +50,7 @@ class ProductFeaturesBloc
     invalidateLoader(emit, loading: true);
     Either<ServerException, UserActivityInfo>? userActivitiesOrFailure;
     Either<ServerException, ProductFeatureList?>? productFeaturesOrFailure;
+    Either<ServerException, ProductFeatureList?>? bannersOrFailure;
 
     await Future.wait([
       (() async => userActivitiesOrFailure = await _userActivityFacade
@@ -57,6 +58,11 @@ class ProductFeaturesBloc
       (() async => productFeaturesOrFailure = await _productFeatureFacade
           .getUIComponents(
             componentType: UIComponentType.card,
+            screen: Routes.home.toUpperCase(),
+          ))(),
+      (() async =>
+          bannersOrFailure = await _productFeatureFacade.getUIComponents(
+            componentType: UIComponentType.banner,
             screen: Routes.home.toUpperCase(),
           ))(),
     ]);
@@ -69,6 +75,7 @@ class ProductFeaturesBloc
             loading: false,
             userActivityInfo: userActivityInfo,
             featureCards: productFeaturesOrFailure?.getOrElse(() => null),
+            banners: bannersOrFailure?.getOrElse(() => null),
           ),
         ),
       ),

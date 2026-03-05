@@ -28,6 +28,10 @@ sealed class HistoryState extends BaseState with _$HistoryState {
     required int? documentId,
   }) = OnDocumentPress;
 
+  const factory HistoryState.onDocumentDelete({
+    required HistoryStateStore store,
+  }) = OnDocumentDelete;
+
   @override
   BaseState getExceptionState(Exception exception) => HistoryState.onException(
     store: store.copyWith(loading: false),

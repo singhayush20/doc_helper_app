@@ -4,28 +4,31 @@ class _ProfileForm extends StatelessWidget {
   const _ProfileForm();
 
   @override
-  Widget build(BuildContext context) => BlocBuilder<ProfileBloc, ProfileState>(
-    builder: (context, state) => SingleChildScrollView(
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: DsSpacing.radialSpace16,
-          vertical: DsSpacing.radialSpace24,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          spacing: DsSpacing.verticalSpace24,
-          children: [
-            _UserInfoSection(),
-            if (state.store.usageInfo != null) ...[_UsageSection()],
-            if (state.store.subscriptionInfo != null) ...[
-              const _SubscriptionSection(),
+  Widget build(BuildContext context) => RefreshIndicator(
+    onRefresh: () async => getBloc<ProfileBloc>(context).onProfileRefreshed(),
+    child: BlocBuilder<ProfileBloc, ProfileState>(
+      builder: (context, state) => SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: DsSpacing.radialSpace16,
+            vertical: DsSpacing.radialSpace24,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            spacing: DsSpacing.verticalSpace24,
+            children: [
+              _UserInfoSection(),
+              if (state.store.usageInfo != null) ...[_UsageSection()],
+              if (state.store.subscriptionInfo != null) ...[
+                const _SubscriptionSection(),
+              ],
+              _SettingsSection(),
+              DsButton.secondary(
+                data: 'Log Out',
+                onTap: () => getBloc<ProfileBloc>(context).onLogoutPressed(),
+              ),
             ],
-            _SettingsSection(),
-            DsButton.secondary(
-              data: 'Log Out',
-              onTap: () => getBloc<ProfileBloc>(context).onLogoutPressed(),
-            ),
-          ],
+          ),
         ),
       ),
     ),

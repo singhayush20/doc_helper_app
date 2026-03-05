@@ -16,19 +16,21 @@ class TextInfoDto {
 @JsonSerializable()
 class ButtonInfoDto {
   const ButtonInfoDto({
-    required this.text,
     required this.leadingIcon,
     required this.trailingIcon,
     required this.onClick,
+    required this.buttonData,
+    required this.buttonColor,
   });
 
   factory ButtonInfoDto.fromJson(Map<String, dynamic> json) =>
       _$ButtonInfoDtoFromJson(json);
 
-  final String? text;
+  final TextInfoDto? buttonData;
   final String? leadingIcon;
   final String? trailingIcon;
   final ComponentActionDto? onClick;
+  final String? buttonColor;
 }
 
 @JsonSerializable()
@@ -121,6 +123,7 @@ class BannerDto {
     required this.leadingImageUrl,
     required this.buttonInfo,
     required this.onClick,
+    required this.backgroundColor
   });
 
   factory BannerDto.fromJson(Map<String, dynamic> json) =>
@@ -131,6 +134,7 @@ class BannerDto {
   final String? leadingImageUrl;
   final ButtonInfoDto? buttonInfo;
   final ComponentActionDto? onClick;
+  final String? backgroundColor;
 }
 
 @JsonSerializable()

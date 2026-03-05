@@ -45,6 +45,7 @@ sealed class ProductFeaturesStateStore with _$ProductFeaturesStateStore {
   const factory ProductFeaturesStateStore({
     UserActivityInfo? userActivityInfo,
     ProductFeatureList? featureCards,
+    ProductFeatureList? banners,
     @Default(false) bool loading,
   }) = _HomeStateStore;
 }
