@@ -39,3 +39,30 @@ abstract class ProductFeatureList with _$ProductFeatureList {
     final List<ProductFeatureUi?>? features,
   }) = _ProductFeatureList;
 }
+
+@liteFreezed
+abstract class FeatureUsageInfo with _$FeatureUsageInfo {
+  const factory FeatureUsageInfo({
+    final String? metric,
+    final int? used,
+    final int? limit,
+    final DateTime? resetAt,
+  }) = _FeatureUsageInfo;
+}
+
+@liteFreezed
+abstract class ProductFeatureUsageInfo with _$ProductFeatureUsageInfo {
+  const factory ProductFeatureUsageInfo({
+    final String? code,
+    final int? featureId,
+    final String? name,
+    final FeatureUsageInfo? usageInfo,
+  }) = _ProductFeatureUsageInfo;
+}
+
+@liteFreezed
+abstract class ProductFeaturesUsageInfo with _$ProductFeaturesUsageInfo {
+  const factory ProductFeaturesUsageInfo({
+    final List<ProductFeatureUsageInfo?>? usageInfo,
+  }) = _ProductFeaturesUsageInfo;
+}

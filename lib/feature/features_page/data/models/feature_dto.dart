@@ -61,3 +61,50 @@ class ProductFeatureListDto {
 
   final List<ProductFeatureUiDto>? features;
 }
+
+@JsonSerializable()
+class FeatureUsageInfoDto {
+  const FeatureUsageInfoDto({
+    required this.metric,
+    required this.used,
+    required this.limit,
+    required this.resetAt,
+  });
+
+  factory FeatureUsageInfoDto.fromJson(Map<String, dynamic> json) =>
+      _$FeatureUsageInfoDtoFromJson(json);
+
+  final String? metric;
+  final int? used;
+  final int? limit;
+  final DateTime? resetAt;
+}
+
+@JsonSerializable()
+class ProductFeatureUsageInfoDto {
+  const ProductFeatureUsageInfoDto({
+    required this.code,
+    required this.featureId,
+    required this.name,
+    required this.usageInfo,
+  });
+
+  factory ProductFeatureUsageInfoDto.fromJson(Map<String, dynamic> json) =>
+      _$ProductFeatureUsageInfoDtoFromJson(json);
+
+  final String? code;
+  final int? featureId;
+  final String? name;
+  final FeatureUsageInfoDto? usageInfo;
+}
+
+@JsonSerializable()
+class ProductFeaturesUsageInfoResponse {
+  const ProductFeaturesUsageInfoResponse({required this.usageInfo});
+
+  factory ProductFeaturesUsageInfoResponse.fromJson(
+    Map<String, dynamic> json,
+  ) => _$ProductFeaturesUsageInfoResponseFromJson(json);
+
+  final List<ProductFeatureUsageInfoDto?> usageInfo;
+}

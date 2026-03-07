@@ -6,12 +6,12 @@ import 'package:doc_helper_app/core/extensions/extensions.dart';
 import 'package:doc_helper_app/core/router/route_mapper.dart';
 import 'package:doc_helper_app/core/utils/enums.dart';
 import 'package:doc_helper_app/core/utils/number_utils.dart';
-import 'package:doc_helper_app/design/atoms/typography/ds_text_style.dart';
 import 'package:doc_helper_app/design/design.dart'
     show DsText, DsButton, DsColors, DsSpacing, DsBorderRadius, DsSizing;
 import 'package:doc_helper_app/design/molecules/app_bar/primary_app_bar.dart';
 import 'package:doc_helper_app/design/molecules/list_tile/ds_list_tile.dart';
 import 'package:doc_helper_app/design/molecules/list_tile/list_tile_title.dart';
+import 'package:doc_helper_app/design/molecules/usage_indicator/ds_usage_indicator.dart';
 import 'package:doc_helper_app/di/injection.dart';
 import 'package:doc_helper_app/feature/profile/presentation/bloc/profile_bloc.dart';
 import 'package:flutter/material.dart';

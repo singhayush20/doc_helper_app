@@ -9,6 +9,7 @@ import 'package:doc_helper_app/core/global_store/global_state_impl.dart';
 import 'package:doc_helper_app/core/global_store/global_store.dart';
 import 'package:doc_helper_app/feature/auth/domain/interfaces/i_auth_facade.dart';
 import 'package:doc_helper_app/feature/billing/domain/entities/billing_entity.dart';
+import 'package:doc_helper_app/feature/features_page/domain/entity/features.dart';
 import 'package:doc_helper_app/feature/plan/domain/models/usage_info.dart';
 import 'package:doc_helper_app/feature/user/domain/entity/user.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -50,6 +51,7 @@ class ProfileBloc extends BaseBloc<ProfileEvent, ProfileState> {
           userInfo: globalState.store.userInfo,
           usageInfo: globalState.store.usageInfo,
           subscriptionInfo: globalState.store.subscriptionResponse,
+          productFeaturesUsageInfo: globalState.store.productFeaturesUsageInfo,
           loading: false,
         ),
       ),
@@ -103,6 +105,7 @@ class ProfileBloc extends BaseBloc<ProfileEvent, ProfileState> {
             userInfo: globalState.store.userInfo,
             usageInfo: globalState.store.usageInfo,
             subscriptionInfo: globalState.store.subscriptionResponse,
+            productFeaturesUsageInfo: globalState.store.productFeaturesUsageInfo,
             loading: false,
           ),
         ),

@@ -35,4 +35,21 @@ class ProductFeatureFacadeImpl implements IProductFeatureFacade {
       ),
     );
   }
+
+  @override
+  Future<Either<ServerException, ProductFeaturesUsageInfo>>
+  getFeaturesUsageInfo() async {
+    final responseOrError = await _apiCallHandler.handleApi(
+      _apiClient.getFeaturesUsageInfo,
+    );
+
+    return responseOrError.fold(
+      (error) => left(error),
+      (response) => right(
+        ProductFeaturesUsageInfoResponse.fromJson(
+          response.data as Map<String, dynamic>,
+        ).toDomain(),
+      ),
+    );
+  }
 }

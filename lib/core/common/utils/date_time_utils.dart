@@ -72,3 +72,10 @@ String getTimeAgo(DateTime? dateTime) {
     return 'just now';
   }
 }
+
+String getMonthNameDateYear(DateTime? dateTime) {
+  if (dateTime == null) {
+    return '';
+  }
+  return '''${getMonthName(dateTime.month)} ${dateTime.day}, ${dateTime.year}''';
+}

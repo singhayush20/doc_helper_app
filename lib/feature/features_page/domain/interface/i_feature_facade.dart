@@ -8,4 +8,7 @@ abstract class IProductFeatureFacade {
     required UIComponentType componentType,
     required String screen,
   });
+
+  Future<Either<ServerException, ProductFeaturesUsageInfo?>>
+  getFeaturesUsageInfo();
 }

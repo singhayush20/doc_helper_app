@@ -135,4 +135,6 @@ abstract class RetrofitApiClient {
   @DELETE('/api/v1/documents/{documentId}')
   Future<HttpResponse> deleteDocument(@Path('documentId') int documentId);
 
+  @GET('/api/v1/features/usage-info')
+  Future<HttpResponse> getFeaturesUsageInfo();
 }

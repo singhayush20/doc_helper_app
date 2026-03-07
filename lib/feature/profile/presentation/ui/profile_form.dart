@@ -18,7 +18,15 @@ class _ProfileForm extends StatelessWidget {
             spacing: DsSpacing.verticalSpace24,
             children: [
               _UserInfoSection(),
-              if (state.store.usageInfo != null) ...[_UsageSection()],
+              if (state.store.usageInfo != null ||
+                  (state
+                          .store
+                          .productFeaturesUsageInfo
+                          ?.usageInfo
+                          ?.isNotEmpty ??
+                      false)) ...[
+                _UsageSection(),
+              ],
               if (state.store.subscriptionInfo != null) ...[
                 const _SubscriptionSection(),
               ],
@@ -85,74 +93,77 @@ class _UsageSection extends StatelessWidget {
       final usageInfo = state.store.usageInfo;
       if (usageInfo == null) return const SizedBox.shrink();
 
-      final limit = usageInfo.monthlyLimit ?? 5000;
+      final limit = usageInfo.monthlyLimit ?? 0;
       final usage = usageInfo.currentMonthlyUsage ?? 0;
-      final percentage = (usage / limit).clamp(0.0, 1.0);
 
       final resetDate = usageInfo.resetDate;
-      final dateStr = resetDate != null
-          ? '''${getMonthName(resetDate.month)} ${resetDate.day}, ${resetDate.year}'''
-          : '';
+      final dateStr = getMonthNameDateYear(resetDate);
 
-      return Container(
-        padding: EdgeInsets.all(DsSpacing.radialSpace16),
-        decoration: BoxDecoration(
-          color: DsColors.backgroundPrimary,
-          borderRadius: BorderRadius.circular(DsBorderRadius.borderRadius12),
-          border: Border.all(color: DsColors.borderSubtle),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              spacing: DsSpacing.horizontalSpace4,
-              children: [
-                const Expanded(
-                  child: DsText.titleMedium(data: 'Monthly Usage'),
-                ),
-                RichText(
-                  text: TextSpan(
-                    style: const TextStyle(color: DsColors.textPrimary),
-                    children: [
-                      TextSpan(
-                        text: formatNumberWithSymbol(usage.toDouble()),
-                        style: DsTextStyle.bodyMedium.copyWith(
-                          color: DsColors.textSecondary,
-                        ),
-                      ),
-                      TextSpan(
-                        text:
-                            ' / ${formatNumberWithSymbol(limit.toDouble())} tokens',
-                        style: DsTextStyle.bodyMedium.copyWith(
-                          color: DsColors.textSecondary,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            DsSpacing.verticalSpaceSizedBox8,
-            ClipRRect(
-              borderRadius: BorderRadius.circular(DsBorderRadius.borderRadius4),
-              child: LinearProgressIndicator(
-                value: percentage,
-                minHeight: 6,
-                backgroundColor: DsColors.backgroundDisabled,
-                valueColor: const AlwaysStoppedAnimation<Color>(
-                  DsColors.primary,
-                ),
+      return Column(
+        spacing: DsSpacing.verticalSpace12,
+        children: [
+          Container(
+            padding: EdgeInsets.all(DsSpacing.radialSpace16),
+            decoration: BoxDecoration(
+              color: DsColors.backgroundPrimary,
+              borderRadius: BorderRadius.circular(
+                DsBorderRadius.borderRadius12,
               ),
+              border: Border.all(color: DsColors.borderSubtle),
             ),
-            DsSpacing.verticalSpaceSizedBox8,
-            if (dateStr.isNotEmpty)
-              DsText.bodySmall(
-                data: 'Resets on $dateStr',
-                color: DsColors.textSecondary,
+            child: DsUsageIndicator(
+              title: 'Chat Usage',
+              currentUsage: usage,
+              totalLimit: limit,
+              unit: 'tokens',
+              resetDate: dateStr,
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.all(DsSpacing.radialSpace16),
+            decoration: BoxDecoration(
+              color: DsColors.backgroundPrimary,
+              borderRadius: BorderRadius.circular(
+                DsBorderRadius.borderRadius12,
               ),
-          ],
-        ),
+              border: Border.all(color: DsColors.borderSubtle),
+            ),
+            child: ListView.separated(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              primary: false,
+              itemBuilder: (_, index) {
+                final usageData =
+                    state.store.productFeaturesUsageInfo?.usageInfo?[index];
+
+                if (usageData != null) {
+                  return DsUsageIndicator(
+                    title: usageData.name ?? '',
+                    currentUsage: usageData.usageInfo?.used ?? 0,
+                    totalLimit: usageData.usageInfo?.limit ?? 0,
+                    unit: 'tokens',
+                    resetDate: getMonthNameDateYear(
+                      usageData.usageInfo?.resetAt,
+                    ),
+                  );
+                } else {
+                  return const SizedBox.shrink();
+                }
+              },
+              separatorBuilder: (_, index) {
+                final usageData =
+                    state.store.productFeaturesUsageInfo?.usageInfo?[index];
+                if (usageData != null) {
+                  return DsSpacing.verticalSpaceSizedBox4;
+                } else {
+                  return const SizedBox();
+                }
+              },
+              itemCount:
+                  state.store.productFeaturesUsageInfo?.usageInfo?.length ?? 0,
+            ),
+          ),
+        ],
       );
     },
   );
@@ -367,12 +378,6 @@ class _SettingsSection extends StatelessWidget {
           title: const ListTileTitleMedium(data: 'Change Password'),
           trailing: Icon(Icons.chevron_right, size: DsSizing.size24),
           onTap: () => getBloc<ProfileBloc>(context).onPasswordResetPressed(),
-        ),
-        DsListTile(
-          leading: Icon(Icons.notifications_outlined, size: DsSizing.size24),
-          title: const ListTileTitleMedium(data: 'Notification Settings'),
-          trailing: Icon(Icons.chevron_right, size: DsSizing.size24),
-          onTap: () {},
         ),
       ],
     ),

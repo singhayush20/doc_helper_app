@@ -22,14 +22,36 @@ extension ProductFeatureDtoX on ProductFeatureDto {
 }
 
 extension ProductFeatureUiDtoX on ProductFeatureUiDto {
-  ProductFeatureUi toDomain() => ProductFeatureUi(
-    feature: feature?.toDomain(),
-    ui: ui?.toDomain(),
-  );
+  ProductFeatureUi toDomain() =>
+      ProductFeatureUi(feature: feature?.toDomain(), ui: ui?.toDomain());
 }
 
 extension ProductFeatureListDtoX on ProductFeatureListDto {
-  ProductFeatureList toDomain() => ProductFeatureList(
-    features: features?.map((e) => e.toDomain()).toList(),
+  ProductFeatureList toDomain() =>
+      ProductFeatureList(features: features?.map((e) => e.toDomain()).toList());
+}
+
+extension FeatureUsageInfoDtoX on FeatureUsageInfoDto {
+  FeatureUsageInfo toDomain() => FeatureUsageInfo(
+    metric: metric,
+    used: used,
+    limit: limit,
+    resetAt: resetAt,
+  );
+}
+
+extension ProductFeatureUsageInfoDtoX on ProductFeatureUsageInfoDto {
+  ProductFeatureUsageInfo toDomain() => ProductFeatureUsageInfo(
+    code: code,
+    featureId: featureId,
+    name: name,
+    usageInfo: usageInfo?.toDomain(),
+  );
+}
+
+extension ProductFeaturesUsageInfoResponseX
+    on ProductFeaturesUsageInfoResponse {
+  ProductFeaturesUsageInfo toDomain() => ProductFeaturesUsageInfo(
+    usageInfo: usageInfo.map((e) => e?.toDomain()).toList(),
   );
 }
