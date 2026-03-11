@@ -20,6 +20,7 @@ abstract class ChatMessage with _$ChatMessage {
     final MessageActor? role,
     final DateTime? timestamp,
     final bool? isError,
+    final List<ChatResponseCitation?>? citations,
   }) = _ChatMessage;
 }
 
@@ -30,6 +31,19 @@ abstract class QuestionAnswerResponse with _$QuestionAnswerResponse {
     final String? errorMessage,
     final String? errorCode,
     final MessageEventType? event,
+    final List<ChatResponseCitation>? citations,
   }) = _QuestionAnswerResponse;
 }
 
+@liteFreezed
+abstract class ChatResponseCitation with _$ChatResponseCitation {
+  const factory ChatResponseCitation({
+    final int? index,
+    final CitationType? type,
+    final String? title,
+    final String? url,
+    final String? snippet,
+    final dynamic page,
+    final double? score,
+  }) = _ChatResponseCitation;
+}

@@ -33,6 +33,7 @@ class ChatMessageDto {
     required this.content,
     required this.role,
     required this.timestamp,
+    required this.citations,
   });
 
   factory ChatMessageDto.fromJson(Map<String, dynamic> json) =>
@@ -42,6 +43,7 @@ class ChatMessageDto {
   final String? content;
   final String? role;
   final DateTime? timestamp;
+  final List<ChatResponseCitationDto?>? citations;
 }
 
 @JsonSerializable()
@@ -50,12 +52,38 @@ class QuestionAnswerResponseDto {
     this.errorMessage,
     this.errorCode,
     this.message,
+    this.citations,
   });
 
   factory QuestionAnswerResponseDto.fromJson(Map<String, dynamic> json) =>
       _$QuestionAnswerResponseDtoFromJson(json);
 
   final String? message;
+  final List<ChatResponseCitationDto?>? citations;
   final String? errorMessage;
   final String? errorCode;
+}
+
+@JsonSerializable()
+class ChatResponseCitationDto {
+  const ChatResponseCitationDto({
+    required this.index,
+    required this.type,
+    required this.title,
+    required this.url,
+    required this.snippet,
+    required this.page,
+    required this.score,
+  });
+
+  factory ChatResponseCitationDto.fromJson(Map<String, dynamic> json) =>
+      _$ChatResponseCitationDtoFromJson(json);
+
+  final int? index;
+  final String? type;
+  final String? title;
+  final String? url;
+  final String? snippet;
+  final dynamic page;
+  final double? score;
 }

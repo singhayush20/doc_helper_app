@@ -4,7 +4,15 @@ enum MessageActor {
 }
 
 enum MessageEventType {
+  start,
+  heartbeat,
   message,
+  citations,
   done,
   error
+}
+
+enum CitationType {
+  document,
+  web
 }

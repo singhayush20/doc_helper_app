@@ -5,18 +5,15 @@ class _ChatForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => BlocBuilder<ChatBloc, ChatState>(
-    builder: (context, state) => Container(
-      color: DsColors.backgroundPrimary,
-      child: Column(
-        children: [
-          const Expanded(child: ChatListView()),
-          if (state.store.streamingErrorCode ==
-              ErrorCodes.quotaExceededServerError) ...const [
-            _QuotaExceededMessage(),
-          ],
-          const ChatInputBar(),
+    builder: (context, state) => Column(
+      children: [
+        const Expanded(child: ChatListView()),
+        if (state.store.streamingErrorCode ==
+            ErrorCodes.quotaExceededServerError) ...const [
+          _QuotaExceededMessage(),
         ],
-      ),
+        const ChatInputBar(),
+      ],
     ),
   );
 }
@@ -49,30 +46,30 @@ class _QuotaExceededMessageState extends State<_QuotaExceededMessage> {
 
   @override
   Widget build(BuildContext context) => Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: DsSpacing.horizontalSpace16,
-        vertical: DsSpacing.verticalSpace12,
-      ),
-      child: RichText(
-        textAlign: TextAlign.center,
-        text: TextSpan(
-          style: DsTextStyle.bodyMedium.copyWith(color: DsColors.textSecondary),
-          children: [
-            const TextSpan(text: 'You have exceeded your quota. '),
-            TextSpan(
-              text: 'Upgrade your plan',
-              style: DsTextStyle.bodyMedium.copyWith(
-                color: DsColors.textError,
-                fontWeight: FontWeight.bold,
-                decoration: TextDecoration.underline,
-              ),
-              recognizer: _recognizer,
+    padding: EdgeInsets.symmetric(
+      horizontal: DsSpacing.horizontalSpace16,
+      vertical: DsSpacing.verticalSpace12,
+    ),
+    child: RichText(
+      textAlign: TextAlign.center,
+      text: TextSpan(
+        style: DsTextStyle.bodyMedium.copyWith(color: DsColors.textSecondary),
+        children: [
+          const TextSpan(text: 'You have exceeded your quota. '),
+          TextSpan(
+            text: 'Upgrade your plan',
+            style: DsTextStyle.bodyMedium.copyWith(
+              color: DsColors.textError,
+              fontWeight: FontWeight.bold,
+              decoration: TextDecoration.underline,
             ),
-            const TextSpan(text: ' to continue.'),
-          ],
-        ),
+            recognizer: _recognizer,
+          ),
+          const TextSpan(text: ' to continue.'),
+        ],
       ),
-    );
+    ),
+  );
 }
 
 class ChatListView extends StatelessWidget {
@@ -138,10 +135,12 @@ class ChatMessageBubble extends StatelessWidget {
     final isUser = message.role == MessageActor.user;
     final content = message.content ?? '';
     final canCopy = content.trim().isNotEmpty;
+    final citations = message.citations ?? [];
 
     final Widget bubbleChild;
+
     if (isUser) {
-      bubbleChild = DsText.bodyMedium(data: content, color: DsColors.onPrimary);
+      bubbleChild = DsText.bodyMedium(data: content);
     } else if (showTyping) {
       bubbleChild = const _TypingDots();
     } else {
@@ -151,7 +150,7 @@ class ChatMessageBubble extends StatelessWidget {
     final Decoration decoration;
     if (isUser) {
       decoration = BoxDecoration(
-        color: DsColors.primary,
+        color: DsColors.userChatBubbleBackground,
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(DsBorderRadius.borderRadius16),
           bottomRight: Radius.circular(DsBorderRadius.borderRadius16),
@@ -166,7 +165,13 @@ class ChatMessageBubble extends StatelessWidget {
         gradient: isError
             ? null
             : const LinearGradient(
-                colors: [DsColors.backgroundSurface, DsColors.backgroundSubtle],
+                stops: [0.6, 0.8],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  DsColors.assistantChatBubbleBackgroundPrimary,
+                  DsColors.assistantChatBubbleBackground,
+                ],
               ),
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(DsBorderRadius.borderRadius16),
@@ -176,7 +181,7 @@ class ChatMessageBubble extends StatelessWidget {
         ),
         border: isError
             ? Border.all(color: DsColors.iconError.withAlpha(80))
-            : null,
+            : Border.all(color: DsColors.borderDefaultSecondary),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withAlpha(3),
@@ -196,7 +201,17 @@ class ChatMessageBubble extends StatelessWidget {
         maxWidth: MediaQuery.sizeOf(context).width * 0.7,
       ),
       decoration: decoration,
-      child: bubbleChild,
+      child: Column(
+        spacing: DsSpacing.verticalSpace8,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          bubbleChild,
+          if (citations.isNotEmpty) ...[
+            DsSpacing.verticalSpaceSizedBox4,
+            _CitationDropdown(citations: citations),
+          ],
+        ],
+      ),
     );
 
     return Container(
@@ -252,6 +267,55 @@ class ChatMessageBubble extends StatelessWidget {
       ),
     );
   }
+}
+
+class _CitationDropdown extends StatelessWidget {
+  const _CitationDropdown({required this.citations});
+
+  final List<ChatResponseCitation?> citations;
+
+  @override
+  Widget build(BuildContext context) => Theme(
+    data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+    child: ExpansionTile(
+      tilePadding: EdgeInsets.zero,
+      childrenPadding: EdgeInsets.zero,
+      visualDensity: VisualDensity.compact,
+      title: DsText.labelSmall(
+        data: 'Sources (${citations.length})',
+        color: DsColors.primary,
+      ),
+      iconColor: DsColors.primary,
+      collapsedIconColor: DsColors.primary,
+      children: citations
+          .map(
+            (citation) => citation == null
+                ? const SizedBox.shrink()
+                : Padding(
+                    padding: EdgeInsets.symmetric(
+                      vertical: DsSpacing.verticalSpace4,
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      spacing: DsSpacing.horizontalSpace8,
+                      children: [
+                        DsText.labelSmall(
+                          data: '[${citation.index}]',
+                          color: DsColors.textSecondary,
+                        ),
+                        Expanded(
+                          child: DsText.labelSmall(
+                            data: citation.snippet ?? '',
+                            color: DsColors.textSecondary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+          )
+          .toList(),
+    ),
+  );
 }
 
 class _MessageMetaBar extends StatelessWidget {

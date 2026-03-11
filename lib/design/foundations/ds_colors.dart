@@ -46,9 +46,12 @@ abstract class DsColors {
 
   /// Disabled state background
   static const Color backgroundDisabled = _BaseColors.neutral200;
-  
+
   /// Chat page background
   static const Color chatBubbleErrorBackground = _BaseColors.red200;
+  static const Color userChatBubbleBackground = _BaseColors.neutral200;
+  static const Color assistantChatBubbleBackgroundPrimary = _BaseColors.white;
+  static const Color assistantChatBubbleBackground = _BaseColors.blue100;
 
   // ==========================================
   // 3. SURFACE COLORS (Cards, Dialogs, Sheets)
@@ -94,6 +97,7 @@ abstract class DsColors {
   // 5. BORDER COLORS
   // ==========================================
   static const Color borderDefault = _BaseColors.neutral700;
+  static const Color borderDefaultSecondary = _BaseColors.neutral400;
 
   static const Color borderSubtle = _BaseColors.neutral200;
 

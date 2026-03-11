@@ -267,9 +267,12 @@ class ChatBloc extends BaseBloc<ChatEvent, ChatState> {
           );
         },
         (response) {
-          if (response.event == MessageEventType.message) {
-            if (response.message?.isNotEmpty ?? false) {
-              aiStreamChunkReceived(chunk: response.message ?? '');
+          if (response.event == MessageEventType.message ||
+              response.event == MessageEventType.citations) {
+            final chunk = response.message ?? '';
+            final citations = response.citations;
+            if (chunk.isNotEmpty || (citations?.isNotEmpty ?? false)) {
+              aiStreamChunkReceived(chunk: chunk, citations: citations);
             }
           } else if (response.event == MessageEventType.error) {
             isError = true;
@@ -323,6 +326,9 @@ class ChatBloc extends BaseBloc<ChatEvent, ChatState> {
 
     final updatedMsg = aiMsg.copyWith(
       content: (aiMsg.content ?? '') + event.chunk,
+      citations: (event.citations?.isNotEmpty ?? false)
+          ? event.citations
+          : aiMsg.citations,
     );
 
     message[aiIndex] = updatedMsg;
@@ -491,8 +497,11 @@ class ChatBloc extends BaseBloc<ChatEvent, ChatState> {
 
   void stopGeneration() => add(const ChatEvent.stopGeneration());
 
-  void aiStreamChunkReceived({required String chunk}) =>
-      add(ChatEvent.aiStreamChunkReceived(chunk: chunk));
+  void aiStreamChunkReceived({
+    required String chunk,
+    required List<ChatResponseCitation>? citations,
+  }) =>
+      add(ChatEvent.aiStreamChunkReceived(chunk: chunk, citations: citations));
 
   void aiStreamError({
     required String errorMessage,

@@ -92,6 +92,7 @@ class ChatFacadeImpl implements IChatFacade {
 
     _internalSubscription = stream.listen(
       (sseEvent) {
+        print('sse event: ${sseEvent.event}, data: ${sseEvent.data}');
         try {
           final rawResponse = sseEvent.data.trim();
 

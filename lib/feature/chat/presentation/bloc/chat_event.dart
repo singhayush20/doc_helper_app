@@ -31,6 +31,7 @@ sealed class ChatEvent extends BaseEvent with _$ChatEvent {
 
   const factory ChatEvent.aiStreamChunkReceived({
     required String chunk,
+    required List<ChatResponseCitation?>? citations,
   }) = _AiStreamChunkReceived;
 
   const factory ChatEvent.aiStreamCompleted() = _AiStreamCompleted;

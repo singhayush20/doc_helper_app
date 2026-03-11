@@ -42,7 +42,7 @@ class SseClient implements ISseHandler {
         data: body,
         options: Options(
           responseType: ResponseType.stream,
-          receiveTimeout: null,
+          receiveTimeout: Duration.zero,
         ),
         cancelToken: _cancelToken,
       );

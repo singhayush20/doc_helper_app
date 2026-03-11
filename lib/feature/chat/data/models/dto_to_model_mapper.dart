@@ -16,5 +16,18 @@ extension ChatMessageDtoX on ChatMessageDto {
     content: content,
     role: MessageActor.values.by(role),
     timestamp: timestamp,
+    citations: citations?.map((e) => e?.toDomain()).toList(),
+  );
+}
+
+extension ChatResponseCitationDtoX on ChatResponseCitationDto {
+  ChatResponseCitation toDomain() => ChatResponseCitation(
+    index: index,
+    type: CitationType.values.by(type),
+    title: title,
+    url: url,
+    snippet: snippet,
+    page: page,
+    score: score,
   );
 }
