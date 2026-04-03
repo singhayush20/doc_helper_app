@@ -1,7 +1,9 @@
+import 'package:dartz/dartz.dart';
 import 'package:doc_helper_app/core/common/base_bloc/base_bloc.dart';
 import 'package:doc_helper_app/core/common/base_bloc/base_event.dart';
 import 'package:doc_helper_app/core/common/base_bloc/base_state.dart';
 import 'package:doc_helper_app/core/common/utils/app_utils.dart';
+import 'package:doc_helper_app/core/exception_handling/server_exception.dart';
 import 'package:doc_helper_app/core/global_store/global_state_impl.dart';
 import 'package:doc_helper_app/feature/auth/domain/interfaces/i_auth_facade.dart';
 import 'package:doc_helper_app/feature/user/domain/entity/user.dart';
@@ -29,11 +31,15 @@ class SplashBloc extends BaseBloc<SplashEvent, SplashState> {
 
   Future<void> _onStarted(_, Emitter<SplashState> emit) async {
     emit(state.getLoaderState(loading: true) as SplashState);
-    final currentUserOrFailure = await _authFacade.getCurrentUser();
 
-    await Future.delayed(const Duration(seconds: 4));
+    Either<ServerException, AppUser?>? currentUserOrFailure;
 
-    await currentUserOrFailure.fold(
+    await Future.wait([
+      (() async => currentUserOrFailure = await _authFacade.getCurrentUser())(),
+      (() async => Future.delayed(const Duration(seconds: 4)))()
+    ]);
+
+    await currentUserOrFailure?.fold(
       (exception) async =>
           emit(state.getExceptionState(exception) as SplashState),
       (user) async {
@@ -47,6 +53,13 @@ class SplashBloc extends BaseBloc<SplashEvent, SplashState> {
                 store: state.store.copyWith(loading: false),
                 user: user,
               ),
+            ),
+          );
+        } else {
+          emit(
+            SplashState.onCurrentUserFetch(
+              store: state.store.copyWith(loading: false),
+              user: user,
             ),
           );
         }

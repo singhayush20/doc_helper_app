@@ -204,7 +204,6 @@ class _EmailAddressFieldState extends State<_EmailAddressField> {
       BlocBuilder<PasswordResetBloc, PasswordResetState>(
         builder: (context, state) {
           _controller.text = state.store.email?.input ?? '';
-
           return EmailTextFormField(
             value: state.store.email,
             controller: _controller,
@@ -212,7 +211,7 @@ class _EmailAddressFieldState extends State<_EmailAddressField> {
             labelText: 'Email Address',
             hintText: 'Enter your email address',
             errorText: 'Enter a valid email id!',
-            readOnly: (state.store.parentRoute != Routes.profile),
+            readOnly: (state.store.parentRoute == Routes.profile),
             onChanged: (state.store.parentRoute != Routes.profile)
                 ? (value) => getBloc<PasswordResetBloc>(
                     context,
