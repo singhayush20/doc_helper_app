@@ -1,21 +1,27 @@
 # Doc Helper App
+A Flutter Application that provides RAG-powered document utility features based on the user's plan and enabled features. 
 
-A Flutter application that enables users to upload documents and engage in intelligent conversations about their content. The app leverages AI-powered chat to answer questions, extract information, and provide insights from uploaded documents.
+https://github.com/user-attachments/assets/be975437-8d10-4545-a0c9-3e42cf1ddd41
+
+
+https://github.com/user-attachments/assets/55fa983b-7888-44c4-8a5a-1ca03638a65e
+
+The backend project can be found [here](https://github.com/singhayush20/doc_helper_backend).
 
 ## Features
 
-### Document Management
-- **Upload Documents**: Users can upload files to the platform and monitor processing status
-- **Document Library**: View and manage all uploaded documents in a centralized location
-
-### Intelligent Chat Interface
+### Chat Interface
 - **AI-Powered Questions**: Ask questions about your uploaded documents and receive AI-generated responses
 - **Conversation History**: Access previous conversations and maintain context across multiple sessions
 - **Real-Time Responses**: Get instant answers powered by advanced language models
 
+### Document Summarizer
+- **Generate document summary**: Generate a summary for your documents by controlling tone and length.
+- **Share and Save**: Share or save the document summary from within the summarizer interface.
+- **Track your activity**: Track what you did in the app, as recent activity.
+
 ### User Authentication
 - **Secure Sign-Up**: Create accounts with email verification
-- **Flexible Sign-In**: Authenticate using email credentials
 - **Password Recovery**: Reset passwords through email-based verification
 - **Session Management**: Automatic session handling and logout functionality
 
@@ -28,14 +34,10 @@ A Flutter application that enables users to upload documents and engage in intel
 - **Flexible Billing**: Cancel subscriptions with grace periods
 
 ### User Profile
-- **Account Management**: View and update profile information
 - **Usage Analytics**: Track current token usage against monthly limits
 - **Subscription Details**: View active plan, pricing, and renewal information
-- **Account Settings**: Manage password, subscription preferences, and account options
 
 ## Architecture
-
-The app follows **Clean Architecture** principles with clear separation of concerns:
 
 ### Project Structure
 
@@ -84,10 +86,8 @@ lib/
 │   ├── splash_screen/             # Splash screen
 │   └── features_page/             # App features showcase
 │
-├── main.dart                      # App entry point
 ├── main_dev.dart                  # Development environment entry
 ├── main_prod.dart                 # Production environment entry
-└── firebase_options.dart          # Firebase configuration
 ```
 
 ### Design Patterns & Technologies
@@ -106,20 +106,6 @@ lib/
 **Markdown Rendering**: GPT Markdown for rich text rendering of AI responses  
 **Animations**: Lottie for smooth animation effects  
 **Pagination**: Infinite scroll pagination for efficient list rendering  
-
-### Layered Architecture
-
-Each feature module follows the Clean Architecture pattern with three layers:
-
-1. **Data Layer**: Handles data sources (API, local storage), DTOs, and data mapping
-2. **Domain Layer**: Contains business logic, entities, and use cases
-3. **Presentation Layer**: Manages UI, state with BLoCs, and user interactions
-
-This separation ensures:
-- Testability at each layer
-- Clear data flow and dependencies
-- Easy feature maintenance and scaling
-- Reusable domain logic independent of UI
 
 ## Environment Configuration
 
@@ -144,7 +130,6 @@ Environment setup is handled through the `env/config_options.dart` and dependenc
 | `flutter_screenutil` | Responsive design |
 | `freezed` | Code generation for immutable classes |
 | `dartz` | Functional programming utilities |
-| `permission_handler` | Device permissions |
 | `file_picker` | File selection from device |
 | `gpt_markdown` | Markdown rendering for AI responses |
 | `infinite_scroll_pagination` | Efficient list pagination |
@@ -152,12 +137,6 @@ Environment setup is handled through the `env/config_options.dart` and dependenc
 | `lottie` | Animation support |
 
 ## Getting Started
-
-### Prerequisites
-- Flutter SDK 3.8.1 or higher
-- Dart SDK 3.8.1 or higher
-- Android SDK (for Android builds)
-- iOS deployment target 12.0+ (for iOS builds)
 
 ### Installation
 
@@ -179,24 +158,9 @@ Environment setup is handled through the `env/config_options.dart` and dependenc
 
 4. **Run the app**
    ```bash
-   flutter run -t lib/main.dart          # Production
+   flutter run -t lib/main_prod.dart          # Production
    flutter run -t lib/main_dev.dart      # Development
    ```
-
-## Building
-
-### Android
-```bash
-flutter build apk              # Debug APK
-flutter build apk --release    # Release APK
-flutter build appbundle        # App Bundle for Play Store
-```
-
-### iOS
-```bash
-flutter build ios              # iOS app
-flutter build ipa --release    # Release IPA for App Store
-```
 
 ## Project Setup Notes
 
